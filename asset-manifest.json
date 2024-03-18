@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/f1-guessing-game/static/css/main.f855e6bc.css",
-    "main.js": "/f1-guessing-game/static/js/main.56a22e66.js",
-    "static/js/453.8541eca0.chunk.js": "/f1-guessing-game/static/js/453.8541eca0.chunk.js",
-    "static/media/logo.svg": "/f1-guessing-game/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
-    "index.html": "/f1-guessing-game/index.html",
-    "main.f855e6bc.css.map": "/f1-guessing-game/static/css/main.f855e6bc.css.map",
-    "main.56a22e66.js.map": "/f1-guessing-game/static/js/main.56a22e66.js.map",
-    "453.8541eca0.chunk.js.map": "/f1-guessing-game/static/js/453.8541eca0.chunk.js.map"
+    "main.css": "/F1-Guessing-Game/static/css/main.f855e6bc.css",
+    "main.js": "/F1-Guessing-Game/static/js/main.2756f811.js",
+    "static/js/453.8541eca0.chunk.js": "/F1-Guessing-Game/static/js/453.8541eca0.chunk.js",
+    "static/media/logo.svg": "/F1-Guessing-Game/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/F1-Guessing-Game/index.html",
+    "main.f855e6bc.css.map": "/F1-Guessing-Game/static/css/main.f855e6bc.css.map",
+    "main.2756f811.js.map": "/F1-Guessing-Game/static/js/main.2756f811.js.map",
+    "453.8541eca0.chunk.js.map": "/F1-Guessing-Game/static/js/453.8541eca0.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f855e6bc.css",
-    "static/js/main.56a22e66.js"
+    "static/js/main.2756f811.js"
   ]
 }
