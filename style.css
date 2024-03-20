@@ -46,11 +46,11 @@ body {
     margin: 0;
 }
 
-div {
-    margin:  8px;
-    overflow-x: auto;
-}
-
 .inline-block { 
 	display: inline-block;
+}
+
+.my-table {
+    margin:  8px;
+    overflow-x: auto;
 }
