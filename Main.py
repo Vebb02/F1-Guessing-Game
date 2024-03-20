@@ -81,23 +81,18 @@ for key in guessers.keys():
 # HTML skeleton
 html_head = """<!DOCTYPE html>
 <html lang="en">
-<style>
-table, th, td {
-    border:1px solid black;
-}
-th, td {
-    text-align: center;
-    padding-left: 5px;
-    padding-right: 5px;
-}
-</style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>F1 tipping</title>
 </head>
 <body>
-<h1>F1 tipping 2024</h1>
+    <header>
+        <h1>F1 tipping 2024</h1>
+        <a href="./">Hjem</a>
+        <a href="beregning_av_poeng">Beregning av poeng</a>
+    </header>
 """
 html_tail = "</body>\n</html>\n"
 
@@ -107,6 +102,7 @@ html_body = ""
 summary_html = """<div>
 <h2>Oppsummering</h2>
 <table>
+<thead>
 <tr>
 <th>Navn</th>
 <th>Sjåførmesterskap</th>
@@ -114,6 +110,8 @@ summary_html = """<div>
 <th>10.plass</th>
 <th>Total</th>
 </tr>
+</thead>
+<tbody>
 """
 
 for key in guessers.keys():
@@ -131,7 +129,8 @@ for key in guessers.keys():
 <tr>
 """
 
-summary_html += """</table>
+summary_html += """</tbody>
+</table>
 </div>
 """
 html_body += summary_html
@@ -140,6 +139,7 @@ html_body += summary_html
 driver_standings_html = """<div>
 <h2>Sjåførmesterskap</h2>
 <table>
+<thead>
 <tr>
 <th>Plassering</th>
 <th>Sjåfør</th>
@@ -149,7 +149,7 @@ for key in guessers.keys():
     driver_standings_html += f"<th>{guesser.alias} gjettet</th>\n"
     driver_standings_html += f"<th>{guesser.alias} poeng</th>\n"
 
-driver_standings_html += "</tr>\n"
+driver_standings_html += "</tr>\n</thead>\n<tbody>\n"
 
 for row in driver_standings[1:]:
     driver_standings_html += "<tr>\n"
@@ -157,7 +157,7 @@ for row in driver_standings[1:]:
     driver_split = driver[0]
     for c in driver[1:-3]:
         if c.isupper():
-            driver_split += ' '
+            driver_split += " "
         driver_split += c
     driver_standings_html += f"<td>{row[0]}</td>\n"
     driver_standings_html += f"<td>{driver_split}</td>\n"
@@ -174,7 +174,8 @@ for row in driver_standings[1:]:
             driver_standings_html += f"<td>{scored[driver_shorthand]}</td>\n"
     driver_standings_html += "</tr>\n"
 
-driver_standings_html += """</table>
+driver_standings_html += """</tbody>
+</table>
 </div>
 """
 html_body += driver_standings_html
@@ -183,6 +184,7 @@ html_body += driver_standings_html
 constructor_standings_html = """<div>
 <h2>Konstruktørmesterskap</h2>
 <table>
+<thead>
 <tr>
 <th>Plassering</th>
 <th>Konstruktør</th>
@@ -192,7 +194,7 @@ for key in guessers.keys():
     constructor_standings_html += f"<th>{guesser.alias} gjettet</th>\n"
     constructor_standings_html += f"<th>{guesser.alias} poeng</th>\n"
 
-constructor_standings_html += "</tr>\n"
+constructor_standings_html += "</tr>\n</thead>\n<tbody>\n"
 
 for row in constructor_standings[1:]:
     constructor_standings_html += "<tr>\n"
@@ -208,7 +210,8 @@ for row in constructor_standings[1:]:
         constructor_standings_html += f"<td>{scored[constructor]}</td>\n"
     constructor_standings_html += "</tr>\n"
 
-constructor_standings_html += """</table>
+constructor_standings_html += """</tbody>
+</table>
 </div>
 """
 html_body += constructor_standings_html
@@ -218,6 +221,7 @@ html_body += constructor_standings_html
 tenth_place_html = """<div>
 <h2>10.plass</h2>
 <table>
+<thead>
 <tr>
 <th>Løp</th>
 """
@@ -227,22 +231,22 @@ for key in guessers.keys():
     tenth_place_html += f"<th>{guesser.alias} faktisk plassering</th>\n"
     tenth_place_html += f"<th>{guesser.alias} poeng</th>\n"
 
-tenth_place_html += "</tr>\n"
+tenth_place_html += "</tr>\n</thead>\n<tbody>\n"
 
 for i in range(len(races.keys())):
     tenth_place_html += "<tr>\n"
     tenth_place_html += f"<td>{races[i]}</td>\n"
     for key in guessers.keys():
         guesser = guessers[key]
-        guessed = guesser.tenth_place[i]['full_name']
+        guessed = guesser.tenth_place[i]["full_name"]
         evaluated = guesser.tenth_place_evaluated[i]
-        actual_place = evaluated['placed']
-        scored = evaluated['points']
+        actual_place = evaluated["placed"]
+        scored = evaluated["points"]
         tenth_place_html += f"<td>{guessed}</td>\n"
         tenth_place_html += f"<td>{actual_place}</td>\n"
         tenth_place_html += f"<td>{scored}</td>\n"
     tenth_place_html += "</tr>\n"
-    
+
 tenth_place_html += """</table>
 </div>
 """

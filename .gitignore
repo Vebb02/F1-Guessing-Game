@@ -2,8 +2,8 @@
 credentials.json
 sheets.json
 
-# Front end
-*.html
+# Code generated front end
+index.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
