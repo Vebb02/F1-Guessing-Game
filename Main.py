@@ -2,6 +2,7 @@ from google.oauth2 import service_account
 import gspread
 import json
 from Guesser import Guesser
+from Stats import Stats
 
 guessers = dict()
 
@@ -53,6 +54,10 @@ for row in tenth_place_guessed[1:]:
     races[race_number] = race_name
     guessers[email].add_10th_place_guess(race_number, guessed)
 
+table = sheet.get_worksheet(2)
+race_stats = table.get_values()
+stats = Stats(race_stats)
+
 # Evaluate scoring tenth place
 sheet = client.open_by_key(proxy_id)
 table = sheet.get_worksheet(0)
@@ -71,6 +76,7 @@ table.update_cell(1, 1, driver_standings_link)
 driver_standings = table.get_values(range_name="B1:F24")
 for key in guessers.keys():
     guessers[key].evaluate_driver_standings(driver_standings[1:])
+
 
 constructor_standings_link = '=importhtml("https://www.formula1.com/en/results.html/2024/team.html"; "table"; 1; "en_US")'
 table.update_cell(1, 1, constructor_standings_link)
@@ -92,6 +98,7 @@ html_head = """<!DOCTYPE html>
         <h1>F1 tipping 2024</h1>
         <a href="./">Hjem</a>
         <a href="beregning_av_poeng">Beregning av poeng</a>
+        <a href="statistikk">Statistikk</a>
     </header>
 """
 html_tail = "</body>\n</html>\n"
@@ -151,6 +158,8 @@ for key in guessers.keys():
 
 driver_standings_html += "</tr>\n</thead>\n<tbody>\n"
 
+short_to_long_name = {}
+
 for row in driver_standings[1:]:
     driver_standings_html += "<tr>\n"
     driver = row[1]
@@ -166,6 +175,8 @@ for row in driver_standings[1:]:
         guessed = guesser.driver
         scored = guesser.driver_evaluated
         driver_shorthand = driver[-3:]
+        # For later use
+        short_to_long_name[driver_shorthand] = driver_split
         if not driver_shorthand in guessed.keys():
             driver_standings_html += f"<td>N/A</td>\n"
             driver_standings_html += f"<td>N/A</td>\n"
@@ -253,5 +264,74 @@ tenth_place_html += """</table>
 html_body += tenth_place_html
 
 file = open("index.html", "w", encoding="UTF-8")
+file.write(html_head + html_body + html_tail)
+file.close()
+
+
+
+# Stats fra sjåførene
+
+def stats_html_table(kategori: str, ranked_drivers: list):
+    html = f"""<div>
+<h3>{kategori}</h3>
+<table>
+<thead>
+<tr>
+<th>Plassering</th>
+<th>Sjåfør</th>
+<th>Antall</th>
+</tr>
+</thead>
+<tbody>
+"""
+    for driver in ranked_drivers:
+        html += "<tr>\n"
+        html += f"<td>{driver[0]}</td>\n"
+        html += f"<td>{short_to_long_name[driver[1].upper()]}</td>\n"
+        html += f"<td>{driver[2]}</td>\n"
+        html += "</tr>\n"
+
+    html += """</tbody>
+</table>
+</div>
+"""
+    return html
+
+
+html_body = '<div>\n<h2>Statistikk</h2\n'
+
+html_body += stats_html_table('Seiere', stats.get_ranked_wins())
+html_body += stats_html_table('Poles', stats.get_ranked_poles())
+html_body += stats_html_table('Spins', stats.get_ranked_spins())
+html_body += stats_html_table('Krasj', stats.get_ranked_crashes())
+html_body += stats_html_table('DNFs', stats.get_ranked_dnfs())
+html_body += f"""<div>
+<h3>Antall av diverse</h3>
+<table>
+<thead>
+<tr>
+<th>Kategori</th>
+<th>Antall</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gule flagg</td>
+<td>{stats.antall['gf']}</td>
+</tr>
+<tr>
+<td>Røde flagg</td>
+<td>{stats.antall['rf']}</td>
+</tr>
+<tr>
+<td>Sikkerhetsbiler (ink. VSC)</td>
+<td>{stats.antall['sc']}</td>
+</tr>
+</tbody>
+</div>
+"""
+
+html_body += '</div>\n'
+file = open("statistikk.html", "w", encoding="UTF-8")
 file.write(html_head + html_body + html_tail)
 file.close()

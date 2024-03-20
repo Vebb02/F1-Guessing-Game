@@ -33,15 +33,15 @@ class Guesser:
                 else:
                     match split_key[1]:
                         case 'seiere':
-                            self.wins[driver] = place
+                            self.wins[place] = driver
                         case 'poles':
-                            self.poles[driver] = place
+                            self.poles[place] = driver
                         case 'spins':
-                            self.spins[driver] = place
+                            self.spins[place] = driver
                         case 'krasj':
-                            self.crash[driver] = place
+                            self.crash[place] = driver
                         case 'DNFs':
-                            self.dnfs[driver] = place
+                            self.dnfs[place] = driver
                         case _:
                             raise Exception('Could not parse key')
 
