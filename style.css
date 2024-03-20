@@ -1,11 +1,17 @@
 table {
     border-collapse: collapse;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    position: relative;
 }
 
 thead th {
     background-color: rgb(187, 0, 31);
     color: #ffffff;
+}
+
+thead {
+    position: sticky;
+    top: 0;
 }
 
 tbody tr {
@@ -15,6 +21,7 @@ tbody tr {
 tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
+
 tbody tr:last-of-type {
     border-bottom: 2px solid rgb(187, 0, 31);
 }
@@ -50,8 +57,8 @@ body {
     margin: 0;
 }
 
-.inline-block { 
-	display: inline-block;
+.inline-block {
+    display: inline-block;
     text-align: top;
 }
 
