@@ -1,7 +1,6 @@
 table {
     border-collapse: collapse;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    position: relative;
 }
 
 thead th {
@@ -9,7 +8,7 @@ thead th {
     color: #ffffff;
 }
 
-thead {
+th {
     position: sticky;
     top: 0;
 }
@@ -55,15 +54,12 @@ div {
 
 body {
     margin: 0;
+    padding: 0;
 }
 
 .inline-block {
     display: inline-block;
     text-align: top;
-}
-
-.my-big-table {
-    overflow-x: auto;
 }
 
 .sub-header {
