@@ -1,1 +1,1 @@
-[Website] (https://vebb02.github.io/F1-Guessing-Game/)
+[Website](https://vebb02.github.io/F1-Guessing-Game/)
