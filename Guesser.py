@@ -46,10 +46,10 @@ class Guesser:
                             raise Exception('Could not parse key')
 
     def add_10th_place_guess(self, race_number: int, guess: str):
-        self.tenth_place[race_number] = guess[-3:]
+        self.tenth_place[race_number] = {'short':guess[-3:], 'full_name': guess[:-4]}
 
     def add_10th_place_result(self, race_number: int, race_result: list):
-        guessed_driver = self.tenth_place[race_number]
+        guessed_driver = self.tenth_place[race_number]['short']
         for row in race_result:
             driver = row[2][-3:]
             if (guessed_driver == driver):
@@ -58,7 +58,7 @@ class Guesser:
                 else:
                     diff = abs (10 - int(row[0]))
                     points = Guesser.get_10th_place_diff(diff)
-                self.tenth_place_evaluated[race_number] = points
+                self.tenth_place_evaluated[race_number] = {'placed':row[0], 'points':points}
             
     def get_10th_place_diff(diff: int):
         match diff:
@@ -88,7 +88,7 @@ class Guesser:
     def get_10th_place_score(self):
         score = 0
         for key in self.tenth_place_evaluated.keys():
-            score += self.tenth_place_evaluated[key]
+            score += self.tenth_place_evaluated[key]['points']
         return score
 
     def evaluate_driver_standings(self, standings: list):
