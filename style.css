@@ -42,15 +42,23 @@ a {
     color: white;
 }
 
+div {
+    margin: 8px;
+}
+
 body {
     margin: 0;
 }
 
 .inline-block { 
 	display: inline-block;
+    text-align: top;
 }
 
-.my-table {
-    margin:  8px;
+.my-big-table {
     overflow-x: auto;
+}
+
+.sub-header {
+    margin-top: 0;
 }
