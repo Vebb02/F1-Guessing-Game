@@ -1,527 +1,530 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>F1 tipping</title>
 </head>
+
 <body>
     <header>
         <h1>F1 tipping 2024</h1>
-        <a href ="./index.html">Hjem</a>
-        <a href="./beregning_av_poeng.html">Beregning av poeng</a>
+        <a href="./">Hjem</a>
+        <a href="./beregning_av_poeng">Beregning av poeng</a>
     </header>
-<div>
-<h2>Oppsummering</h2>
-<table>
-<thead>
-<tr>
-<th>Navn</th>
-<th>Sjåførmesterskap</th>
-<th>Konstruktørmesterskap</th>
-<th>10.plass</th>
-<th>Total</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Ø</td>
-<td>48</td>
-<td>28</td>
-<td>4.5</td>
-<td>80.5</td>
-<tr>
-<tr>
-<td>V</td>
-<td>47</td>
-<td>54</td>
-<td>2.5</td>
-<td>103.5</td>
-<tr>
-<tr>
-<td>S</td>
-<td>49</td>
-<td>38</td>
-<td>6.0</td>
-<td>93.0</td>
-<tr>
-<tr>
-<td>F</td>
-<td>52</td>
-<td>38</td>
-<td>6.0</td>
-<td>96.0</td>
-<tr>
-</tbody>
-</table>
-</div>
-<div class='inline-block'>
-<h2>Sjåførmesterskap</h2>
-<table>
-<thead>
-<tr>
-<th>Plassering</th>
-<th>Sjåfør</th>
-<th>Ø gjettet</th>
-<th>Ø poeng</th>
-<th>V gjettet</th>
-<th>V poeng</th>
-<th>S gjettet</th>
-<th>S poeng</th>
-<th>F gjettet</th>
-<th>F poeng</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>Max Verstappen</td>
-<td>1</td>
-<td>10</td>
-<td>1</td>
-<td>10</td>
-<td>1</td>
-<td>10</td>
-<td>1</td>
-<td>10</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Sergio Perez</td>
-<td>3</td>
-<td>5</td>
-<td>6</td>
-<td>0</td>
-<td>3</td>
-<td>5</td>
-<td>6</td>
-<td>0</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Charles Leclerc</td>
-<td>7</td>
-<td>0</td>
-<td>4</td>
-<td>5</td>
-<td>2</td>
-<td>5</td>
-<td>3</td>
-<td>10</td>
-</tr>
-<tr>
-<td>4</td>
-<td>George Russell</td>
-<td>9</td>
-<td>0</td>
-<td>8</td>
-<td>0</td>
-<td>7</td>
-<td>1</td>
-<td>8</td>
-<td>0</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Oscar Piastri</td>
-<td>4</td>
-<td>5</td>
-<td>7</td>
-<td>2</td>
-<td>8</td>
-<td>1</td>
-<td>4</td>
-<td>5</td>
-</tr>
-<tr>
-<td>6</td>
-<td>Carlos Sainz</td>
-<td>8</td>
-<td>2</td>
-<td>5</td>
-<td>5</td>
-<td>6</td>
-<td>10</td>
-<td>9</td>
-<td>1</td>
-</tr>
-<tr>
-<td>7</td>
-<td>Fernando Alonso</td>
-<td>6</td>
-<td>5</td>
-<td>9</td>
-<td>2</td>
-<td>9</td>
-<td>2</td>
-<td>7</td>
-<td>10</td>
-</tr>
-<tr>
-<td>8</td>
-<td>Lando Norris</td>
-<td>2</td>
-<td>0</td>
-<td>2</td>
-<td>0</td>
-<td>5</td>
-<td>1</td>
-<td>2</td>
-<td>0</td>
-</tr>
-<tr>
-<td>9</td>
-<td>Lewis Hamilton</td>
-<td>5</td>
-<td>0</td>
-<td>3</td>
-<td>0</td>
-<td>4</td>
-<td>0</td>
-<td>5</td>
-<td>0</td>
-</tr>
-<tr>
-<td>10</td>
-<td>Oliver Bearman</td>
-<td>N/A</td>
-<td>N/A</td>
-<td>N/A</td>
-<td>N/A</td>
-<td>N/A</td>
-<td>N/A</td>
-<td>N/A</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td>11</td>
-<td>Nico Hulkenberg</td>
-<td>17</td>
-<td>0</td>
-<td>18</td>
-<td>0</td>
-<td>17</td>
-<td>0</td>
-<td>17</td>
-<td>0</td>
-</tr>
-<tr>
-<td>12</td>
-<td>Lance Stroll</td>
-<td>11</td>
-<td>5</td>
-<td>12</td>
-<td>10</td>
-<td>13</td>
-<td>5</td>
-<td>11</td>
-<td>5</td>
-</tr>
-<tr>
-<td>13</td>
-<td>Alexander Albon</td>
-<td>14</td>
-<td>5</td>
-<td>14</td>
-<td>5</td>
-<td>10</td>
-<td>1</td>
-<td>14</td>
-<td>5</td>
-</tr>
-<tr>
-<td>14</td>
-<td>Zhou Guanyu</td>
-<td>18</td>
-<td>0</td>
-<td>17</td>
-<td>1</td>
-<td>19</td>
-<td>0</td>
-<td>18</td>
-<td>0</td>
-</tr>
-<tr>
-<td>15</td>
-<td>Kevin Magnussen</td>
-<td>20</td>
-<td>0</td>
-<td>19</td>
-<td>0</td>
-<td>18</td>
-<td>1</td>
-<td>19</td>
-<td>0</td>
-</tr>
-<tr>
-<td>16</td>
-<td>Daniel Ricciardo</td>
-<td>10</td>
-<td>0</td>
-<td>13</td>
-<td>1</td>
-<td>11</td>
-<td>0</td>
-<td>10</td>
-<td>0</td>
-</tr>
-<tr>
-<td>17</td>
-<td>Esteban Ocon</td>
-<td>13</td>
-<td>0</td>
-<td>11</td>
-<td>0</td>
-<td>15</td>
-<td>2</td>
-<td>13</td>
-<td>0</td>
-</tr>
-<tr>
-<td>18</td>
-<td>Yuki Tsunoda</td>
-<td>15</td>
-<td>1</td>
-<td>15</td>
-<td>1</td>
-<td>12</td>
-<td>0</td>
-<td>15</td>
-<td>1</td>
-</tr>
-<tr>
-<td>19</td>
-<td>Logan Sargeant</td>
-<td>19</td>
-<td>10</td>
-<td>20</td>
-<td>5</td>
-<td>20</td>
-<td>5</td>
-<td>20</td>
-<td>5</td>
-</tr>
-<tr>
-<td>20</td>
-<td>Valtteri Bottas</td>
-<td>16</td>
-<td>0</td>
-<td>16</td>
-<td>0</td>
-<td>16</td>
-<td>0</td>
-<td>16</td>
-<td>0</td>
-</tr>
-<tr>
-<td>21</td>
-<td>Pierre Gasly</td>
-<td>12</td>
-<td>0</td>
-<td>10</td>
-<td>0</td>
-<td>14</td>
-<td>0</td>
-<td>12</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class='inline-block'>
-<h2>Konstruktørmesterskap</h2>
-<table>
-<thead>
-<tr>
-<th>Plassering</th>
-<th>Konstruktør</th>
-<th>Ø gjettet</th>
-<th>Ø poeng</th>
-<th>V gjettet</th>
-<th>V poeng</th>
-<th>S gjettet</th>
-<th>S poeng</th>
-<th>F gjettet</th>
-<th>F poeng</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1</td>
-<td>Red Bull</td>
-<td>1</td>
-<td>10</td>
-<td>1</td>
-<td>10</td>
-<td>1</td>
-<td>10</td>
-<td>2</td>
-<td>2</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Ferrari</td>
-<td>4</td>
-<td>0</td>
-<td>2</td>
-<td>10</td>
-<td>2</td>
-<td>10</td>
-<td>3</td>
-<td>2</td>
-</tr>
-<tr>
-<td>3</td>
-<td>McLaren</td>
-<td>2</td>
-<td>2</td>
-<td>3</td>
-<td>10</td>
-<td>4</td>
-<td>2</td>
-<td>1</td>
-<td>0</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Mercedes</td>
-<td>3</td>
-<td>2</td>
-<td>4</td>
-<td>10</td>
-<td>3</td>
-<td>2</td>
-<td>4</td>
-<td>10</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Aston Martin</td>
-<td>5</td>
-<td>10</td>
-<td>5</td>
-<td>10</td>
-<td>5</td>
-<td>10</td>
-<td>5</td>
-<td>10</td>
-</tr>
-<tr>
-<td>6</td>
-<td>Haas</td>
-<td>10</td>
-<td>0</td>
-<td>10</td>
-<td>0</td>
-<td>10</td>
-<td>0</td>
-<td>10</td>
-<td>0</td>
-</tr>
-<tr>
-<td>7</td>
-<td>Williams</td>
-<td>8</td>
-<td>2</td>
-<td>8</td>
-<td>2</td>
-<td>8</td>
-<td>2</td>
-<td>6</td>
-<td>2</td>
-</tr>
-<tr>
-<td>8</td>
-<td>Stake</td>
-<td>9</td>
-<td>2</td>
-<td>9</td>
-<td>2</td>
-<td>9</td>
-<td>2</td>
-<td>7</td>
-<td>2</td>
-</tr>
-<tr>
-<td>9</td>
-<td>RB</td>
-<td>7</td>
-<td>0</td>
-<td>7</td>
-<td>0</td>
-<td>6</td>
-<td>0</td>
-<td>9</td>
-<td>10</td>
-</tr>
-<tr>
-<td>10</td>
-<td>Alpine</td>
-<td>6</td>
-<td>0</td>
-<td>6</td>
-<td>0</td>
-<td>7</td>
-<td>0</td>
-<td>8</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div>
-<h2>10.plass</h2>
-<table>
-<thead>
-<tr>
-<th>Løp</th>
-<th>Ø gjettet</th>
-<th>Ø faktisk plassering</th>
-<th>Ø poeng</th>
-<th>V gjettet</th>
-<th>V faktisk plassering</th>
-<th>V poeng</th>
-<th>S gjettet</th>
-<th>S faktisk plassering</th>
-<th>S poeng</th>
-<th>F gjettet</th>
-<th>F faktisk plassering</th>
-<th>F poeng</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1. Bahrain</td>
-<td>Yuki Tsunoda</td>
-<td>14</td>
-<td>2.5</td>
-<td>Yuki Tsunoda</td>
-<td>14</td>
-<td>2.5</td>
-<td>Daniel Ricciardo</td>
-<td>13</td>
-<td>3.0</td>
-<td>Nico Hülkenberg</td>
-<td>16</td>
-<td>1.5</td>
-</tr>
-<tr>
-<td>2. Saudi Arabia</td>
-<td>Yuki Tsunoda</td>
-<td>15</td>
-<td>2.0</td>
-<td>Lance Stroll</td>
-<td>NC</td>
-<td>0</td>
-<td>Oliver Bearman</td>
-<td>7</td>
-<td>3.0</td>
-<td>Alexander Albon</td>
-<td>11</td>
-<td>4.5</td>
-</tr>
-</table>
-</div>
+    <div>
+        <h2>Oppsummering</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Navn</th>
+                    <th>Sjåførmesterskap</th>
+                    <th>Konstruktørmesterskap</th>
+                    <th>10.plass</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Ø</td>
+                    <td>48</td>
+                    <td>28</td>
+                    <td>4.5</td>
+                    <td>80.5</td>
+                <tr>
+                <tr>
+                    <td>V</td>
+                    <td>47</td>
+                    <td>54</td>
+                    <td>2.5</td>
+                    <td>103.5</td>
+                <tr>
+                <tr>
+                    <td>S</td>
+                    <td>49</td>
+                    <td>38</td>
+                    <td>6.0</td>
+                    <td>93.0</td>
+                <tr>
+                <tr>
+                    <td>F</td>
+                    <td>52</td>
+                    <td>38</td>
+                    <td>6.0</td>
+                    <td>96.0</td>
+                <tr>
+            </tbody>
+        </table>
+    </div>
+    <div class='inline-block'>
+        <h2>Sjåførmesterskap</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plassering</th>
+                    <th>Sjåfør</th>
+                    <th>Ø gjettet</th>
+                    <th>Ø poeng</th>
+                    <th>V gjettet</th>
+                    <th>V poeng</th>
+                    <th>S gjettet</th>
+                    <th>S poeng</th>
+                    <th>F gjettet</th>
+                    <th>F poeng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Max Verstappen</td>
+                    <td>1</td>
+                    <td>10</td>
+                    <td>1</td>
+                    <td>10</td>
+                    <td>1</td>
+                    <td>10</td>
+                    <td>1</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Sergio Perez</td>
+                    <td>3</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Charles Leclerc</td>
+                    <td>7</td>
+                    <td>0</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>2</td>
+                    <td>5</td>
+                    <td>3</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>George Russell</td>
+                    <td>9</td>
+                    <td>0</td>
+                    <td>8</td>
+                    <td>0</td>
+                    <td>7</td>
+                    <td>1</td>
+                    <td>8</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Oscar Piastri</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td>7</td>
+                    <td>2</td>
+                    <td>8</td>
+                    <td>1</td>
+                    <td>4</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Carlos Sainz</td>
+                    <td>8</td>
+                    <td>2</td>
+                    <td>5</td>
+                    <td>5</td>
+                    <td>6</td>
+                    <td>10</td>
+                    <td>9</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Fernando Alonso</td>
+                    <td>6</td>
+                    <td>5</td>
+                    <td>9</td>
+                    <td>2</td>
+                    <td>9</td>
+                    <td>2</td>
+                    <td>7</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Lando Norris</td>
+                    <td>2</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>0</td>
+                    <td>5</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Lewis Hamilton</td>
+                    <td>5</td>
+                    <td>0</td>
+                    <td>3</td>
+                    <td>0</td>
+                    <td>4</td>
+                    <td>0</td>
+                    <td>5</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Oliver Bearman</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                    <td>N/A</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>Nico Hulkenberg</td>
+                    <td>17</td>
+                    <td>0</td>
+                    <td>18</td>
+                    <td>0</td>
+                    <td>17</td>
+                    <td>0</td>
+                    <td>17</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>Lance Stroll</td>
+                    <td>11</td>
+                    <td>5</td>
+                    <td>12</td>
+                    <td>10</td>
+                    <td>13</td>
+                    <td>5</td>
+                    <td>11</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>Alexander Albon</td>
+                    <td>14</td>
+                    <td>5</td>
+                    <td>14</td>
+                    <td>5</td>
+                    <td>10</td>
+                    <td>1</td>
+                    <td>14</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>Zhou Guanyu</td>
+                    <td>18</td>
+                    <td>0</td>
+                    <td>17</td>
+                    <td>1</td>
+                    <td>19</td>
+                    <td>0</td>
+                    <td>18</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>Kevin Magnussen</td>
+                    <td>20</td>
+                    <td>0</td>
+                    <td>19</td>
+                    <td>0</td>
+                    <td>18</td>
+                    <td>1</td>
+                    <td>19</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>Daniel Ricciardo</td>
+                    <td>10</td>
+                    <td>0</td>
+                    <td>13</td>
+                    <td>1</td>
+                    <td>11</td>
+                    <td>0</td>
+                    <td>10</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>Esteban Ocon</td>
+                    <td>13</td>
+                    <td>0</td>
+                    <td>11</td>
+                    <td>0</td>
+                    <td>15</td>
+                    <td>2</td>
+                    <td>13</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>Yuki Tsunoda</td>
+                    <td>15</td>
+                    <td>1</td>
+                    <td>15</td>
+                    <td>1</td>
+                    <td>12</td>
+                    <td>0</td>
+                    <td>15</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>Logan Sargeant</td>
+                    <td>19</td>
+                    <td>10</td>
+                    <td>20</td>
+                    <td>5</td>
+                    <td>20</td>
+                    <td>5</td>
+                    <td>20</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>20</td>
+                    <td>Valtteri Bottas</td>
+                    <td>16</td>
+                    <td>0</td>
+                    <td>16</td>
+                    <td>0</td>
+                    <td>16</td>
+                    <td>0</td>
+                    <td>16</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>21</td>
+                    <td>Pierre Gasly</td>
+                    <td>12</td>
+                    <td>0</td>
+                    <td>10</td>
+                    <td>0</td>
+                    <td>14</td>
+                    <td>0</td>
+                    <td>12</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class='inline-block'>
+        <h2>Konstruktørmesterskap</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Plassering</th>
+                    <th>Konstruktør</th>
+                    <th>Ø gjettet</th>
+                    <th>Ø poeng</th>
+                    <th>V gjettet</th>
+                    <th>V poeng</th>
+                    <th>S gjettet</th>
+                    <th>S poeng</th>
+                    <th>F gjettet</th>
+                    <th>F poeng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Red Bull</td>
+                    <td>1</td>
+                    <td>10</td>
+                    <td>1</td>
+                    <td>10</td>
+                    <td>1</td>
+                    <td>10</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Ferrari</td>
+                    <td>4</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>10</td>
+                    <td>2</td>
+                    <td>10</td>
+                    <td>3</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>McLaren</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>10</td>
+                    <td>4</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Mercedes</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>10</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>4</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Aston Martin</td>
+                    <td>5</td>
+                    <td>10</td>
+                    <td>5</td>
+                    <td>10</td>
+                    <td>5</td>
+                    <td>10</td>
+                    <td>5</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Haas</td>
+                    <td>10</td>
+                    <td>0</td>
+                    <td>10</td>
+                    <td>0</td>
+                    <td>10</td>
+                    <td>0</td>
+                    <td>10</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Williams</td>
+                    <td>8</td>
+                    <td>2</td>
+                    <td>8</td>
+                    <td>2</td>
+                    <td>8</td>
+                    <td>2</td>
+                    <td>6</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Stake</td>
+                    <td>9</td>
+                    <td>2</td>
+                    <td>9</td>
+                    <td>2</td>
+                    <td>9</td>
+                    <td>2</td>
+                    <td>7</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>RB</td>
+                    <td>7</td>
+                    <td>0</td>
+                    <td>7</td>
+                    <td>0</td>
+                    <td>6</td>
+                    <td>0</td>
+                    <td>9</td>
+                    <td>10</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>Alpine</td>
+                    <td>6</td>
+                    <td>0</td>
+                    <td>6</td>
+                    <td>0</td>
+                    <td>7</td>
+                    <td>0</td>
+                    <td>8</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h2>10.plass</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Løp</th>
+                    <th>Ø gjettet</th>
+                    <th>Ø faktisk plassering</th>
+                    <th>Ø poeng</th>
+                    <th>V gjettet</th>
+                    <th>V faktisk plassering</th>
+                    <th>V poeng</th>
+                    <th>S gjettet</th>
+                    <th>S faktisk plassering</th>
+                    <th>S poeng</th>
+                    <th>F gjettet</th>
+                    <th>F faktisk plassering</th>
+                    <th>F poeng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1. Bahrain</td>
+                    <td>Yuki Tsunoda</td>
+                    <td>14</td>
+                    <td>2.5</td>
+                    <td>Yuki Tsunoda</td>
+                    <td>14</td>
+                    <td>2.5</td>
+                    <td>Daniel Ricciardo</td>
+                    <td>13</td>
+                    <td>3.0</td>
+                    <td>Nico Hülkenberg</td>
+                    <td>16</td>
+                    <td>1.5</td>
+                </tr>
+                <tr>
+                    <td>2. Saudi Arabia</td>
+                    <td>Yuki Tsunoda</td>
+                    <td>15</td>
+                    <td>2.0</td>
+                    <td>Lance Stroll</td>
+                    <td>NC</td>
+                    <td>0</td>
+                    <td>Oliver Bearman</td>
+                    <td>7</td>
+                    <td>3.0</td>
+                    <td>Alexander Albon</td>
+                    <td>11</td>
+                    <td>4.5</td>
+                </tr>
+        </table>
+    </div>
 </body>
+
 </html>
