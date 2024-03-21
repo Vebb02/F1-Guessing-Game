@@ -298,7 +298,7 @@ def stats_html_table(kategori: str, ranked_drivers: list):
     return html
 
 
-html_body = '<div>\n<h2>Statistikk</h2\n'
+html_body = '<div>\n<h2>Statistikk</h2>\n'
 
 html_body += stats_html_table('Seiere', stats.get_ranked_wins())
 html_body += stats_html_table('Poles', stats.get_ranked_poles())
