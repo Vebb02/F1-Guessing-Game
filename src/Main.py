@@ -264,6 +264,121 @@ tenth_place_html += """</table>
 """
 html_body += tenth_place_html
 
+
+# Flest i diverse
+
+def guesses_html_table(title: str, header: list, ranked_drivers: list):
+    html = f"""<div>
+<h3>{title}</h3>
+<table>
+<thead>
+<tr>
+{''.join([f'<th>{col_name}</th>' for col_name in header])}
+</tr>
+</thead>
+<tbody>
+"""
+    for i in range(len(ranked_drivers[0])):
+        html += "<tr>\n"
+        html += f"<td>{i+1}</td>\n"
+        for guesser in ranked_drivers:
+            html += f"<td>{short_to_long_name[guesser[i+1]]}</td>\n"
+        html += "</tr>\n"
+
+    html += """</tbody>
+</table>
+</div>
+"""
+    return html
+
+html_body += '<div>\n<h2>Tippet i diverse kategorier</h2>\n'
+
+header = ['Plassering']
+guessed = []
+
+for key in guessers.keys():
+    guesser = guessers[key]
+    header.append(f'{guesser.alias} gjettet')
+    guessed.append(guesser.wins)
+
+html_body += guesses_html_table('Seiere', header, guessed)
+
+header = ['Plassering']
+guessed = []
+
+for key in guessers.keys():
+    guesser = guessers[key]
+    header.append(f'{guesser.alias} gjettet')
+    guessed.append(guesser.poles)
+
+html_body += guesses_html_table('Poles', header, guessed)
+
+header = ['Plassering']
+guessed = []
+
+for key in guessers.keys():
+    guesser = guessers[key]
+    header.append(f'{guesser.alias} gjettet')
+    guessed.append(guesser.spins)
+
+html_body += guesses_html_table('Spins', header, guessed)
+
+header = ['Plassering']
+guessed = []
+
+for key in guessers.keys():
+    guesser = guessers[key]
+    header.append(f'{guesser.alias} gjettet')
+    guessed.append(guesser.crash)
+
+html_body += guesses_html_table('Krasj', header, guessed)
+
+header = ['Plassering']
+guessed = []
+
+for key in guessers.keys():
+    guesser = guessers[key]
+    header.append(f'{guesser.alias} gjettet')
+    guessed.append(guesser.dnfs)
+
+html_body += guesses_html_table('DNFs', header, guessed)
+
+# Antall
+
+html_body += f"""<div>
+<h3>Antall av diverse</h3>
+<table>
+<thead>
+<tr>
+<th>Kategori</th>
+<th>Faktisk antall</th>
+{''.join([f'<th>{guesser.alias} gjettet</th>' for guesser in guessers.values()])}
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gule flagg</td>
+<td>{stats.antall['gf']}</td>
+{''.join([f'<td>{guesser.antall["gule"]}</td>' for guesser in guessers.values()])}
+</tr>
+<tr>
+<td>Røde flagg</td>
+<td>{stats.antall['rf']}</td>
+{''.join([f'<td>{guesser.antall["røde"]}</td>' for guesser in guessers.values()])}
+</tr>
+<tr>
+<td>Sikkerhetsbiler (ink. VSC)</td>
+<td>{stats.antall['sc']}</td>
+{''.join([f'<td>{guesser.antall["sikkerhets"]}</td>' for guesser in guessers.values()])}
+</tr>
+</tbody>
+</div>
+"""
+
+
+html_body += '</div>\n'
+
+
 file = open(HTML_PATH + "index.html", "w", encoding="UTF-8")
 file.write(html_head + html_body + html_tail)
 file.close()
