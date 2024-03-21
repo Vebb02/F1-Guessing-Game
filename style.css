@@ -72,3 +72,7 @@ and (max-width: 1250px) {
         width: 225%;
     }
 }
+
+a {
+    margin-right: 5px;
+}
