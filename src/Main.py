@@ -5,7 +5,7 @@ from Guesser import Guesser
 from Stats import Stats
 
 guessers = dict()
-
+HTML_PATH = 'pages/'
 # Load the IDs to the sheets
 f = open("sheets.json")
 data = json.load(f)
@@ -263,7 +263,7 @@ tenth_place_html += """</table>
 """
 html_body += tenth_place_html
 
-file = open("index.html", "w", encoding="UTF-8")
+file = open(HTML_PATH + "index.html", "w", encoding="UTF-8")
 file.write(html_head + html_body + html_tail)
 file.close()
 
@@ -332,6 +332,6 @@ html_body += f"""<div>
 """
 
 html_body += '</div>\n'
-file = open("statistikk.html", "w", encoding="UTF-8")
+file = open(HTML_PATH + "statistikk.html", "w", encoding="UTF-8")
 file.write(html_head + html_body + html_tail)
 file.close()
