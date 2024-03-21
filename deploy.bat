@@ -1,5 +1,8 @@
 python ./src/Main.py
-pause
+pushd .
+cd pages
 git add .
 git commit -m "Deployment"
 git push
+popd
+pause
