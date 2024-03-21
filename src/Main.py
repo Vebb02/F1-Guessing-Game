@@ -5,9 +5,10 @@ from Guesser import Guesser
 from Stats import Stats
 
 guessers = dict()
-HTML_PATH = 'pages/'
+HTML_PATH = "pages/"
+JSON_PATH = "json/"
 # Load the IDs to the sheets
-f = open("sheets.json")
+f = open(JSON_PATH + "sheets.json")
 data = json.load(f)
 f.close()
 
@@ -24,7 +25,7 @@ proxy_id = data["proxy"]
 guesses_id = data["guesses"]
 
 credentials = service_account.Credentials.from_service_account_file(
-    "credentials.json",
+    JSON_PATH + "credentials.json",
     scopes=[
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/spreadsheets.readonly",
@@ -268,8 +269,8 @@ file.write(html_head + html_body + html_tail)
 file.close()
 
 
-
 # Stats fra sjåførene
+
 
 def stats_html_table(kategori: str, ranked_drivers: list):
     html = f"""<div>
@@ -298,13 +299,13 @@ def stats_html_table(kategori: str, ranked_drivers: list):
     return html
 
 
-html_body = '<div>\n<h2>Statistikk</h2>\n'
+html_body = "<div>\n<h2>Statistikk</h2>\n"
 
-html_body += stats_html_table('Seiere', stats.get_ranked_wins())
-html_body += stats_html_table('Poles', stats.get_ranked_poles())
-html_body += stats_html_table('Spins', stats.get_ranked_spins())
-html_body += stats_html_table('Krasj', stats.get_ranked_crashes())
-html_body += stats_html_table('DNFs', stats.get_ranked_dnfs())
+html_body += stats_html_table("Seiere", stats.get_ranked_wins())
+html_body += stats_html_table("Poles", stats.get_ranked_poles())
+html_body += stats_html_table("Spins", stats.get_ranked_spins())
+html_body += stats_html_table("Krasj", stats.get_ranked_crashes())
+html_body += stats_html_table("DNFs", stats.get_ranked_dnfs())
 html_body += f"""<div>
 <h3>Antall av diverse</h3>
 <table>
@@ -331,7 +332,7 @@ html_body += f"""<div>
 </div>
 """
 
-html_body += '</div>\n'
+html_body += "</div>\n"
 file = open(HTML_PATH + "statistikk.html", "w", encoding="UTF-8")
 file.write(html_head + html_body + html_tail)
 file.close()
