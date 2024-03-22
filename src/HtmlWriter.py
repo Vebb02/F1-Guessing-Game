@@ -25,8 +25,9 @@ html_tail = "</body>\n</html>\n"
 empty = "N/A"
 
 
-def get_table_header(title: str, header_content: list):
-    head = f"<div>\n<h2>{title}</h2>\n<table>\n<thead>\n<tr>\n"
+def get_table_header(title: str, header_content: list, big_header: bool = True):
+    header_type = "h2" if big_header else "h3"
+    head = f"<div>\n<{header_type}>{title}</{header_type}>\n<table>\n<thead>\n<tr>\n"
     body = ""
     tail = "</tr>\n</thead>\n<tbody>\n"
     for s in header_content:
@@ -47,6 +48,14 @@ def get_table_tail():
     return "</tbody>\n</table>\n</div>\n"
 
 
+def get_table(title: str, rows: list, big_header: bool = True):
+    html = get_table_header(title, rows[0], big_header)
+    for row in rows[1:]:
+        html += get_table_body_segment(row)
+    html += get_table_tail()
+    return html
+
+
 def write_index(
     guessers: dict,
     driver_standings: list,
@@ -55,78 +64,55 @@ def write_index(
     stats: Stats,
     short_to_long_name: dict,
 ):
-    # Summary
     html_body = ""
-    summary_html = get_table_header(
-        "Oppsummering",
-        ["Navn", "Sjåførmesterskap", "Konstruktørmesterskap", "10.plass", "Total"],
-    )
+
+    # Summary
+    rows = [["Navn", "Sjåførmesterskap", "Konstruktørmesterskap", "10.plass", "Total"]]
 
     for guesser in guessers.values():
         constructor = guesser.get_constructor_score()
         driver = guesser.get_driver_score()
         tenth = guesser.get_10th_place_score()
         total = constructor + driver + tenth
-        summary_html += get_table_body_segment(
-            [guesser.alias, driver, constructor, tenth, total]
-        )
+        rows.append([guesser.alias, driver, constructor, tenth, total])
 
-    summary_html += get_table_tail()
-
+    html_body += get_table("Oppsummering", rows)
     list_of_lists = [
         [f"{guesser.alias} gjettet", f"{guesser.alias} poeng"]
         for guesser in guessers.values()
     ]
     names_header = [s for sublist in list_of_lists for s in sublist]
 
-    html_body += summary_html
     # Drivers
-    driver_standings_html = get_table_header(
-        "Sjåførmesterskap", ["Plassering", "Sjåfør"] + names_header
-    )
-
+    rows = [["Plassering", "Sjåfør"] + names_header]
     for row in driver_standings[1:]:
-        driver = row[1]
-        driver = driver[-3:]
-        cells = []
-        cells.append(row[0])
-        cells.append(short_to_long_name[driver])
+        driver = row[1][-3:]
+        cells = [row[0], short_to_long_name[driver]]
         for guesser in guessers.values():
-            guessed = guesser.driver
+            guessed = guesser.driver[driver]
             scored = guesser.driver_evaluated
             if not driver in guessed:
-                cells.append(empty)
-                cells.append(empty)
+                cells += [empty, empty]
             else:
-                cells.append(guessed[driver])
-                cells.append(scored[driver])
-        driver_standings_html += get_table_body_segment(cells)
+                cells += [guessed[driver], scored[driver]]
+        rows.append(cells)
 
-    driver_standings_html += get_table_tail()
-
-    html_body += driver_standings_html
+    html_body += get_table("Sjåførmesterskap", rows)
 
     # Constructors
-    constructor_standings_html = get_table_header(
-        "Konstruktørmesterskap", ["Plassering", "Konstruktør"] + names_header
-    )
+    rows = [["Plassering", "Konstruktør"] + names_header]
 
     for row in constructor_standings[1:]:
-        cells = []
         constructor = row[1]
         constructor = Guesser.translate_constructor(constructor)
-        cells.append(row[0])
-        cells.append(constructor)
+        cells = [row[0], constructor]
         for guesser in guessers.values():
-            guessed = guesser.constructor
-            scored = guesser.constructor_evaluated
-            cells.append(guessed[constructor])
-            cells.append(scored[constructor])
-        constructor_standings_html += get_table_body_segment(cells)
+            guessed = guesser.constructor[constructor]
+            scored = guesser.constructor_evaluated[constructor]
+            cells += [guessed, scored]
+        rows.append(cells)
 
-    constructor_standings_html += get_table_tail()
-
-    html_body += constructor_standings_html
+    html_body += get_table("Konstruktørmesterskap", rows)
 
     # 10th place
     list_of_lists = [
@@ -139,57 +125,37 @@ def write_index(
     ]
     names_header_with_actual = [s for sublist in list_of_lists for s in sublist]
 
-    tenth_place_html = get_table_header(
-        "10.plass", ["Løp"] + names_header_with_actual
-    )
-
+    rows = [["Løp"] + names_header_with_actual]
     for i in range(len(races)):
-        cells = []
-        cells.append(races[i])
+        row = [races[i]]
         for guesser in guessers.values():
+            scored = 0
             if not i in guesser.tenth_place:
-                guessed = "N/A"
-                actual_place = "N/A"
-                scored = 0
+                guessed = empty
+                actual_place = empty
             else:
                 guessed = short_to_long_name[guesser.tenth_place[i]]
-                evaluated = guesser.tenth_place_evaluated[i]
-                actual_place = evaluated["placed"]
-                scored = evaluated["points"]
-            cells.append(guessed)
-            cells.append(actual_place)
-            cells.append(scored)
-        tenth_place_html += get_table_body_segment(cells)
-
-    tenth_place_html += get_table_tail()
-
-    html_body += tenth_place_html
+                if i in guesser.tenth_place_evaluated:
+                    evaluated = guesser.tenth_place_evaluated[i]
+                    actual_place = evaluated["placed"]
+                    scored = evaluated["points"]
+                else:
+                    evaluated = empty
+                    actual_place = empty
+            row += [guessed, actual_place, scored]
+        rows.append(row)
+    html_body += get_table("10.plass", rows)
 
     # Flest i diverse
 
     def guesses_html_table(title: str, header: list, ranked_drivers: list):
-        html = f"""<div>
-<h3>{title}</h3>
-<table>
-<thead>
-<tr>
-{''.join([f'<th>{col_name}</th>' for col_name in header])}
-</tr>
-</thead>
-<tbody>
-"""
+        rows = [[col_name for col_name in header]]
         for i in range(len(ranked_drivers[0])):
-            html += "<tr>\n"
-            html += f"<td>{i+1}</td>\n"
-            for guesser in ranked_drivers:
-                html += f"<td>{short_to_long_name[guesser[i+1]]}</td>\n"
-            html += "</tr>\n"
-
-        html += """</tbody>
-</table>
-</div>
-"""
-        return html
+            rows.append(
+                [i + 1]
+                + [short_to_long_name[guesser[i + 1]] for guesser in ranked_drivers]
+            )
+        return get_table(title, rows, False)
 
     html_body += "<div>\n<h2>Tippet i diverse kategorier</h2>\n"
 
@@ -240,35 +206,23 @@ def write_index(
 
     # Antall
 
-    html_body += f"""<div>
-<h3>Antall av diverse</h3>
-<table>
-<thead>
-<tr>
-<th>Kategori</th>
-<th>Faktisk antall</th>
-{''.join([f'<th>{guesser.alias} gjettet</th>' for guesser in guessers.values()])}
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Gule flagg</td>
-<td>{stats.antall['gf']}</td>
-{''.join([f'<td>{guesser.antall["gule"]}</td>' for guesser in guessers.values()])}
-</tr>
-<tr>
-<td>Røde flagg</td>
-<td>{stats.antall['rf']}</td>
-{''.join([f'<td>{guesser.antall["røde"]}</td>' for guesser in guessers.values()])}
-</tr>
-<tr>
-<td>Sikkerhetsbiler (ink. VSC)</td>
-<td>{stats.antall['sc']}</td>
-{''.join([f'<td>{guesser.antall["sikkerhets"]}</td>' for guesser in guessers.values()])}
-</tr>
-</tbody>
-</div>
-"""
+    rows = [
+        ["Kategori", "Faktisk antall"]
+        + [guesser.alias for guesser in guessers.values()]
+    ]
+    rows.append(
+        ["Gule flagg", stats.antall["gf"]]
+        + [guesser.antall["gule"] for guesser in guessers.values()]
+    )
+    rows.append(
+        ["Røde flagg", stats.antall["rf"]]
+        + [guesser.antall["røde"] for guesser in guessers.values()]
+    )
+    rows.append(
+        ["Sikkerhetsbiler (ink. VSC)", stats.antall["sc"]]
+        + [guesser.antall["sikkerhets"] for guesser in guessers.values()]
+    )
+    html_body += get_table("Antall av diverse", rows, False)
 
     html_body += "</div>\n"
 
@@ -278,34 +232,12 @@ def write_index(
 
 
 def write_stats(stats: Stats, short_to_long_name: dict):
-    # Stats fra sjåførene
-    html_body = ""
-
     def stats_html_table(kategori: str, ranked_drivers: list):
-        html = f"""<div>
-<h3>{kategori}</h3>
-<table>
-<thead>
-<tr>
-<th>Plassering</th>
-<th>Sjåfør</th>
-<th>Antall</th>
-</tr>
-</thead>
-<tbody>
-"""
+        rows = [["Plassering", "Sjåfør", "Antall"]]
         for driver in ranked_drivers:
-            html += "<tr>\n"
-            html += f"<td>{driver[0]}</td>\n"
-            html += f"<td>{short_to_long_name[driver[1].upper()]}</td>\n"
-            html += f"<td>{driver[2]}</td>\n"
-            html += "</tr>\n"
+            rows.append([driver[0], short_to_long_name[driver[1].upper()], driver[2]])
 
-        html += """</tbody>
-</table>
-</div>
-"""
-        return html
+        return get_table(kategori, rows, False)
 
     html_body = "<div>\n<h2>Statistikk</h2>\n"
 
@@ -314,31 +246,15 @@ def write_stats(stats: Stats, short_to_long_name: dict):
     html_body += stats_html_table("Spins", stats.get_ranked_spins())
     html_body += stats_html_table("Krasj", stats.get_ranked_crashes())
     html_body += stats_html_table("DNFs", stats.get_ranked_dnfs())
-    html_body += f"""<div>
-<h3>Antall av diverse</h3>
-<table>
-<thead>
-<tr>
-<th>Kategori</th>
-<th>Antall</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Gule flagg</td>
-<td>{stats.antall['gf']}</td>
-</tr>
-<tr>
-<td>Røde flagg</td>
-<td>{stats.antall['rf']}</td>
-</tr>
-<tr>
-<td>Sikkerhetsbiler (ink. VSC)</td>
-<td>{stats.antall['sc']}</td>
-</tr>
-</tbody>
-</div>
-"""
+
+    antall = stats.antall
+    rows = [
+        ["Kategori", "Antall"],
+        ["Gule flagg", antall["gf"]],
+        ["Røde flagg", antall["rf"]],
+        ["Sikkerhetsbiler (ink. VSC)", antall["sc"]],
+    ]
+    html_body += get_table("Antall av diverse", rows, False)
 
     html_body += "</div>\n"
     file = open(HTML_PATH + "statistikk.html", "w", encoding="UTF-8")

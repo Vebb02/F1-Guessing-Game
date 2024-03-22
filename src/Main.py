@@ -69,7 +69,7 @@ for i in range(24):
         break
     if len(race[0]) < 7:
         break
-    if not (race[0][6] == "PTS" and race[1][6]):
+    if not (race[0][6] == "PTS" and int(race[1][6]) >= 25):
         break
     for guesser in guessers.values():
         guesser.add_10th_place_result(i, race[1:])
@@ -104,3 +104,4 @@ HtmlWriter.write_index(
     guessers, driver_standings, constructor_standings, races, stats, short_to_long_name
 )
 HtmlWriter.write_stats(stats, short_to_long_name)
+print("Success!")
