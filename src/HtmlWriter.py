@@ -22,6 +22,30 @@ html_head = """<!DOCTYPE html>
 """
 html_tail = "</body>\n</html>\n"
 
+empty = "N/A"
+
+
+def get_table_header(title: str, header_content: list):
+    head = f"<div>\n<h2>{title}</h2>\n<table>\n<thead>\n<tr>\n"
+    body = ""
+    tail = "</tr>\n</thead>\n<tbody>\n"
+    for s in header_content:
+        body += f"<th>{s}</th>\n"
+    return head + body + tail
+
+
+def get_table_body_segment(content: list):
+    head = "<tr>\n"
+    body = ""
+    tail = "</tr>\n"
+    for s in content:
+        body += f"<td>{s}</td>\n"
+    return head + body + tail
+
+
+def get_table_tail():
+    return "</tbody>\n</table>\n</div>\n"
+
 
 def write_index(
     guessers: dict,
@@ -29,141 +53,99 @@ def write_index(
     constructor_standings: list,
     races: list,
     stats: Stats,
-    short_to_long_name: dict
+    short_to_long_name: dict,
 ):
     # Summary
     html_body = ""
-    summary_html = """<div>
-<h2>Oppsummering</h2>
-<table>
-<thead>
-<tr>
-<th>Navn</th>
-<th>Sjåførmesterskap</th>
-<th>Konstruktørmesterskap</th>
-<th>10.plass</th>
-<th>Total</th>
-</tr>
-</thead>
-<tbody>
-"""
+    summary_html = get_table_header(
+        "Oppsummering",
+        ["Navn", "Sjåførmesterskap", "Konstruktørmesterskap", "10.plass", "Total"],
+    )
 
     for guesser in guessers.values():
         constructor = guesser.get_constructor_score()
         driver = guesser.get_driver_score()
         tenth = guesser.get_10th_place_score()
         total = constructor + driver + tenth
-        summary_html += f"""<tr>
-<td>{guesser.alias}</td>
-<td>{driver}</td>
-<td>{constructor}</td>
-<td>{tenth}</td>
-<td>{total}</td>
-<tr>
-"""
+        summary_html += get_table_body_segment(
+            [guesser.alias, driver, constructor, tenth, total]
+        )
 
-    summary_html += """</tbody>
-</table>
-</div>
-"""
+    summary_html += get_table_tail()
+
+    list_of_lists = [
+        [f"{guesser.alias} gjettet", f"{guesser.alias} poeng"]
+        for guesser in guessers.values()
+    ]
+    names_header = [s for sublist in list_of_lists for s in sublist]
+
     html_body += summary_html
-
     # Drivers
-    driver_standings_html = """<div>
-<h2>Sjåførmesterskap</h2>
-<table>
-<thead>
-<tr>
-<th>Plassering</th>
-<th>Sjåfør</th>
-"""
-    for guesser in guessers.values():
-        driver_standings_html += f"<th>{guesser.alias} gjettet</th>\n"
-        driver_standings_html += f"<th>{guesser.alias} poeng</th>\n"
-
-    driver_standings_html += "</tr>\n</thead>\n<tbody>\n"
+    driver_standings_html = get_table_header(
+        "Sjåførmesterskap", ["Plassering", "Sjåfør"] + names_header
+    )
 
     for row in driver_standings[1:]:
-        driver_standings_html += "<tr>\n"
         driver = row[1]
-        driver_split = driver[0]
-        for c in driver[1:-3]:
-            if c.isupper():
-                driver_split += " "
-            driver_split += c
-        driver_standings_html += f"<td>{row[0]}</td>\n"
-        driver_standings_html += f"<td>{driver_split}</td>\n"
+        driver = driver[-3:]
+        cells = []
+        cells.append(row[0])
+        cells.append(short_to_long_name[driver])
         for guesser in guessers.values():
             guessed = guesser.driver
             scored = guesser.driver_evaluated
-            driver_shorthand = driver[-3:]
-            # For later use
-            if not driver_shorthand in guessed:
-                driver_standings_html += f"<td>N/A</td>\n"
-                driver_standings_html += f"<td>N/A</td>\n"
+            if not driver in guessed:
+                cells.append(empty)
+                cells.append(empty)
             else:
-                driver_standings_html += f"<td>{guessed[driver_shorthand]}</td>\n"
-                driver_standings_html += f"<td>{scored[driver_shorthand]}</td>\n"
-        driver_standings_html += "</tr>\n"
+                cells.append(guessed[driver])
+                cells.append(scored[driver])
+        driver_standings_html += get_table_body_segment(cells)
 
-    driver_standings_html += """</tbody>
-</table>
-</div>
-"""
+    driver_standings_html += get_table_tail()
+
     html_body += driver_standings_html
 
     # Constructors
-    constructor_standings_html = """<div>
-<h2>Konstruktørmesterskap</h2>
-<table>
-<thead>
-<tr>
-<th>Plassering</th>
-<th>Konstruktør</th>
-"""
-    for guesser in guessers.values():
-        constructor_standings_html += f"<th>{guesser.alias} gjettet</th>\n"
-        constructor_standings_html += f"<th>{guesser.alias} poeng</th>\n"
-
-    constructor_standings_html += "</tr>\n</thead>\n<tbody>\n"
+    constructor_standings_html = get_table_header(
+        "Konstruktørmesterskap", ["Plassering", "Konstruktør"] + names_header
+    )
 
     for row in constructor_standings[1:]:
-        constructor_standings_html += "<tr>\n"
+        cells = []
         constructor = row[1]
         constructor = Guesser.translate_constructor(constructor)
-        constructor_standings_html += f"<td>{row[0]}</td>\n"
-        constructor_standings_html += f"<td>{constructor}</td>\n"
+        cells.append(row[0])
+        cells.append(constructor)
         for guesser in guessers.values():
             guessed = guesser.constructor
             scored = guesser.constructor_evaluated
-            constructor_standings_html += f"<td>{guessed[constructor]}</td>\n"
-            constructor_standings_html += f"<td>{scored[constructor]}</td>\n"
-        constructor_standings_html += "</tr>\n"
+            cells.append(guessed[constructor])
+            cells.append(scored[constructor])
+        constructor_standings_html += get_table_body_segment(cells)
 
-    constructor_standings_html += """</tbody>
-</table>
-</div>
-"""
+    constructor_standings_html += get_table_tail()
+
     html_body += constructor_standings_html
 
     # 10th place
-    tenth_place_html = """<div>
-<h2>10.plass</h2>
-<table>
-<thead>
-<tr>
-<th>Løp</th>
-"""
-    for guesser in guessers.values():
-        tenth_place_html += f"<th>{guesser.alias} gjettet</th>\n"
-        tenth_place_html += f"<th>{guesser.alias} faktisk plassering</th>\n"
-        tenth_place_html += f"<th>{guesser.alias} poeng</th>\n"
+    list_of_lists = [
+        [
+            f"{guesser.alias} gjettet",
+            f"{guesser.alias} faktisk plassering",
+            f"{guesser.alias} poeng",
+        ]
+        for guesser in guessers.values()
+    ]
+    names_header_with_actual = [s for sublist in list_of_lists for s in sublist]
 
-    tenth_place_html += "</tr>\n</thead>\n<tbody>\n"
+    tenth_place_html = get_table_header(
+        "10.plass", ["Løp"] + names_header_with_actual
+    )
 
     for i in range(len(races)):
-        tenth_place_html += "<tr>\n"
-        tenth_place_html += f"<td>{races[i]}</td>\n"
+        cells = []
+        cells.append(races[i])
         for guesser in guessers.values():
             if not i in guesser.tenth_place:
                 guessed = "N/A"
@@ -174,14 +156,13 @@ def write_index(
                 evaluated = guesser.tenth_place_evaluated[i]
                 actual_place = evaluated["placed"]
                 scored = evaluated["points"]
-            tenth_place_html += f"<td>{guessed}</td>\n"
-            tenth_place_html += f"<td>{actual_place}</td>\n"
-            tenth_place_html += f"<td>{scored}</td>\n"
-        tenth_place_html += "</tr>\n"
+            cells.append(guessed)
+            cells.append(actual_place)
+            cells.append(score)
+        tenth_place_html += get_table_body_segment(cells)
 
-    tenth_place_html += """</table>
-</div>
-"""
+    tenth_place_html += get_table_tail()
+
     html_body += tenth_place_html
 
     # Flest i diverse
