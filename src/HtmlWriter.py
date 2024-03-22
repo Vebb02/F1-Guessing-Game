@@ -150,7 +150,7 @@ def write_index(
             if not i in guesser.tenth_place:
                 guessed = "N/A"
                 actual_place = "N/A"
-                score = 0
+                scored = 0
             else:
                 guessed = short_to_long_name[guesser.tenth_place[i]]
                 evaluated = guesser.tenth_place_evaluated[i]
@@ -158,7 +158,7 @@ def write_index(
                 scored = evaluated["points"]
             cells.append(guessed)
             cells.append(actual_place)
-            cells.append(score)
+            cells.append(scored)
         tenth_place_html += get_table_body_segment(cells)
 
     tenth_place_html += get_table_tail()
