@@ -26,8 +26,8 @@ html_tail = "</body>\n</html>\n"
 empty = "N/A"
 
 
-def get_table_header(title: str, header_content: list, big_header: bool = True):
-    header_type = "h2" if big_header else "h3"
+def get_table_header(title: str, header_content: list):
+    header_type = "h3"
     head = f"<div>\n<{header_type}>{title}</{header_type}>\n<table>\n<thead>\n<tr>\n"
     body = ""
     tail = "</tr>\n</thead>\n<tbody>\n"
@@ -49,8 +49,8 @@ def get_table_tail():
     return "</tbody>\n</table>\n</div>\n"
 
 
-def get_table(title: str, rows: list, big_header: bool = True):
-    html = get_table_header(title, rows[0], big_header)
+def get_table(title: str, rows: list):
+    html = get_table_header(title, rows[0])
     for row in rows[1:]:
         html += get_table_body_segment(row)
     html += get_table_tail()
@@ -65,7 +65,7 @@ def write_index(
     stats: Stats,
     short_to_long_name: dict,
 ):
-    html_body = ""
+    html_body = "<div><h2>Hjem</h2>"
 
     # Summary
     rows = [["Navn", "Sjåførmesterskap", "Konstruktørmesterskap", "10.plass", "Total"]]
@@ -90,7 +90,7 @@ def write_index(
         driver = row[1][-3:]
         cells = [row[0], short_to_long_name[driver]]
         for guesser in guessers.values():
-            guessed = guesser.driver[driver]
+            guessed = guesser.driver
             scored = guesser.driver_evaluated
             if not driver in guessed:
                 cells += [empty, empty]
@@ -156,9 +156,9 @@ def write_index(
                 [i + 1]
                 + [short_to_long_name[guesser[i + 1]] for guesser in ranked_drivers]
             )
-        return get_table(title, rows, False)
+        return get_table(title, rows)
 
-    html_body += "<div>\n<h2>Tippet i diverse kategorier</h2>\n"
+    html_body += "<div>\n<h3>Tippet i diverse kategorier</h3>\n"
 
     header = ["Plassering"]
     guessed = []
@@ -223,9 +223,9 @@ def write_index(
         ["Sikkerhetsbiler (ink. VSC)", stats.antall["sc"]]
         + [guesser.antall["sikkerhets"] for guesser in guessers.values()]
     )
-    html_body += get_table("Antall av diverse", rows, False)
+    html_body += get_table("Antall av diverse", rows)
 
-    html_body += "</div>\n"
+    html_body += "</div>\n</div>"
 
     file = open(HTML_PATH + "index.html", "w", encoding="UTF-8")
     file.write(html_head + html_body + html_tail)
@@ -238,7 +238,7 @@ def write_stats(stats: Stats, short_to_long_name: dict):
         for driver in ranked_drivers:
             rows.append([driver[0], short_to_long_name[driver[1].upper()], driver[2]])
 
-        return get_table(kategori, rows, False)
+        return get_table(kategori, rows)
 
     html_body = "<div>\n<h2>Statistikk</h2>\n"
 
@@ -255,7 +255,7 @@ def write_stats(stats: Stats, short_to_long_name: dict):
         ["Røde flagg", antall["rf"]],
         ["Sikkerhetsbiler (ink. VSC)", antall["sc"]],
     ]
-    html_body += get_table("Antall av diverse", rows, False)
+    html_body += get_table("Antall av diverse", rows)
 
     html_body += "</div>\n"
     file = open(HTML_PATH + "statistikk.html", "w", encoding="UTF-8")
