@@ -1,7 +1,7 @@
 from Stats import Stats
 from Guesser import Guesser
 
-HTML_PATH = "pages/"
+HTML_PATH = "./pages/"
 
 # HTML skeleton
 html_head = """<!DOCTYPE html>

@@ -6,7 +6,7 @@ from Stats import Stats
 import HtmlWriter
 
 guessers = dict()
-JSON_PATH = "json/"
+JSON_PATH = "./F1-Guessing-Game/json/"
 # Load the IDs to the sheets
 f = open(JSON_PATH + "sheets.json")
 data = json.load(f)
