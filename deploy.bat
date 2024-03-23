@@ -1,12 +1,12 @@
 git pull
 pushd .
-cd pages
+cd ../pages
 git pull
-cd ..
+cd ../F1-Guessing-Game
 popd
 python ./src/Main.py
 pushd .
-cd pages
+cd ../pages
 git add .
 git commit -m "Deployment"
 git push
