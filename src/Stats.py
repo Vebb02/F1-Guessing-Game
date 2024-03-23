@@ -1,4 +1,5 @@
 class Stats:
+    categories_in_div = [("Seiere", "win"), ("Poles", "pole"), ("Spins", "spin"), ("Krasj", "krasj"), ("DNFs", "dnf")]
     def __init__(self, stats: list):
         self.antall = {'gf': 0, 'rf': 0, 'sc': 0}
         self.top5 = {'win': {}, 'pole':{}}
@@ -32,24 +33,14 @@ class Stats:
                         category[driver] = 1
             else:
                 raise Exception('Could not parse row')
-            
-    def get_ranked_wins(self):
-        return Stats.get_ranked(self.top5['win'])
-    
-    def get_ranked_poles(self):
-        return Stats.get_ranked(self.top5['pole'])
-    
-    def get_ranked_spins(self):
-        return Stats.get_ranked(self.top3['spin'])
-        
-    
-    def get_ranked_crashes(self):
-        return Stats.get_ranked(self.top3['krasj'])
-    
-    def get_ranked_dnfs(self):
-        return Stats.get_ranked(self.top3['dnf'])
-    
-    def get_ranked(dict: dict):
+
+    def __get_dict(self, name: str):
+        if name == 'win' or name == 'pole':    
+            return self.top5[name]
+        return self.top3[name]
+
+    def get_ranked(self, name: str):
+        dict = self.__get_dict(name)
         list = []
         for item in dict.items():
             list.append(item)
@@ -68,3 +59,29 @@ class Stats:
         for (x, y, _) in l:
             d[y] = x
         return d
+    
+    def diff_to_points(diff: int, topx: int):
+        if topx == 5:
+            match diff:
+                case 0:
+                    return 10
+                case 1:
+                    return 4
+                case 2:
+                    return 2
+                case _:
+                    return 0
+        elif topx == 3:
+            match diff:
+                case 0:
+                    return 15
+                case 1:
+                    return 7
+                case 2:
+                    return 2
+                case 3:
+                    return 1
+                case _:
+                    return 0
+        else:
+            raise Exception(f"{topx} is not a valid category")

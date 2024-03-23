@@ -1,16 +1,16 @@
+from Stats import Stats
+
 class Guesser:
-    def __init__(self, guesses: list, header: list):
+    def __init__(self, guesses: list[str], header: list[str]):
         self.alias = guesses[1][0]
         self.antall = dict()
         self.driver = dict()
         self.constructor = dict()
-        self.wins = dict()
-        self.poles = dict()
-        self.spins = dict()
-        self.crash = dict()
-        self.dnfs = dict()
+        self.top5 = {'win': {}, 'pole':{}}
+        self.top3 = {'spin':{}, 'krasj':{}, 'dnf':{}}
         self.tenth_place = dict()
         self.tenth_place_evaluated = dict()
+        self.__div_score = 0
 
         guesses = guesses[2:]
         header = header[2:]
@@ -33,22 +33,22 @@ class Guesser:
                 else:
                     match split_key[1]:
                         case "seiere":
-                            self.wins[place] = driver
+                            self.top5['win'][place] = driver
                         case "poles":
-                            self.poles[place] = driver
+                            self.top5['pole'][place] = driver
                         case "spins":
-                            self.spins[place] = driver
+                            self.top3['spin'][place] = driver
                         case "krasj":
-                            self.crash[place] = driver
+                            self.top3['krasj'][place] = driver
                         case "DNFs":
-                            self.dnfs[place] = driver
+                            self.top3['dnf'][place] = driver
                         case _:
                             raise Exception("Could not parse key")
 
     def add_10th_place_guess(self, race_number: int, guess: str):
         self.tenth_place[race_number] = guess[-3:]
 
-    def add_10th_place_result(self, race_number: int, race_result: list):
+    def add_10th_place_result(self, race_number: int, race_result: list[list[str]]):
         if not race_number in self.tenth_place:
             return
         guessed_driver = self.tenth_place[race_number]
@@ -96,7 +96,7 @@ class Guesser:
             score += self.tenth_place_evaluated[key]["points"]
         return score
 
-    def evaluate_driver_standings(self, standings: list):
+    def evaluate_driver_standings(self, standings: list[list[str]]):
         self.driver_evaluated = dict()
         for row in standings:
             driver = row[1][-3:]
@@ -124,7 +124,7 @@ class Guesser:
             score += self.driver_evaluated[key]
         return score
 
-    def evaluate_constructor_standings(self, standings: list):
+    def evaluate_constructor_standings(self, standings: list[list[str]]):
         self.constructor_evaluated = dict()
         for row in standings:
             constructor = Guesser.translate_constructor(row[1])
@@ -170,3 +170,25 @@ class Guesser:
         for key in self.constructor_evaluated.keys():
             score += self.constructor_evaluated[key]
         return score
+
+    def add_div_stats(self, stats: Stats):
+        for category in Stats.categories_in_div:
+            key = category[1]
+            dictionary = self.get_dict(key)
+            ranked_drivers = Stats.get_ranked_dict(stats.get_ranked(key))
+            topx = len(dictionary)
+            for i in range(topx):
+                driver = dictionary[i+1]
+                if driver in ranked_drivers:
+                    place = ranked_drivers[driver]
+                    diff = abs(i + 1 - place)
+                    self.__div_score += Stats.diff_to_points(diff, topx)
+
+
+    def get_div_score(self):
+        return self.__div_score
+    
+    def get_dict(self, name: str):
+        if name == 'win' or name == 'pole':    
+            return self.top5[name]
+        return self.top3[name]

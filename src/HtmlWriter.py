@@ -57,39 +57,64 @@ def get_table(title: str, rows: list):
     html += get_table_tail()
     return html
 
+
 def get_antall(stats: Stats, stats_key: str, guessers: list, guesser_key: str):
-        antall = stats.antall[stats_key]
-        rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
-        unsorted_list = [
-            (
-                guesser.alias,
-                guesser.antall[guesser_key],
-                abs(guesser.antall[guesser_key] - antall),
-            )
-            for guesser in guessers.values()
-        ]
-        sorted_list = sorted(unsorted_list, key=lambda x: x[2])
-        for i in range(len(sorted_list)):
-            name, number, diff = sorted_list[i]
-            match i:
-                case 0:
-                    points = 25
-                case 1:
-                    points = 12
-                case 2:
-                    points = 5
-                case _:
-                    points = 0
-            if diff == 0:
-                points += 20
-            rank = i + 1
-            if i > 0 and diff == rows[i][3]:
-                rank = rows[i][0]
-            rows.append((rank, name, number, diff, points))
-        return rows
+    antall = stats.antall[stats_key]
+    rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
+    unsorted_list = [
+        (
+            guesser.alias,
+            guesser.antall[guesser_key],
+            abs(guesser.antall[guesser_key] - antall),
+        )
+        for guesser in guessers.values()
+    ]
+    sorted_list = sorted(unsorted_list, key=lambda x: x[2])
+    for i in range(len(sorted_list)):
+        name, number, diff = sorted_list[i]
+        match i:
+            case 0:
+                points = 25
+            case 1:
+                points = 12
+            case 2:
+                points = 5
+            case _:
+                points = 0
+        if diff == 0:
+            points += 20
+        rank = i + 1
+        if i > 0 and diff == rows[i][3]:
+            rank = rows[i][0]
+        rows.append((rank, name, number, diff, points))
+    return rows
+
+def get_guesses_table(category: tuple[str], stats: Stats, short_to_long_name: dict[str, str], guessers: dict[str, Guesser]):
+    rows = []
+    key = category[1]
+    guessed = [guesser.get_dict(key) for guesser in guessers.values()]
+        
+    ranked_drivers = Stats.get_ranked_dict(stats.get_ranked(key))
+    topx = len(guessed[0])
+    for i in range(topx):
+        row = []
+        row.append(i + 1)
+        for driver in guessed:
+            driver_name = driver[i + 1]
+            row.append(short_to_long_name[driver_name])
+            if driver_name in ranked_drivers:
+                place = ranked_drivers[driver_name]
+                row.append(place)
+                diff = abs(i + 1 - place)
+                row.append(Stats.diff_to_points(diff, topx))
+            else:
+                row.append(empty)
+                row.append(0)
+        rows.append(row)
+    return rows
 
 def write_index(
-    guessers: dict,
+    guessers: dict[str, Guesser],
     driver_standings: list,
     constructor_standings: list,
     races: list,
@@ -99,14 +124,45 @@ def write_index(
     html_body = "<div>\n<h2>Hjem</h2>\n"
 
     # Summary
-    rows = [["Navn", "Sjåførmesterskap", "Konstruktørmesterskap", "10.plass", "Total"]]
+    summary_header = [
+        [
+            "Navn",
+            "Sjåførmesterskap",
+            "Konstruktørmesterskap",
+            "10.plass",
+            "Tipping av diverse",
+            "Antall",
+            "Total",
+        ]
+    ]
 
+    categories_in_antall = [
+        ("gule flagg", "gf", "gule"),
+        ("røde flagg", "rf", "røde"),
+        ("sikkerhetsbiler (ink. VSC)", "sc", "sikkerhets"),
+    ]
+
+    points_antall = {}
+    for guesser in guessers.values():
+        points_antall[guesser.alias] = 0
+
+    for category in categories_in_antall:
+        table = get_antall(
+            stats, category[1], guessers, category[2]
+        )[1:]
+        for row in table:
+            points_antall[row[1]] += row[4]
+
+    rows = []
     for guesser in guessers.values():
         constructor = guesser.get_constructor_score()
         driver = guesser.get_driver_score()
         tenth = guesser.get_10th_place_score()
-        total = constructor + driver + tenth
-        rows.append([guesser.alias, driver, constructor, tenth, total])
+        div = guesser.get_div_score()
+        antall = points_antall[guesser.alias]
+        total = constructor + driver + tenth + div + antall
+        rows.append([guesser.alias, driver, constructor, tenth, div, antall, total])
+    rows = summary_header + sorted(rows, key= lambda x:x[6], reverse = True)
 
     html_body += get_table("Oppsummering", rows)
     list_of_lists = [
@@ -180,113 +236,33 @@ def write_index(
 
     # Flest i diverse
 
-    def diff_to_points(diff: int, topx: int):
-        if topx == 5:
-            match diff:
-                case 0:
-                    return 10
-                case 1:
-                    return 4
-                case 2:
-                    return 2
-                case _:
-                    return 0
-        elif topx == 3:
-            match diff:
-                case 0:
-                    return 15
-                case 1:
-                    return 7
-                case 2:
-                    return 2
-                case 3:
-                    return 1
-                case _:
-                    return 0
-        else:
-            raise Exception(f"{topx} is not a valid category")
-
-    def guesses_html_table(title: str, header: list, ranked_drivers: list, stats: dict):
-        rows = [header]
-        topx = len(ranked_drivers[0])
-        for i in range(topx):
-            row = []
-            row.append(i + 1)
-            for driver in ranked_drivers:
-                d = driver[i + 1]
-                row.append(short_to_long_name[d])
-                if d in stats:
-                    place = stats[d]
-                    row.append(place)
-                    diff = abs(i + 1 - place)
-                    row.append(diff_to_points(diff, topx))
-                else:
-                    row.append(empty)
-                    row.append(0)
-            rows.append(row)
+    def guesses_html_table(category: tuple[str], stats: Stats):
+        title = category[0]
+        rows = [["Plassering"] + names_header_with_actual] + get_guesses_table(category, stats, short_to_long_name, guessers)
         return get_table(title, rows)
 
     html_body += "<div>\n<h3>Tippet i diverse kategorier</h3>\n"
 
-    header = ["Plassering"] + names_header_with_actual
-    guessed = []
 
-    for guesser in guessers.values():
-        guessed.append(guesser.wins)
-
-    html_body += guesses_html_table(
-        "Seiere", header, guessed, Stats.get_ranked_dict(stats.get_ranked_wins())
-    )
-
-    guessed = []
-
-    for guesser in guessers.values():
-        guessed.append(guesser.poles)
-
-    html_body += guesses_html_table(
-        "Poles", header, guessed, Stats.get_ranked_dict(stats.get_ranked_poles())
-    )
-
-    guessed = []
-
-    for guesser in guessers.values():
-        guessed.append(guesser.spins)
-
-    html_body += guesses_html_table(
-        "Spins", header, guessed, Stats.get_ranked_dict(stats.get_ranked_spins())
-    )
-
-    guessed = []
-
-    for guesser in guessers.values():
-        guessed.append(guesser.crash)
-
-    html_body += guesses_html_table(
-        "Krasj", header, guessed, Stats.get_ranked_dict(stats.get_ranked_crashes())
-    )
-
-    guessed = []
-
-    for guesser in guessers.values():
-        guessed.append(guesser.dnfs)
-
-    html_body += guesses_html_table(
-        "DNFs", header, guessed, Stats.get_ranked_dict(stats.get_ranked_dnfs())
-    )
+    for category in Stats.categories_in_div:
+        html_body += guesses_html_table(category, stats)
 
     # Antall
     def get_antall_table(
-        category: str, stats: Stats, stats_key: str, guessers: list[Guesser], guesser_key: str
+        category: str,
+        stats: Stats,
+        stats_key: str,
+        guessers: list[Guesser],
+        guesser_key: str,
     ):
         antall = stats.antall[stats_key]
         rows = get_antall(stats, stats_key, guessers, guesser_key)
-        return get_table(f"Antall {category}\nFaktisk antall: {antall}", rows)
+        return get_table(f"Antall {category}. Faktisk antall: {antall}", rows)
 
-    html_body += get_antall_table("gule flagg", stats, "gf", guessers, "gule")
-    html_body += get_antall_table("røde flagg", stats, "rf", guessers, "røde")
-    html_body += get_antall_table(
-        "sikkerhetsbiler (ink. VSC)", stats, "sc", guessers, "sikkerhets"
-    )
+    for category in categories_in_antall:
+        html_body += get_antall_table(
+            category[0], stats, category[1], guessers, category[2]
+        )
 
     html_body += "</div>\n</div>"
 
@@ -305,11 +281,8 @@ def write_stats(stats: Stats, short_to_long_name: dict):
 
     html_body = "<div>\n<h2>Statistikk</h2>\n"
 
-    html_body += stats_html_table("Seiere", stats.get_ranked_wins())
-    html_body += stats_html_table("Poles", stats.get_ranked_poles())
-    html_body += stats_html_table("Spins", stats.get_ranked_spins())
-    html_body += stats_html_table("Krasj", stats.get_ranked_crashes())
-    html_body += stats_html_table("DNFs", stats.get_ranked_dnfs())
+    for category in Stats.categories_in_div:
+        html_body += stats_html_table(category[0], stats.get_ranked(category[1]))
 
     antall = stats.antall
     rows = [
