@@ -56,6 +56,36 @@ def get_table(title: str, rows: list):
     html += get_table_tail()
     return html
 
+def get_antall(stats: Stats, stats_key: str, guessers: list, guesser_key: str):
+        antall = stats.antall[stats_key]
+        rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
+        unsorted_list = [
+            (
+                guesser.alias,
+                guesser.antall[guesser_key],
+                abs(guesser.antall[guesser_key] - antall),
+            )
+            for guesser in guessers.values()
+        ]
+        sorted_list = sorted(unsorted_list, key=lambda x: x[2])
+        for i in range(len(sorted_list)):
+            name, number, diff = sorted_list[i]
+            match i:
+                case 0:
+                    points = 25
+                case 1:
+                    points = 12
+                case 2:
+                    points = 5
+                case _:
+                    points = 0
+            if diff == 0:
+                points += 20
+            rank = i + 1
+            if i > 0 and diff == rows[i][3]:
+                rank = rows[i][0]
+            rows.append((rank, name, number, diff, points))
+        return rows
 
 def write_index(
     guessers: dict,
@@ -203,55 +233,59 @@ def write_index(
     for guesser in guessers.values():
         guessed.append(guesser.wins)
 
-    html_body += guesses_html_table("Seiere", header, guessed, Stats.get_ranked_dict(stats.get_ranked_wins()))
+    html_body += guesses_html_table(
+        "Seiere", header, guessed, Stats.get_ranked_dict(stats.get_ranked_wins())
+    )
 
     guessed = []
 
     for guesser in guessers.values():
         guessed.append(guesser.poles)
 
-    html_body += guesses_html_table("Poles", header, guessed, Stats.get_ranked_dict(stats.get_ranked_poles()))
+    html_body += guesses_html_table(
+        "Poles", header, guessed, Stats.get_ranked_dict(stats.get_ranked_poles())
+    )
 
     guessed = []
 
     for guesser in guessers.values():
         guessed.append(guesser.spins)
 
-    html_body += guesses_html_table("Spins", header, guessed, Stats.get_ranked_dict(stats.get_ranked_spins()))
+    html_body += guesses_html_table(
+        "Spins", header, guessed, Stats.get_ranked_dict(stats.get_ranked_spins())
+    )
 
     guessed = []
 
     for guesser in guessers.values():
         guessed.append(guesser.crash)
 
-    html_body += guesses_html_table("Krasj", header, guessed, Stats.get_ranked_dict(stats.get_ranked_crashes()))
+    html_body += guesses_html_table(
+        "Krasj", header, guessed, Stats.get_ranked_dict(stats.get_ranked_crashes())
+    )
 
     guessed = []
 
     for guesser in guessers.values():
         guessed.append(guesser.dnfs)
 
-    html_body += guesses_html_table("DNFs", header, guessed, Stats.get_ranked_dict(stats.get_ranked_dnfs()))
+    html_body += guesses_html_table(
+        "DNFs", header, guessed, Stats.get_ranked_dict(stats.get_ranked_dnfs())
+    )
 
     # Antall
+    def get_antall_table(
+        category: str, stats: Stats, stats_key: str, guessers: list[Guesser], guesser_key: str
+    ):
+        antall = stats.antall[stats_key]
+        rows = get_antall(stats, stats_key, guessers, guesser_key)
+        return get_table(f"Antall {category}\nFaktisk antall: {antall}", rows)
 
-    rows = [
-        ["Kategori", "Faktisk antall"]
-        + [guesser.alias for guesser in guessers.values()]
-    ]
-    rows.append(
-        ["Gule flagg", stats.antall["gf"]]
-        + [guesser.antall["gule"] for guesser in guessers.values()]
+    html_body += get_antall_table("gule flagg", stats, "gf", guessers, "gule")
+    html_body += get_antall_table("røde flagg", stats, "rf", guessers, "røde")
+    html_body += get_antall_table(
+        "sikkerhetsbiler (ink. VSC)", stats, "sc", guessers, "sikkerhets"
     )
-    rows.append(
-        ["Røde flagg", stats.antall["rf"]]
-        + [guesser.antall["røde"] for guesser in guessers.values()]
-    )
-    rows.append(
-        ["Sikkerhetsbiler (ink. VSC)", stats.antall["sc"]]
-        + [guesser.antall["sikkerhets"] for guesser in guessers.values()]
-    )
-    html_body += get_table("Antall av diverse", rows)
 
     html_body += "</div>\n</div>"
 
