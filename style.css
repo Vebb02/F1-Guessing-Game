@@ -77,3 +77,7 @@ and (max-width: 1250px) {
 a {
     margin-right: 5px;
 }
+
+td a {
+    color: black;
+}
