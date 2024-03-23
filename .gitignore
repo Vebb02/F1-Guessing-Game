@@ -2,6 +2,9 @@
 credentials.json
 sheets.json
 
+#Links
+*.lnk
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
