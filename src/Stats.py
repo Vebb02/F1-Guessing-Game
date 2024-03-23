@@ -15,7 +15,7 @@ class Stats:
                 self.antall[key] += 1
             elif key in self.top5.keys():
                 category = self.top5[key]
-                driver = row[1]
+                driver = row[1].upper()
                 if driver in category.keys():
                     category[driver] += 1
                 else:
@@ -23,6 +23,7 @@ class Stats:
             elif key in self.top3.keys():
                 category = self.top3[key]
                 for driver in row[1:]:
+                    driver = driver.upper()
                     if driver == '':
                         break
                     if driver in category.keys():
@@ -61,3 +62,9 @@ class Stats:
                 place = ranked_list[i-1][0]
             ranked_list.append((place, driver, score))
         return ranked_list
+    
+    def get_ranked_dict(l: list):
+        d = {}
+        for (x, y, _) in l:
+            d[y] = x
+        return d

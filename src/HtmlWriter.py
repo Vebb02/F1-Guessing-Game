@@ -149,61 +149,89 @@ def write_index(
 
     # Flest i diverse
 
-    def guesses_html_table(title: str, header: list, ranked_drivers: list):
-        rows = [[col_name for col_name in header]]
-        for i in range(len(ranked_drivers[0])):
-            rows.append(
-                [i + 1]
-                + [short_to_long_name[guesser[i + 1]] for guesser in ranked_drivers]
-            )
+    def diff_to_points(diff: int, topx: int):
+        if topx == 5:
+            match diff:
+                case 0:
+                    return 10
+                case 1:
+                    return 4
+                case 2:
+                    return 2
+                case _:
+                    return 0
+        elif topx == 3:
+            match diff:
+                case 0:
+                    return 15
+                case 1:
+                    return 7
+                case 2:
+                    return 2
+                case 3:
+                    return 1
+                case _:
+                    return 0
+        else:
+            raise Exception(f"{topx} is not a valid category")
+
+    def guesses_html_table(title: str, header: list, ranked_drivers: list, stats: dict):
+        rows = [header]
+        topx = len(ranked_drivers[0])
+        for i in range(topx):
+            row = []
+            row.append(i + 1)
+            for driver in ranked_drivers:
+                d = driver[i + 1]
+                row.append(short_to_long_name[d])
+                if d in stats:
+                    place = stats[d]
+                    row.append(place)
+                    diff = abs(i + 1 - place)
+                    row.append(diff_to_points(diff, topx))
+                else:
+                    row.append(empty)
+                    row.append(0)
+            rows.append(row)
         return get_table(title, rows)
 
     html_body += "<div>\n<h3>Tippet i diverse kategorier</h3>\n"
 
-    header = ["Plassering"]
+    header = ["Plassering"] + names_header_with_actual
     guessed = []
 
     for guesser in guessers.values():
-        header.append(f"{guesser.alias} gjettet")
         guessed.append(guesser.wins)
 
-    html_body += guesses_html_table("Seiere", header, guessed)
+    html_body += guesses_html_table("Seiere", header, guessed, Stats.get_ranked_dict(stats.get_ranked_wins()))
 
-    header = ["Plassering"]
     guessed = []
 
     for guesser in guessers.values():
-        header.append(f"{guesser.alias} gjettet")
         guessed.append(guesser.poles)
 
-    html_body += guesses_html_table("Poles", header, guessed)
+    html_body += guesses_html_table("Poles", header, guessed, Stats.get_ranked_dict(stats.get_ranked_poles()))
 
-    header = ["Plassering"]
     guessed = []
 
     for guesser in guessers.values():
-        header.append(f"{guesser.alias} gjettet")
         guessed.append(guesser.spins)
 
-    html_body += guesses_html_table("Spins", header, guessed)
+    html_body += guesses_html_table("Spins", header, guessed, Stats.get_ranked_dict(stats.get_ranked_spins()))
 
-    header = ["Plassering"]
     guessed = []
 
     for guesser in guessers.values():
-        header.append(f"{guesser.alias} gjettet")
         guessed.append(guesser.crash)
 
-    html_body += guesses_html_table("Krasj", header, guessed)
+    html_body += guesses_html_table("Krasj", header, guessed, Stats.get_ranked_dict(stats.get_ranked_crashes()))
 
-    header = ["Plassering"]
     guessed = []
 
     for guesser in guessers.values():
-        header.append(f"{guesser.alias} gjettet")
         guessed.append(guesser.dnfs)
 
-    html_body += guesses_html_table("DNFs", header, guessed)
+    html_body += guesses_html_table("DNFs", header, guessed, Stats.get_ranked_dict(stats.get_ranked_dnfs()))
 
     # Antall
 
