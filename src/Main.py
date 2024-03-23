@@ -103,7 +103,6 @@ for guesser in guessers.values():
 # Div categories
 for guesser in guessers.values():
     guesser.add_div_stats(stats)
-    print(guesser.get_div_score())
 
 HtmlWriter.write_index(
     guessers, driver_standings, constructor_standings, races, stats, short_to_long_name
