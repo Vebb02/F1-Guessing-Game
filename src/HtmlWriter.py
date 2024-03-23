@@ -18,6 +18,7 @@ html_head = """<!DOCTYPE html>
         <a href="./">Hjem</a>
         <a href="beregning_av_poeng">Beregning av poeng</a>
         <a href="statistikk">Statistikk</a>
+        <a href="tidligere_resultater">Tidligere resultater</a>
     </header>
 """
 html_tail = "</body>\n</html>\n"
