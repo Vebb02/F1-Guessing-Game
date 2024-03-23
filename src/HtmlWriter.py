@@ -65,7 +65,7 @@ def write_index(
     stats: Stats,
     short_to_long_name: dict,
 ):
-    html_body = "<div><h2>Hjem</h2>"
+    html_body = "<div>\n<h2>Hjem</h2>\n"
 
     # Summary
     rows = [["Navn", "Sjåførmesterskap", "Konstruktørmesterskap", "10.plass", "Total"]]
