@@ -1,3 +1,9 @@
+git pull
+pushd .
+cd pages
+git pull
+cd ..
+popd
 python ./src/Main.py
 pushd .
 cd pages
