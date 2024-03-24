@@ -220,7 +220,17 @@ def write_index(
     ]
     names_header_with_actual = [s for sublist in list_of_lists for s in sublist]
 
-    rows = [["Løp"] + names_header_with_actual]
+    list_of_lists = [
+        [
+            f"{guesser.alias} gjettet",
+            f"{guesser.alias} startplassering",
+            f"{guesser.alias} faktisk plassering",
+            f"{guesser.alias} poeng",
+        ]
+        for guesser in guessers.values()
+    ]
+    names_header_with_start = [s for sublist in list_of_lists for s in sublist]
+    rows = [["Løp"] + names_header_with_start]
     for i in range(len(races)):
         row = [races[i]]
         for guesser in guessers.values():
@@ -230,14 +240,16 @@ def write_index(
                 actual_place = empty
             else:
                 guessed = short_to_long_name[guesser.tenth_place[i]]
+                start_place = empty
+                evaluated = empty
+                actual_place = empty
                 if i in guesser.tenth_place_evaluated:
                     evaluated = guesser.tenth_place_evaluated[i]
-                    actual_place = evaluated["placed"]
-                    scored = evaluated["points"]
-                else:
-                    evaluated = empty
-                    actual_place = empty
-            row += [guessed, actual_place, scored]
+                    start_place = evaluated["start pos"]
+                    if "placed" in evaluated:
+                        actual_place = evaluated["placed"]
+                        scored = evaluated["points"]
+            row += [guessed, start_place, actual_place, scored]
         rows.append(row)
     html_body += get_table("10.plass", rows)
 

@@ -1,15 +1,16 @@
 from Stats import Stats
 
+
 class Guesser:
     def __init__(self, guesses: list[str], header: list[str]):
         self.alias = guesses[1][0]
-        self.antall = dict()
-        self.driver = dict()
-        self.constructor = dict()
-        self.top5 = {'win': {}, 'pole':{}}
-        self.top3 = {'spin':{}, 'krasj':{}, 'dnf':{}}
-        self.tenth_place = dict()
-        self.tenth_place_evaluated = dict()
+        self.antall = {}
+        self.driver = {}
+        self.constructor = {}
+        self.top5 = {"win": {}, "pole": {}}
+        self.top3 = {"spin": {}, "krasj": {}, "dnf": {}}
+        self.tenth_place = {}
+        self.tenth_place_evaluated = {}
         self.__div_score = 0
 
         guesses = guesses[2:]
@@ -33,22 +34,37 @@ class Guesser:
                 else:
                     match split_key[1]:
                         case "seiere":
-                            self.top5['win'][place] = driver
+                            self.top5["win"][place] = driver
                         case "poles":
-                            self.top5['pole'][place] = driver
+                            self.top5["pole"][place] = driver
                         case "spins":
-                            self.top3['spin'][place] = driver
+                            self.top3["spin"][place] = driver
                         case "krasj":
-                            self.top3['krasj'][place] = driver
+                            self.top3["krasj"][place] = driver
                         case "DNFs":
-                            self.top3['dnf'][place] = driver
+                            self.top3["dnf"][place] = driver
                         case _:
                             raise Exception("Could not parse key")
 
     def add_10th_place_guess(self, race_number: int, guess: str):
         self.tenth_place[race_number] = guess[-3:]
 
-    def add_10th_place_result(self, race_number: int, race_result: list[list[str]]):
+    def add_10th_place_start(self, race_number: int, starting_grid: list[list[str]]):
+        start_pos = "N/A"
+        if not race_number in self.tenth_place:
+            return
+        guessed_driver = self.tenth_place[race_number]
+        for row in starting_grid:
+            driver = row[2][-3:]
+            if guessed_driver == driver:
+                start_pos = row[0]        
+        self.tenth_place_evaluated[race_number] = {"start pos": start_pos}
+
+    def add_10th_place_result(
+        self,
+        race_number: int,
+        race_result: list[list[str]],
+    ):
         if not race_number in self.tenth_place:
             return
         guessed_driver = self.tenth_place[race_number]
@@ -63,6 +79,7 @@ class Guesser:
                 self.tenth_place_evaluated[race_number] = {
                     "placed": row[0],
                     "points": points,
+                    "start pos": self.tenth_place_evaluated[race_number]["start pos"],
                 }
 
     def get_10th_place_diff(diff: int):
@@ -93,7 +110,8 @@ class Guesser:
     def get_10th_place_score(self):
         score = 0
         for key in self.tenth_place_evaluated.keys():
-            score += self.tenth_place_evaluated[key]["points"]
+            if "points" in  self.tenth_place_evaluated[key]:
+                score += self.tenth_place_evaluated[key]["points"]
         return score
 
     def evaluate_driver_standings(self, standings: list[list[str]]):
@@ -178,17 +196,16 @@ class Guesser:
             ranked_drivers = Stats.get_ranked_dict(stats.get_ranked(key))
             topx = len(dictionary)
             for i in range(topx):
-                driver = dictionary[i+1]
+                driver = dictionary[i + 1]
                 if driver in ranked_drivers:
                     place = ranked_drivers[driver]
                     diff = abs(i + 1 - place)
                     self.__div_score += Stats.diff_to_points(diff, topx)
 
-
     def get_div_score(self):
         return self.__div_score
-    
+
     def get_dict(self, name: str):
-        if name == 'win' or name == 'pole':    
+        if name == "win" or name == "pole":
             return self.top5[name]
         return self.top3[name]
