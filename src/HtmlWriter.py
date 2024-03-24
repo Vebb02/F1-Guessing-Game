@@ -73,17 +73,7 @@ def get_antall(stats: Stats, stats_key: str, list_of_guessers: list[Guesser], gu
     sorted_list = sorted(unsorted_list, key=lambda x: x[2])
     for i in range(len(sorted_list)):
         name, number, diff = sorted_list[i]
-        match i:
-            case 0:
-                points = 25
-            case 1:
-                points = 12
-            case 2:
-                points = 5
-            case _:
-                points = 0
-        if diff == 0:
-            points += 20
+        points = Stats.antall_rank_to_points(i, diff)
         rank = i + 1
         if i > 0 and diff == rows[i][3]:
             rank = rows[i][0]
@@ -101,7 +91,7 @@ def get_guesses_table(
     key = category[1]
     guessed = [guesser.get_dict(key) for guesser in list_of_guessers]
 
-    ranked_drivers = Stats.get_ranked_dict(stats.get_ranked(key))
+    ranked_drivers = stats.get_ranked_dict(key)
     topx = len(guessed[0])
     for i in range(topx):
         row = []
@@ -265,7 +255,7 @@ def write_index(
 
     html_body += "<div>\n<h3>Tippet i diverse kategorier</h3>\n"
 
-    for category in Stats.categories_in_div:
+    for category in Stats.get_categories_in_div():
         html_body += guesses_html_table(category, stats)
 
     # Antall
@@ -278,7 +268,7 @@ def write_index(
     ):
         antall = stats.antall[stats_key]
         rows = get_antall(stats, stats_key, list_of_guessers, guesser_key)
-        antatt_total = antall / stats.races_done * stats.total_number_of_races
+        antatt_total = antall / stats.races_done * Stats.get_total_number_of_races()
         return get_table(
             f"Antall {category}<br>\nFaktisk antall: {antall}. Antatt total:{antatt_total}",
             rows,
@@ -306,7 +296,7 @@ def write_stats(stats: Stats, short_to_long_name: dict):
 
     html_body = "<div>\n<h2>Statistikk</h2>\n"
 
-    for category in Stats.categories_in_div:
+    for category in Stats.get_categories_in_div():
         html_body += stats_html_table(category[0], stats.get_ranked(category[1]))
 
     antall = stats.antall

@@ -107,7 +107,7 @@ def add_starting_grid(list_of_starting_grid: list[list[str]], list_of_guessers: 
 
 def get_race_results(table):
     race_results = []
-    for i in range(Stats.total_number_of_races):
+    for i in range(Stats.get_total_number_of_races()):
         table.update_cell(1, 1, get_race_string(i))
         race = table.get_values(range_name="B1:H21")
         if len(race) == 1:
@@ -181,6 +181,8 @@ def get_stats(sheet, race_results: list[list[str]]) -> Stats:
     stats = Stats(race_stats, len(race_results))
     return stats
 
+def add_antall_score():
+    ...
 
 proxy_id, guesses_id = get_id_from_json()
 client = get_client()

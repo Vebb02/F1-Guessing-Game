@@ -7,8 +7,7 @@ class Guesser:
         self.antall = {}
         self.driver = {}
         self.constructor = {}
-        self.top5 = {"win": {}, "pole": {}}
-        self.top3 = {"spin": {}, "krasj": {}, "dnf": {}}
+        self.topx = {c[1] : {} for c in Stats.get_categories_in_div()}
         self.tenth_place = {}
         self.tenth_place_evaluated = {}
         self.__div_score = 0
@@ -34,15 +33,15 @@ class Guesser:
                 else:
                     match split_key[1]:
                         case "seiere":
-                            self.top5["win"][place] = driver
+                            self.topx["win"][place] = driver
                         case "poles":
-                            self.top5["pole"][place] = driver
+                            self.topx["pole"][place] = driver
                         case "spins":
-                            self.top3["spin"][place] = driver
+                            self.topx["spin"][place] = driver
                         case "krasj":
-                            self.top3["krasj"][place] = driver
+                            self.topx["krasj"][place] = driver
                         case "DNFs":
-                            self.top3["dnf"][place] = driver
+                            self.topx["dnf"][place] = driver
                         case _:
                             raise Exception("Could not parse key")
 
@@ -190,10 +189,10 @@ class Guesser:
         return score
 
     def add_div_stats(self, stats: Stats):
-        for category in Stats.categories_in_div:
+        for category in Stats.get_categories_in_div():
             key = category[1]
             dictionary = self.get_dict(key)
-            ranked_drivers = Stats.get_ranked_dict(stats.get_ranked(key))
+            ranked_drivers = stats.get_ranked_dict(key)
             topx = len(dictionary)
             for i in range(topx):
                 driver = dictionary[i + 1]
@@ -206,6 +205,10 @@ class Guesser:
         return self.__div_score
 
     def get_dict(self, name: str):
-        if name == "win" or name == "pole":
-            return self.top5[name]
-        return self.top3[name]
+        return self.topx[name]
+
+    def add_antall_score(self, rank, diff):
+        self.__antall_score = Stats.antall_rank_to_points(rank, diff)
+
+    def get_antall_score(self):
+        return self.__antall_score

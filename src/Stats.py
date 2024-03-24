@@ -1,13 +1,4 @@
 class Stats:
-    categories_in_div = [
-        ("Seiere", "win"),
-        ("Poles", "pole"),
-        ("Spins", "spin"),
-        ("Krasj", "krasj"),
-        ("DNFs", "dnf"),
-    ]
-    total_number_of_races = 24
-
     def __init__(self, stats: list, races_done: int):
         self.antall = {"gf": 0, "rf": 0, "sc": 0}
         self.top5 = {"win": {}, "pole": {}}
@@ -47,7 +38,7 @@ class Stats:
             return self.top5[name]
         return self.top3[name]
 
-    def get_ranked(self, name: str):
+    def get_ranked(self, name: str) -> list:
         dict = self.__get_dict(name)
         list = []
         for item in dict.items():
@@ -62,11 +53,22 @@ class Stats:
             ranked_list.append((place, driver, score))
         return ranked_list
 
-    def get_ranked_dict(l: list):
-        d = {}
-        for x, y, _ in l:
-            d[y] = x
-        return d
+    def get_ranked_dict(self, name: str):
+        return get_ranked_dict_from_list(self.get_ranked(name))
+
+
+    def get_categories_in_div():
+        return [
+            ("Seiere", "win"),
+            ("Poles", "pole"),
+            ("Spins", "spin"),
+            ("Krasj", "krasj"),
+            ("DNFs", "dnf"),
+        ]
+
+    def get_total_number_of_races():
+        return 24
+
 
     def diff_to_points(diff: int, topx: int):
         if topx == 5:
@@ -93,3 +95,25 @@ class Stats:
                     return 0
         else:
             raise Exception(f"{topx} is not a valid category")
+
+
+    def antall_rank_to_points(rank: int, diff: int) -> int:
+        match rank:
+            case 0:
+                points = 25
+            case 1:
+                points = 12
+            case 2:
+                points = 5
+            case _:
+                points = 0
+        if diff == 0:
+            points += 20
+        return points
+
+
+def get_ranked_dict_from_list(l: list):
+    d = {}
+    for x, y, _ in l:
+        d[y] = x
+    return d
