@@ -213,7 +213,7 @@ def write_index(
     list_of_lists = [
         [
             f"{guesser.alias} gjettet",
-            f"{guesser.alias} faktisk plassering",
+            f"Plasserte",
             f"{guesser.alias} poeng",
         ]
         for guesser in guessers.values()
@@ -223,8 +223,8 @@ def write_index(
     list_of_lists = [
         [
             f"{guesser.alias} gjettet",
-            f"{guesser.alias} startplassering",
-            f"{guesser.alias} faktisk plassering",
+            f"Startet",
+            f"Plasserte",
             f"{guesser.alias} poeng",
         ]
         for guesser in guessers.values()
@@ -309,7 +309,7 @@ def write_stats(stats: Stats, short_to_long_name: dict):
         ["Kategori", "Antall"],
         ["Gule flagg", antall["gf"]],
         ["Røde flagg", antall["rf"]],
-        ["Sikkerhetsbiler (ink. VSC)", antall["sc"]],
+        ["Sikkerhetsbiler (inkl. VSC)", antall["sc"]],
     ]
     html_body += get_table("Antall av diverse", rows)
 
