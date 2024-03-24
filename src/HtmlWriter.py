@@ -277,7 +277,11 @@ def write_index(
     ):
         antall = stats.antall[stats_key]
         rows = get_antall(stats, stats_key, guessers, guesser_key)
-        return get_table(f"Antall {category}. Faktisk antall: {antall}", rows)
+        antatt_total = antall / stats.races_done * stats.total_number_of_races
+        return get_table(
+            f"Antall {category}. Faktisk antall: {antall}. Antatt total:{antatt_total}",
+            rows,
+        )
 
     for category in categories_in_antall:
         html_body += get_antall_table(

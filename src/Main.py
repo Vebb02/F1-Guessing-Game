@@ -5,15 +5,17 @@ from Guesser import Guesser
 from Stats import Stats
 import HtmlWriter
 
-guessers = dict()
+guessers: dict[str, Guesser] = dict()
 JSON_PATH = "./F1-Guessing-Game/json/"
 # Load the IDs to the sheets
 f = open(JSON_PATH + "sheets.json")
 data = json.load(f)
 f.close()
 
+
 def first_race():
     return 1229
+
 
 def get_race_string(race_number: int):
     first_race_season = first_race()
@@ -22,12 +24,14 @@ def get_race_string(race_number: int):
 ("https://www.formula1.com/en/results.html/2024/races/{i}//race-result.html"; \
 "table"; 1; "en_US")'
 
+
 def get_start_grid_string(race_number: int):
     first_race_season = first_race()
     i = race_number + first_race_season
     return f'=importhtml\
 ("https://www.formula1.com/en/results.html/2024/races/{i}/a/starting-grid.html"; \
 "table"; 1; "en_US")'
+
 
 proxy_id = data["proxy"]
 guesses_id = data["guesses"]
@@ -63,9 +67,6 @@ for row in tenth_place_guessed[1:]:
     races[race_number] = race_name
     guessers[email].add_10th_place_guess(race_number, guessed)
 
-table = sheet.get_worksheet(2)
-race_stats = table.get_values()
-stats = Stats(race_stats)
 
 sheet = client.open_by_key(proxy_id)
 table = sheet.get_worksheet(0)
@@ -82,7 +83,7 @@ for i in range(24):
         guesser.add_10th_place_start(i, starting_grid[1:])
 
 # Evaluate scoring tenth place
-for i in range(24):
+for i in range(Stats.total_number_of_races):
     table.update_cell(1, 1, get_race_string(i))
     race = table.get_values(range_name="B1:H21")
     if len(race) == 1:
@@ -93,6 +94,7 @@ for i in range(24):
         break
     for guesser in guessers.values():
         guesser.add_10th_place_result(i, race[1:])
+races_done = i + 1
 
 # Evaluate scoring overall
 driver_standings_link = '=importhtml("https://www.formula1.com/en/results.html/2024/drivers.html"; "table"; 1; "en_US")'
@@ -118,6 +120,11 @@ table.update_cell(1, 1, constructor_standings_link)
 constructor_standings = table.get_values(range_name="B1:D11")
 for guesser in guessers.values():
     guesser.evaluate_constructor_standings(constructor_standings[1:])
+
+sheet = client.open_by_key(guesses_id)
+table = sheet.get_worksheet(2)
+race_stats = table.get_values()
+stats = Stats(race_stats, races_done)
 
 # Div categories
 for guesser in guessers.values():
