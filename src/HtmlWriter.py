@@ -174,7 +174,7 @@ def write_index(
     rows.insert(0, summary_header)
     html_body += get_table("Oppsummering", rows)
     list_of_lists = [
-        [f"{guesser.alias} gjettet", f"{guesser.alias} poeng"]
+        [f"{guesser.alias} gjettet", f"{guesser.alias} pt"]
         for guesser in guessers.values()
     ]
     names_header = [s for sublist in list_of_lists for s in sublist]
@@ -214,8 +214,8 @@ def write_index(
     list_of_lists = [
         [
             f"{guesser.alias} gjettet",
-            f"Plasserte",
-            f"{guesser.alias} poeng",
+            f"P",
+            f"{guesser.alias} pt",
         ]
         for guesser in guessers.values()
     ]
@@ -224,9 +224,9 @@ def write_index(
     list_of_lists = [
         [
             f"{guesser.alias} gjettet",
-            f"Startet",
-            f"Plasserte",
-            f"{guesser.alias} poeng",
+            f"S",
+            f"P",
+            f"{guesser.alias} pt",
         ]
         for guesser in guessers.values()
     ]
@@ -280,7 +280,7 @@ def write_index(
         rows = get_antall(stats, stats_key, guessers, guesser_key)
         antatt_total = antall / stats.races_done * stats.total_number_of_races
         return get_table(
-            f"Antall {category}. Faktisk antall: {antall}. Antatt total:{antatt_total}",
+            f"Antall {category}<br>\nFaktisk antall: {antall}. Antatt total:{antatt_total}",
             rows,
         )
 
@@ -289,7 +289,7 @@ def write_index(
             category[0], stats, category[1], guessers, category[2]
         )
 
-    html_body += "</div>\n</div>"
+    html_body += "<p>*pt = poeng<br>\n**S = startet<br>***P = plasserte\n</p>\n</div>\n</div>"
 
     file = open(HTML_PATH + "index.html", "w", encoding="UTF-8")
     file.write(html_head + html_body + html_tail)
