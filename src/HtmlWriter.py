@@ -53,7 +53,7 @@ def get_table_tail():
 
 
 def get_table(table: Table):
-    return get_table_helper(table.header, table.table_body)
+    return get_table_helper(table.get_header(), table.get_table_body())
 
 
 def get_table_helper(title: str, rows: list):

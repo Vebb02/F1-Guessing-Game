@@ -5,9 +5,14 @@ from Guesser import Guesser
 
 class Table:
     def __init__(self, header: str, table_body: list[list[str]]):
-        self.header = header
-        self.table_body = table_body
+        self.__header = header
+        self.__table_body = table_body
 
+    def get_header(self):
+        return self.__header
+    
+    def get_table_body(self):
+        return copy.deepcopy(self.__table_body)
 
 class TableCollection:
     EMPTY = "N/A"
@@ -87,7 +92,7 @@ class TableCollection:
             header = category[0]
             rows = [
                 ["Plassering"]
-                + TableCollection.names_header_with_actual(list_of_guessers)
+                + TableCollection.__names_header_with_actual(list_of_guessers)
             ]
             key = category[1]
             guessed = [guesser.get_dict(key) for guesser in list_of_guessers]
@@ -115,7 +120,7 @@ class TableCollection:
     def get_div_guessed_tables(self):
         return copy.deepcopy(self.__div_tables)
 
-    def names_header_with_actual(list_of_guessers):
+    def __names_header_with_actual(list_of_guessers):
         list_of_lists = [
             [
                 f"{guesser.alias} gjettet",
