@@ -59,7 +59,7 @@ def get_table(title: str, rows: list):
     return html
 
 
-def get_antall(stats: Stats, stats_key: str, guessers: list, guesser_key: str):
+def get_antall(stats: Stats, stats_key: str, list_of_guessers: list[Guesser], guesser_key: str):
     antall = stats.antall[stats_key]
     rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
     unsorted_list = [
@@ -68,7 +68,7 @@ def get_antall(stats: Stats, stats_key: str, guessers: list, guesser_key: str):
             guesser.antall[guesser_key],
             abs(guesser.antall[guesser_key] - antall),
         )
-        for guesser in guessers.values()
+        for guesser in list_of_guessers
     ]
     sorted_list = sorted(unsorted_list, key=lambda x: x[2])
     for i in range(len(sorted_list)):
@@ -95,11 +95,11 @@ def get_guesses_table(
     category: tuple[str],
     stats: Stats,
     short_to_long_name: dict[str, str],
-    guessers: dict[str, Guesser],
+    list_of_guessers: list[Guesser]
 ):
     rows = []
     key = category[1]
-    guessed = [guesser.get_dict(key) for guesser in guessers.values()]
+    guessed = [guesser.get_dict(key) for guesser in list_of_guessers]
 
     ranked_drivers = Stats.get_ranked_dict(stats.get_ranked(key))
     topx = len(guessed[0])
@@ -122,7 +122,7 @@ def get_guesses_table(
 
 
 def write_index(
-    guessers: dict[str, Guesser],
+    list_of_guessers: list[Guesser],
     driver_standings: list,
     constructor_standings: list,
     races: list,
@@ -146,20 +146,20 @@ def write_index(
     categories_in_antall = [
         ("gule flagg", "gf", "gule"),
         ("røde flagg", "rf", "røde"),
-        ("sikkerhetsbiler (ink. VSC)", "sc", "sikkerhets"),
+        ("sikkerhetsbiler (inkl. VSC)", "sc", "sikkerhets"),
     ]
 
     points_antall = {}
-    for guesser in guessers.values():
+    for guesser in list_of_guessers:
         points_antall[guesser.alias] = 0
 
     for category in categories_in_antall:
-        table = get_antall(stats, category[1], guessers, category[2])[1:]
+        table = get_antall(stats, category[1], list_of_guessers, category[2])[1:]
         for row in table:
             points_antall[row[1]] += row[4]
 
     rows = []
-    for guesser in guessers.values():
+    for guesser in list_of_guessers:
         constructor = guesser.get_constructor_score()
         driver = guesser.get_driver_score()
         tenth = guesser.get_10th_place_score()
@@ -175,7 +175,7 @@ def write_index(
     html_body += get_table("Oppsummering", rows)
     list_of_lists = [
         [f"{guesser.alias} gjettet", f"{guesser.alias} pt"]
-        for guesser in guessers.values()
+        for guesser in list_of_guessers
     ]
     names_header = [s for sublist in list_of_lists for s in sublist]
 
@@ -184,7 +184,7 @@ def write_index(
     for row in driver_standings[1:]:
         driver = row[1][-3:]
         cells = [row[0], short_to_long_name[driver]]
-        for guesser in guessers.values():
+        for guesser in list_of_guessers:
             guessed = guesser.driver
             scored = guesser.driver_evaluated
             if not driver in guessed:
@@ -202,7 +202,7 @@ def write_index(
         constructor = row[1]
         constructor = Guesser.translate_constructor(constructor)
         cells = [row[0], constructor]
-        for guesser in guessers.values():
+        for guesser in list_of_guessers:
             guessed = guesser.constructor[constructor]
             scored = guesser.constructor_evaluated[constructor]
             cells += [guessed, scored]
@@ -217,7 +217,7 @@ def write_index(
             f"P",
             f"{guesser.alias} pt",
         ]
-        for guesser in guessers.values()
+        for guesser in list_of_guessers
     ]
     names_header_with_actual = [s for sublist in list_of_lists for s in sublist]
 
@@ -228,13 +228,13 @@ def write_index(
             f"P",
             f"{guesser.alias} pt",
         ]
-        for guesser in guessers.values()
+        for guesser in list_of_guessers
     ]
     names_header_with_start = [s for sublist in list_of_lists for s in sublist]
     rows = [["Løp"] + names_header_with_start]
     for i in range(len(races)):
         row = [races[i]]
-        for guesser in guessers.values():
+        for guesser in list_of_guessers:
             scored = 0
             if not i in guesser.tenth_place:
                 guessed = empty
@@ -259,7 +259,7 @@ def write_index(
     def guesses_html_table(category: tuple[str], stats: Stats):
         title = category[0]
         rows = [["Plassering"] + names_header_with_actual] + get_guesses_table(
-            category, stats, short_to_long_name, guessers
+            category, stats, short_to_long_name, list_of_guessers
         )
         return get_table(title, rows)
 
@@ -273,11 +273,11 @@ def write_index(
         category: str,
         stats: Stats,
         stats_key: str,
-        guessers: list[Guesser],
+        list_of_guessers: list[Guesser],
         guesser_key: str,
     ):
         antall = stats.antall[stats_key]
-        rows = get_antall(stats, stats_key, guessers, guesser_key)
+        rows = get_antall(stats, stats_key, list_of_guessers, guesser_key)
         antatt_total = antall / stats.races_done * stats.total_number_of_races
         return get_table(
             f"Antall {category}<br>\nFaktisk antall: {antall}. Antatt total:{antatt_total}",
@@ -286,7 +286,7 @@ def write_index(
 
     for category in categories_in_antall:
         html_body += get_antall_table(
-            category[0], stats, category[1], guessers, category[2]
+            category[0], stats, category[1], list_of_guessers, category[2]
         )
 
     html_body += "<p>*pt = poeng<br>\n**S = startet<br>\n***P = plasserte\n</p>\n</div>\n</div>"
