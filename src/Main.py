@@ -82,6 +82,8 @@ for i in range(24):
     for guesser in guessers.values():
         guesser.add_10th_place_start(i, starting_grid[1:])
 
+race_results: list[list[str]] = []
+
 # Evaluate scoring tenth place
 for i in range(Stats.total_number_of_races):
     table.update_cell(1, 1, get_race_string(i))
@@ -92,9 +94,9 @@ for i in range(Stats.total_number_of_races):
         break
     if not (race[0][6] == "PTS" and int(race[1][6]) >= 25):
         break
+    race_results.insert(0, race)
     for guesser in guessers.values():
         guesser.add_10th_place_result(i, race[1:])
-races_done = i + 1
 
 # Evaluate scoring overall
 driver_standings_link = '=importhtml("https://www.formula1.com/en/results.html/2024/drivers.html"; "table"; 1; "en_US")'
@@ -124,7 +126,7 @@ for guesser in guessers.values():
 sheet = client.open_by_key(guesses_id)
 table = sheet.get_worksheet(2)
 race_stats = table.get_values()
-stats = Stats(race_stats, races_done)
+stats = Stats(race_stats, len(race_results))
 
 # Div categories
 for guesser in guessers.values():
@@ -135,3 +137,5 @@ HtmlWriter.write_index(
 )
 HtmlWriter.write_stats(stats, short_to_long_name)
 print("Success!")
+
+HtmlWriter.write_results(race_results, races, short_to_long_name)

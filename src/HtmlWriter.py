@@ -18,6 +18,7 @@ html_head = """<!DOCTYPE html>
         <a href="./">Hjem</a>
         <a href="beregning_av_poeng">Beregning av poeng</a>
         <a href="statistikk">Statistikk</a>
+        <a href="resultater_av_lop">Resultater av løp</a>
         <a href="tidligere_resultater">Tidligere resultater</a>
         <a href="tipping_av_tiende_plass">Tipping av 10.plass</a>
     </header>
@@ -319,5 +320,18 @@ def write_stats(stats: Stats, short_to_long_name: dict):
 
     html_body += "</div>\n"
     file = open(HTML_PATH + "statistikk.html", "w", encoding="UTF-8")
+    file.write(html_head + html_body + html_tail)
+    file.close()
+
+def write_results(race_results: list[list[str]], races: dict[int, str], short_to_long_name: dict,):
+    html_body = "<div>\n<h2>Resultater av løp i år</h2>\n"
+    for i in range(len(race_results)):
+        title = races[len(race_results) - i - 1]
+        result = race_results[i]
+        for row in result[1:]:
+            row[2] = short_to_long_name[row[2][-3:].upper()]
+        html_body += get_table(title, result)
+    html_body += "</div>\n"
+    file = open(HTML_PATH + "resultater_av_lop.html", "w", encoding="UTF-8")
     file.write(html_head + html_body + html_tail)
     file.close()
