@@ -16,11 +16,11 @@ html_head = """<!DOCTYPE html>
     <header>
         <h1>F1 tipping 2024</h1>
         <a href="./">Hjem</a>
-        <a href="beregning_av_poeng">Beregning av poeng</a>
+        <a href="poengberegning">Poengberegning</a>
         <a href="statistikk">Statistikk</a>
-        <a href="resultater_av_lop">Resultater av løp</a>
+        <a href="resultater_lop">Resultater løp</a>
         <a href="tidligere_resultater">Tidligere resultater</a>
-        <a href="tipping_av_tiende_plass">Tipping av 10.plass</a>
+        <a href="tipping_tiende_plass">Tipping 10.plass</a>
     </header>
 """
 html_tail = "</body>\n</html>\n"
@@ -289,7 +289,7 @@ def write_index(
             category[0], stats, category[1], guessers, category[2]
         )
 
-    html_body += "<p>*pt = poeng<br>\n**S = startet<br>***P = plasserte\n</p>\n</div>\n</div>"
+    html_body += "<p>*pt = poeng<br>\n**S = startet<br>\n***P = plasserte\n</p>\n</div>\n</div>"
 
     file = open(HTML_PATH + "index.html", "w", encoding="UTF-8")
     file.write(html_head + html_body + html_tail)
@@ -332,6 +332,6 @@ def write_results(race_results: list[list[str]], races: dict[int, str], short_to
             row[2] = short_to_long_name[row[2][-3:].upper()]
         html_body += get_table(title, result)
     html_body += "</div>\n"
-    file = open(HTML_PATH + "resultater_av_lop.html", "w", encoding="UTF-8")
+    file = open(HTML_PATH + "resultater_lop.html", "w", encoding="UTF-8")
     file.write(html_head + html_body + html_tail)
     file.close()
