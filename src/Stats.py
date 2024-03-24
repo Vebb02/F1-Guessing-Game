@@ -1,8 +1,7 @@
 class Stats:
     def __init__(self, stats: list, races_done: int):
-        self.antall = {"gf": 0, "rf": 0, "sc": 0}
-        self.top5 = {"win": {}, "pole": {}}
-        self.top3 = {"spin": {}, "krasj": {}, "dnf": {}}
+        self.antall = {c[1] : 0 for c in Stats.get_categories_in_antall()}
+        self.topx = {c[1] : {} for c in Stats.get_categories_in_div()}
         self.races_done = races_done
         for row in stats:
             if row[1] == "":
@@ -12,16 +11,9 @@ class Stats:
                 for f in row[1:]:
                     if f == "":
                         break
-                self.antall[key] += 1
-            elif key in self.top5.keys():
-                category = self.top5[key]
-                driver = row[1].upper()
-                if driver in category.keys():
-                    category[driver] += 1
-                else:
-                    category[driver] = 1
-            elif key in self.top3.keys():
-                category = self.top3[key]
+                    self.antall[key] += 1
+            elif key in self.topx:
+                category = self.topx[key]
                 for driver in row[1:]:
                     driver = driver.upper()
                     if driver == "":
@@ -31,12 +23,10 @@ class Stats:
                     else:
                         category[driver] = 1
             else:
-                raise Exception("Could not parse row")
+                raise Exception(f"Could not parse row: {row}")
 
     def __get_dict(self, name: str):
-        if name == "win" or name == "pole":
-            return self.top5[name]
-        return self.top3[name]
+        return self.topx[name]
 
     def get_ranked(self, name: str) -> list:
         dict = self.__get_dict(name)
