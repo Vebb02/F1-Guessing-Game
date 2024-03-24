@@ -3,11 +3,11 @@ from Stats import Stats
 
 class Guesser:
     def __init__(self, guesses: list[str], header: list[str]):
-        self.alias = guesses[1][0]
+        self.__alias = guesses[1][0]
         self.antall = {}
         self.driver = {}
         self.constructor = {}
-        self.topx = {c[1] : {} for c in Stats.get_categories_in_div()}
+        self.__topx = {c[1]: {} for c in Stats.get_categories_in_div()}
         self.tenth_place = {}
         self.tenth_place_evaluated = {}
         self.__div_score = 0
@@ -32,19 +32,16 @@ class Guesser:
                     else:
                         self.driver[driver] = place
                 else:
-                    match split_key[1]:
-                        case "seiere":
-                            self.topx["win"][place] = driver
-                        case "poles":
-                            self.topx["pole"][place] = driver
-                        case "spins":
-                            self.topx["spin"][place] = driver
-                        case "krasj":
-                            self.topx["krasj"][place] = driver
-                        case "DNFs":
-                            self.topx["dnf"][place] = driver
-                        case _:
-                            raise Exception("Could not parse key")
+                    key = split_key[1].lower()
+                    for category in Stats.get_categories_in_div():
+                        if key == category[0].lower():
+                            self.__topx[category[1]][place] = driver
+                            break
+                    else:
+                        raise Exception("Could not parse key")
+
+    def get_alias(self):
+        return self.__alias
 
     def add_10th_place_guess(self, race_number: int, guess: str):
         self.tenth_place[race_number] = guess[-3:]
@@ -57,7 +54,7 @@ class Guesser:
         for row in starting_grid:
             driver = row[2][-3:]
             if guessed_driver == driver:
-                start_pos = row[0]        
+                start_pos = row[0]
         self.tenth_place_evaluated[race_number] = {"start pos": start_pos}
 
     def add_10th_place_result(
@@ -83,34 +80,27 @@ class Guesser:
                 }
 
     def get_10th_place_diff(diff: int):
-        match diff:
-            case 0:
-                return 25 / 4
-            case 1:
-                return 18 / 4
-            case 2:
-                return 15 / 4
-            case 3:
-                return 12 / 4
-            case 4:
-                return 10 / 4
-            case 5:
-                return 8 / 4
-            case 6:
-                return 6 / 4
-            case 7:
-                return 4 / 4
-            case 8:
-                return 2 / 4
-            case 9:
-                return 1 / 4
-            case _:
-                return 0
+        list_of_points = [
+            25 / 4,
+            18 / 4,
+            15 / 4,
+            12 / 4,
+            10 / 4,
+            8 / 4,
+            6 / 4,
+            4 / 4,
+            2 / 4,
+            1 / 4,
+        ]
+        if diff >= len(list_of_points):
+            return 0
+        else:
+            return list_of_points[diff]
 
     def get_10th_place_score(self):
         score = 0
         for key in self.tenth_place_evaluated.keys():
-            if "points" in  self.tenth_place_evaluated[key]:
+            if "points" in self.tenth_place_evaluated[key]:
                 score += self.tenth_place_evaluated[key]["points"]
         return score
 
@@ -159,29 +149,18 @@ class Guesser:
             self.constructor_evaluated[constructor] = gained
 
     def translate_constructor(constructor: str):
-        match constructor:
-            case "Red Bull Racing Honda RBPT":
-                return "Red Bull"
-            case "Ferrari":
-                return "Ferrari"
-            case "McLaren Mercedes":
-                return "McLaren"
-            case "Mercedes":
-                return "Mercedes"
-            case "Aston Martin Aramco Mercedes":
-                return "Aston Martin"
-            case "Haas Ferrari":
-                return "Haas"
-            case "Williams Mercedes":
-                return "Williams"
-            case "Kick Sauber Ferrari":
-                return "Stake"
-            case "RB Honda RBPT":
-                return "RB"
-            case "Alpine Renault":
-                return "Alpine"
-            case _:
-                raise Exception("No such team name", constructor)
+        return {
+            "Red Bull Racing Honda RBPT": "Red Bull",
+            "Ferrari": "Ferrari",
+            "McLaren Mercedes": "McLaren",
+            "Mercedes": "Mercedes",
+            "Aston Martin Aramco Mercedes": "Aston Martin",
+            "Haas Ferrari": "Haas",
+            "Williams Mercedes": "Williams",
+            "Kick Sauber Ferrari": "Stake",
+            "RB Honda RBPT": "RB",
+            "Alpine Renault": "Alpine",
+        }[constructor]
 
     def get_constructor_score(self):
         score = 0
@@ -206,7 +185,7 @@ class Guesser:
         return self.__div_score
 
     def get_dict(self, name: str):
-        return self.topx[name]
+        return self.__topx[name]
 
     def add_antall_score(self, score: int):
         self.__antall_score += score

@@ -207,8 +207,6 @@ add_race_results_to_tenth_place(race_results, list_of_guessers)
 driver_standings = get_driver_standings(proxy)
 evaluate_driver_standings(driver_standings, list_of_guessers)
 
-short_to_long_name = get_short_to_long_name(driver_standings)
-
 constructor_standings = get_constructor_standings(proxy)
 evaluate_constructor_standings(constructor_standings, list_of_guessers)
 
@@ -218,7 +216,7 @@ add_div_categories(stats, list_of_guessers)
 table_coll: TableCollection = TableCollection(
     list_of_guessers,
     stats,
-    short_to_long_name,
+    get_short_to_long_name(driver_standings),
     driver_standings,
     constructor_standings,
     race_number_to_name,

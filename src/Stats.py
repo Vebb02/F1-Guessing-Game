@@ -1,7 +1,7 @@
 class Stats:
     def __init__(self, stats: list, races_done: int):
-        self.antall = {c[1] : 0 for c in Stats.get_categories_in_antall()}
-        self.topx = {c[1] : {} for c in Stats.get_categories_in_div()}
+        self.antall = {c[1]: 0 for c in Stats.get_categories_in_antall()}
+        self.topx = {c[1]: {} for c in Stats.get_categories_in_div()}
         self.races_done = races_done
         for row in stats:
             if row[1] == "":
