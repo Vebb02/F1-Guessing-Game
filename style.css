@@ -67,8 +67,7 @@ body {
     margin-top: 0;
 }
 
-@media only screen 
-and (max-width: 1250px) {
+@media only screen and (max-width: 1250px) {
     header {
         width: 225%;
     }
@@ -76,6 +75,7 @@ and (max-width: 1250px) {
 
 a {
     margin-right: 5px;
+    break-inside: avoid;
 }
 
 td a {
