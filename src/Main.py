@@ -5,6 +5,7 @@ from Guesser import Guesser
 from Stats import Stats
 import HtmlWriter
 import time
+from Tables import TableCollection
 
 start_time = time.time()
 
@@ -76,15 +77,15 @@ def get_guessers(sheet) -> dict[str, Guesser]:
 
 def add_tenth_place_guesses(sheet):
     tenth_place_guessed = get_table_rows(sheet, 1)
-    races = dict()
+    race_number_to_name = dict()
     for row in tenth_place_guessed[1:]:
         email = row[1]
         guessed = row[2]
         race_name = row[3]
         race_number = int(race_name.split(".")[0]) - 1
-        races[race_number] = race_name
+        race_number_to_name[race_number] = race_name
         email_to_guesser[email].add_10th_place_guess(race_number, guessed)
-    return races
+    return race_number_to_name
 
 
 def get_list_of_starting_grid(table) -> list[list[str]]:
@@ -99,11 +100,15 @@ def get_list_of_starting_grid(table) -> list[list[str]]:
         list_of_starting_grid.append(starting_grid)
     return list_of_starting_grid
 
-def add_starting_grid(list_of_starting_grid: list[list[str]], list_of_guessers: list[Guesser]):
+
+def add_starting_grid(
+    list_of_starting_grid: list[list[str]], list_of_guessers: list[Guesser]
+):
     for i in range(len(list_of_starting_grid)):
         starting_grid = list_of_starting_grid[i]
         for guesser in list_of_guessers:
             guesser.add_10th_place_start(i, starting_grid[1:])
+
 
 def get_race_results(table):
     race_results = []
@@ -181,8 +186,6 @@ def get_stats(sheet, race_results: list[list[str]]) -> Stats:
     stats = Stats(race_stats, len(race_results))
     return stats
 
-def add_antall_score():
-    ...
 
 proxy_id, guesses_id = get_id_from_json()
 client = get_client()
@@ -191,7 +194,7 @@ guesses_sheet = client.open_by_key(guesses_id)
 email_to_guesser = get_guessers(guesses_sheet)
 list_of_guessers: list[Guesser] = [guesser for guesser in email_to_guesser.values()]
 
-races = add_tenth_place_guesses(guesses_sheet)
+race_number_to_name = add_tenth_place_guesses(guesses_sheet)
 proxy_sheet = client.open_by_key(proxy_id)
 proxy = proxy_sheet.get_worksheet(0)
 
@@ -212,16 +215,19 @@ evaluate_constructor_standings(constructor_standings, list_of_guessers)
 stats = get_stats(guesses_sheet, race_results)
 add_div_categories(stats, list_of_guessers)
 
-HtmlWriter.write_index(
+table_coll: TableCollection = TableCollection(
     list_of_guessers,
-    driver_standings,
-    constructor_standings,
-    races,
     stats,
     short_to_long_name,
+    driver_standings,
+    constructor_standings,
+    race_number_to_name,
+    race_results,
 )
-HtmlWriter.write_stats(stats, short_to_long_name)
-HtmlWriter.write_results(race_results, races, short_to_long_name)
+
+HtmlWriter.write_index(table_coll)
+HtmlWriter.write_stats(table_coll)
+HtmlWriter.write_results(table_coll)
 
 time_taken = time.time() - start_time
 print(f"Success in {round(time_taken, 2)} seconds!")

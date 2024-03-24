@@ -11,6 +11,7 @@ class Guesser:
         self.tenth_place = {}
         self.tenth_place_evaluated = {}
         self.__div_score = 0
+        self.__antall_score = 0
 
         guesses = guesses[2:]
         header = header[2:]
@@ -207,8 +208,8 @@ class Guesser:
     def get_dict(self, name: str):
         return self.topx[name]
 
-    def add_antall_score(self, rank, diff):
-        self.__antall_score = Stats.antall_rank_to_points(rank, diff)
+    def add_antall_score(self, score: int):
+        self.__antall_score += score
 
     def get_antall_score(self):
         return self.__antall_score

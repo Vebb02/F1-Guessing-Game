@@ -56,7 +56,6 @@ class Stats:
     def get_ranked_dict(self, name: str):
         return get_ranked_dict_from_list(self.get_ranked(name))
 
-
     def get_categories_in_div():
         return [
             ("Seiere", "win"),
@@ -66,9 +65,15 @@ class Stats:
             ("DNFs", "dnf"),
         ]
 
+    def get_categories_in_antall():
+        return [
+            ("gule flagg", "gf", "gule"),
+            ("røde flagg", "rf", "røde"),
+            ("sikkerhetsbiler (inkl. VSC)", "sc", "sikkerhets"),
+        ]
+
     def get_total_number_of_races():
         return 24
-
 
     def diff_to_points(diff: int, topx: int):
         if topx == 5:
@@ -95,7 +100,6 @@ class Stats:
                     return 0
         else:
             raise Exception(f"{topx} is not a valid category")
-
 
     def antall_rank_to_points(rank: int, diff: int) -> int:
         match rank:
