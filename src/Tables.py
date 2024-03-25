@@ -26,6 +26,7 @@ class TableCollection:
         constructor_standings: list[list[str]],
         race_number_to_name: dict[int, str],
         race_results: list[list[str]],
+        enough_time_passed: bool,
     ):
         self.__set_names_header(list_of_guessers)
         self.__add_antall_guessed(stats, list_of_guessers)
@@ -39,6 +40,7 @@ class TableCollection:
         self.__add_race_results(race_results, race_number_to_name, short_to_long_name)
         self.__add_antall_stats(stats)
         self.__add_div_stats(stats, short_to_long_name)
+        self.__enough_time_passed = enough_time_passed
 
     def __set_names_header(self, list_of_guessers: list[Guesser]):
         list_of_lists = [
@@ -289,3 +291,7 @@ class TableCollection:
 
     def get_div_stats_tables(self):
         return copy.deepcopy(self.__div_stats_tables)
+
+
+    def enough_time_paseed(self):
+        return self.__enough_time_passed

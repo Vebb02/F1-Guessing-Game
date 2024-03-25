@@ -29,9 +29,13 @@ html_tail = "</body>\n</html>\n"
 empty = "N/A"
 
 
-def get_table_header(title: str, header_content: list):
+def get_table_title(title: str):
     header_type = "h3"
-    head = f"<div>\n<{header_type}>{title}</{header_type}>\n<table>\n<thead>\n<tr>\n"
+    return f"<div>\n<{header_type}>{title}</{header_type}>\n"
+
+
+def get_table_header(header_content: list):
+    head = "<table>\n<thead>\n<tr>\n"
     body = ""
     tail = "</tr>\n</thead>\n<tbody>\n"
     for s in header_content:
@@ -39,12 +43,16 @@ def get_table_header(title: str, header_content: list):
     return head + body + tail
 
 
+def get_table_cell(s: str):
+    return f"<td>{s}</td>\n"
+
+
 def get_table_body_segment(content: list):
     head = "<tr>\n"
     body = ""
     tail = "</tr>\n"
     for s in content:
-        body += f"<td>{s}</td>\n"
+        body += get_table_cell(s)
     return head + body + tail
 
 
@@ -57,7 +65,36 @@ def get_table(table: Table):
 
 
 def get_table_helper(title: str, rows: list):
-    html = get_table_header(title, rows[0])
+    html = get_table_title(title)
+    html += get_table_header(rows[0])
+    for row in rows[1:]:
+        html += get_table_body_segment(row)
+    html += get_table_tail()
+    return html
+
+
+def should_be_hidden(i: int, race_result_not_out: bool):
+    if race_result_not_out:
+        return (i - 1) % 4 == 0
+    return (i - 1) % 4 != 0
+
+
+def get_tenth_table(table: Table, enough_time_passed: bool):
+    rows = table.get_table_body()
+    all_na = True
+    for i in range(3, len(rows[-1]), 4):
+        all_na = all_na and rows[-1][i] == "N/A"
+    if not all_na and enough_time_passed:
+        return get_table(table)
+    html = (
+        get_table_title(table.get_header()) + '<input type="checkbox" id="toggle"/>\n'
+    )
+    html += get_table_header(rows[0])
+    for i in range(1, len(rows[-1])):
+        if not should_be_hidden(i, all_na):
+            continue
+        cell = rows[-1][i]
+        rows[-1][i] = f'<div id="hidden">█</div><div id="result">{cell}</div>'
     for row in rows[1:]:
         html += get_table_body_segment(row)
     html += get_table_tail()
@@ -69,7 +106,7 @@ def write_index(table_coll: TableCollection):
     html_body += get_table(table_coll.get_summary_table())
     html_body += get_table(table_coll.get_driver_standings_table())
     html_body += get_table(table_coll.get_constructor_standings_table())
-    html_body += get_table(table_coll.get_tenth_table())
+    html_body += get_tenth_table(table_coll.get_tenth_table(), table_coll.enough_time_paseed())
 
     html_body += "<div>\n<h3>Tippet i diverse kategorier</h3>\n"
     for table in table_coll.get_div_guessed_tables():
@@ -95,6 +132,7 @@ def write_stats(table_coll: TableCollection):
     file = open(HTML_PATH + "statistikk.html", "w", encoding="UTF-8")
     file.write(html_head + html_body + html_tail)
     file.close()
+
 
 def write_results(table_coll: TableCollection):
     html_body = "<div>\n<h2>Resultater av løp i år</h2>\n"

@@ -6,11 +6,12 @@ from Stats import Stats
 import HtmlWriter
 import time
 from Tables import TableCollection
+import datetime
 
 start_time = time.time()
 
 JSON_PATH = "./F1-Guessing-Game/json/"
-
+days_before_showing_results = 1
 
 def first_race():
     return 1229
@@ -186,6 +187,16 @@ def get_stats(sheet, race_results: list[list[str]]) -> Stats:
     stats = Stats(race_stats, len(race_results))
     return stats
 
+def get_race_calendar(sheet):
+    table = sheet.get_worksheet(1)
+    calendar = table.get_values(range_name="A2:D30")
+    return calendar
+
+def enough_time_passed_since_race(calendar: list[list[str]]):
+    race_date = calendar[len(race_results)-1][3].split('.')
+    delta = datetime.datetime.now() - datetime.datetime(int(race_date[2]), int(race_date[1]), int(race_date[0]))
+    enough_time = datetime.timedelta(days = days_before_showing_results)
+    return delta > enough_time
 
 proxy_id, guesses_id = get_id_from_json()
 client = get_client()
@@ -213,6 +224,9 @@ evaluate_constructor_standings(constructor_standings, list_of_guessers)
 stats = get_stats(guesses_sheet, race_results)
 add_div_categories(stats, list_of_guessers)
 
+calendar = get_race_calendar(proxy_sheet)
+
+
 table_coll: TableCollection = TableCollection(
     list_of_guessers,
     stats,
@@ -221,6 +235,7 @@ table_coll: TableCollection = TableCollection(
     constructor_standings,
     race_number_to_name,
     race_results,
+    enough_time_passed_since_race(calendar)
 )
 
 HtmlWriter.write_index(table_coll)
