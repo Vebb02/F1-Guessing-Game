@@ -81,3 +81,19 @@ a {
 td a {
     color: black;
 }
+
+#hidden, #result {
+    display: none;
+}
+
+#toggle:checked ~ table #result {
+    display: block;
+}
+
+#toggle:not(:checked) ~ table #hidden {
+    display: block;
+}
+
+td div {
+    margin: 0px;
+}
