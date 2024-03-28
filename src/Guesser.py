@@ -40,7 +40,7 @@ class Guesser:
                     else:
                         raise Exception("Could not parse key")
 
-    def get_alias(self):
+    def __str__(self):
         return self.__alias
 
     def add_10th_place_guess(self, race_number: int, guess: str):

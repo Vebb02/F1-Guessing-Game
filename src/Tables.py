@@ -44,7 +44,7 @@ class TableCollection:
 
     def __set_names_header(self, list_of_guessers: list[Guesser]):
         list_of_lists = [
-            [f"{guesser.get_alias()} gjettet", f"{guesser.get_alias()} pt"]
+            [f"{guesser} gjettet", f"{guesser} pt"]
             for guesser in list_of_guessers
         ]
         self.names_header = [s for sublist in list_of_lists for s in sublist]
@@ -60,7 +60,7 @@ class TableCollection:
             rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
             unsorted_list = [
                 (
-                    guesser.get_alias(),
+                    guesser,
                     guesser.antall[guesser_key],
                     abs(guesser.antall[guesser_key] - antall),
                 )
@@ -75,7 +75,7 @@ class TableCollection:
                     rank = rows[i][0]
                 rows.append((rank, name, number, diff, points))
                 for guesser in list_of_guessers:
-                    if guesser.get_alias() == name:
+                    if guesser == name:
                         guesser.add_antall_score(points)
             tables.append(Table(header, rows))
         self.__antall_tables = tables
@@ -125,9 +125,9 @@ class TableCollection:
     def __names_header_with_actual(list_of_guessers: list[Guesser]):
         list_of_lists = [
             [
-                f"{guesser.get_alias()} gjettet",
+                f"{guesser} gjettet",
                 f"P",
-                f"{guesser.get_alias()} pt",
+                f"{guesser} pt",
             ]
             for guesser in list_of_guessers
         ]
@@ -154,7 +154,7 @@ class TableCollection:
             div = guesser.get_div_score()
             antall = guesser.get_antall_score()
             total = constructor + driver + tenth + div + antall
-            rows.append([guesser.get_alias(), driver, constructor, tenth, div, antall, total])
+            rows.append([guesser, driver, constructor, tenth, div, antall, total])
         rows = sorted(rows, key=lambda x: x[6], reverse=True)
         for i in range(len(rows)):
             row = rows[i]
@@ -213,10 +213,10 @@ class TableCollection:
     ):
         list_of_lists = [
             [
-                f"{guesser.get_alias()} gjettet",
+                f"{guesser} gjettet",
                 f"S",
                 f"P",
-                f"{guesser.get_alias()} pt",
+                f"{guesser} pt",
             ]
             for guesser in list_of_guessers
         ]
