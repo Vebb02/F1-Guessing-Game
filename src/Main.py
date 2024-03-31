@@ -9,9 +9,11 @@ from Tables import TableCollection
 import datetime
 
 start_time = time.time()
+delta_time = time.time()
 
 JSON_PATH = "./F1-Guessing-Game/json/"
 days_before_showing_results = 1
+
 
 def first_race():
     return 1229
@@ -187,45 +189,68 @@ def get_stats(sheet, race_results: list[list[str]]) -> Stats:
     stats = Stats(race_stats, len(race_results))
     return stats
 
+
 def get_race_calendar(sheet):
     table = sheet.get_worksheet(1)
     calendar = table.get_values(range_name="A2:D30")
     return calendar
 
+
 def enough_time_passed_since_race(calendar: list[list[str]]):
-    race_date = calendar[len(race_results)-1][3].split('.')
-    delta = datetime.datetime.now() - datetime.datetime(int(race_date[2]), int(race_date[1]), int(race_date[0]))
-    enough_time = datetime.timedelta(days = days_before_showing_results)
+    race_date = calendar[len(race_results) - 1][3].split(".")
+    delta = datetime.datetime.now() - datetime.datetime(
+        int(race_date[2]), int(race_date[1]), int(race_date[0])
+    )
+    enough_time = datetime.timedelta(days=days_before_showing_results)
     return delta > enough_time
+
+
+def print_delta_time(message: str):
+    global delta_time
+    time_taken = time.time() - delta_time
+    delta_time = time.time()
+    print(f"{message} finished in {round(time_taken, 5)} seconds")
+
 
 proxy_id, guesses_id = get_id_from_json()
 client = get_client()
+print_delta_time("Loaded client")
+
 guesses_sheet = client.open_by_key(guesses_id)
 
 email_to_guesser = get_guessers(guesses_sheet)
 list_of_guessers: list[Guesser] = [guesser for guesser in email_to_guesser.values()]
+print_delta_time("Loaded guesses")
 
 race_number_to_name = add_tenth_place_guesses(guesses_sheet)
+print_delta_time("Loaded tenth place guesses")
+
 proxy_sheet = client.open_by_key(proxy_id)
 proxy = proxy_sheet.get_worksheet(0)
+print_delta_time("Loaded proxy sheet")
 
 list_of_starting_grid = get_list_of_starting_grid(proxy)
 add_starting_grid(list_of_starting_grid, list_of_guessers)
+print_delta_time("Loaded and added starting grid to guessers")
 
 race_results = get_race_results(proxy)
 add_race_results_to_tenth_place(race_results, list_of_guessers)
+print_delta_time("Loaded race results")
 
 driver_standings = get_driver_standings(proxy)
 evaluate_driver_standings(driver_standings, list_of_guessers)
+print_delta_time("Evaluated driver standings")
 
 constructor_standings = get_constructor_standings(proxy)
 evaluate_constructor_standings(constructor_standings, list_of_guessers)
+print_delta_time("Evaluated constructor standings")
 
 stats = get_stats(guesses_sheet, race_results)
 add_div_categories(stats, list_of_guessers)
+print_delta_time("Added stats from div categories")
 
 calendar = get_race_calendar(proxy_sheet)
-
+print_delta_time("Loaded race calendar")
 
 table_coll: TableCollection = TableCollection(
     list_of_guessers,
@@ -235,12 +260,15 @@ table_coll: TableCollection = TableCollection(
     constructor_standings,
     race_number_to_name,
     race_results,
-    enough_time_passed_since_race(calendar)
+    enough_time_passed_since_race(calendar),
 )
+print_delta_time("Created Table Collection")
 
 HtmlWriter.write_index(table_coll)
 HtmlWriter.write_stats(table_coll)
 HtmlWriter.write_results(table_coll)
+
+print_delta_time("Written to HTML")
 
 time_taken = time.time() - start_time
 print(f"Success in {round(time_taken, 2)} seconds!")
