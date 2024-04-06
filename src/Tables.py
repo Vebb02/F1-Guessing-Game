@@ -226,14 +226,11 @@ class TableCollection:
             row = [races[i]]
             for guesser in list_of_guessers:
                 scored = 0
-                if not i in guesser.tenth_place:
-                    guessed = self.EMPTY
-                    actual_place = self.EMPTY
-                else:
+                start_place = self.EMPTY
+                guessed = self.EMPTY
+                actual_place = self.EMPTY
+                if i in guesser.tenth_place:
                     guessed = short_to_long_name[guesser.tenth_place[i]]
-                    start_place = self.EMPTY
-                    evaluated = self.EMPTY
-                    actual_place = self.EMPTY
                     if i in guesser.tenth_place_evaluated:
                         evaluated = guesser.tenth_place_evaluated[i]
                         start_place = evaluated["start pos"]
