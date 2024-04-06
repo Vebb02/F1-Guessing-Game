@@ -75,9 +75,8 @@ def get_table_helper(title: str, rows: list):
 
 def should_be_hidden(i: int, race_result_not_out: bool):
     remainder = (i - 1) % 4
-    if race_result_not_out:
-        return remainder == 0 or remainder == 1
-    return remainder != 0
+    is_hidden = remainder == 0 or remainder == 1
+    return is_hidden if race_result_not_out else not is_hidden
 
 
 def get_tenth_table(table: Table, enough_time_passed: bool):
