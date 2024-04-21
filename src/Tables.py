@@ -56,6 +56,7 @@ class TableCollection:
             guesser_key: str = category[2]
             antall = stats.antall[stats_key]
             antatt_total = antall / stats.races_done * Stats.get_total_number_of_races()
+            antatt_total = round(antatt_total, 1)
             header = f"Antall {category[0]}<br>\nFaktisk antall: {antall}. Antatt total: {antatt_total}"
             rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
             unsorted_list = [
