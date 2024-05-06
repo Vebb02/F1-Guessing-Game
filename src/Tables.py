@@ -70,10 +70,10 @@ class TableCollection:
             sorted_list = sorted(unsorted_list, key=lambda x: x[2])
             for i in range(len(sorted_list)):
                 name, number, diff = sorted_list[i]
-                points = Stats.antall_rank_to_points(i, diff)
                 rank = i + 1
                 if i > 0 and diff == rows[i][3]:
                     rank = rows[i][0]
+                points = Stats.antall_rank_to_points(rank - 1, diff)
                 rows.append((rank, name, number, diff, points))
                 for guesser in list_of_guessers:
                     if guesser == name:
