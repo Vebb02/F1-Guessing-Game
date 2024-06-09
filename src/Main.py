@@ -100,6 +100,7 @@ def get_list_of_starting_grid(table) -> list[list[str]]:
             break
         if len(starting_grid[0]) != 5:
             break
+        print(f"Loaded starting grid for race number {i + 1}", end="\r")
         list_of_starting_grid.append(starting_grid)
     return list_of_starting_grid
 
@@ -124,6 +125,7 @@ def get_race_results(table):
             break
         if not (race[0][6] == "PTS" and int(race[1][6]) >= 25):
             break
+        print(f"Loaded race results for race number {i + 1}", end="\r")
         race_results.insert(0, race)
     return race_results
 
