@@ -1,3 +1,4 @@
+import os
 from google.oauth2 import service_account
 import gspread
 import json
@@ -11,11 +12,15 @@ import datetime
 start_time = time.time()
 delta_time = time.time()
 
-JSON_PATH = "./F1-Guessing-Game/json/"
-SRC_PATH = "./F1-Guessing-Game/src/"
-STARTING_GRID_PATH = SRC_PATH + "starting_grid_cache.txt"
-RACE_RESULTS_PATH = SRC_PATH + "race_results_cache.txt"
-GUESSES_PATH = SRC_PATH + "guesses_cache.txt"
+MAIN_PATH = "./F1-Guessing-Game/"
+JSON_PATH = MAIN_PATH + "json/"
+CACHE_PATH = MAIN_PATH + "cache/"
+STARTING_GRID_PATH = CACHE_PATH + "starting_grid_cache.txt"
+RACE_RESULTS_PATH = CACHE_PATH + "race_results_cache.txt"
+GUESSES_PATH = CACHE_PATH + "guesses_cache.txt"
+
+if not os.path.exists(CACHE_PATH):
+    os.makedirs(CACHE_PATH)
 
 days_before_showing_results = 1
 
