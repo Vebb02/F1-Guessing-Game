@@ -1,4 +1,3 @@
-import os
 from google.oauth2 import service_account
 import gspread
 import json
