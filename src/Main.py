@@ -1,3 +1,4 @@
+import os
 from google.oauth2 import service_account
 import gspread
 import json
@@ -12,6 +13,10 @@ start_time = time.time()
 delta_time = time.time()
 
 JSON_PATH = "./F1-Guessing-Game/json/"
+SRC_PATH = "./F1-Guessing-Game/src/"
+STARTING_GRID_PATH = SRC_PATH + "starting_grid_cache.txt"
+RACE_RESULTS_PATH = SRC_PATH + "race_results_cache.txt"
+
 days_before_showing_results = 1
 
 
@@ -91,17 +96,44 @@ def add_tenth_place_guesses(sheet):
 	return race_number_to_name
 
 
-def get_list_of_starting_grid(table) -> list[list[str]]:
-	list_of_starting_grid = []
-	for i in range(24):
+def cache(grid: list[list[list[str]]], path: str):
+	with open(path, "a") as f:
+		for row in grid:
+			f.write(",".join(row) + "\n")
+		f.write("\n")
+
+
+def get_from_cache(path: str) -> list[list[list[str]]]:
+	try:
+		with open(path, "r") as f:
+			starting_grid = []
+			lines = f.readlines()
+			race = []
+			for line in lines:
+				if line == "\n":
+					if len(race) != 0:
+						starting_grid.append(race)
+						race = []
+				else:
+					line = line[:-1]
+					race.append(line.split(","))
+	except FileNotFoundError:
+		return []
+	return starting_grid
+
+def get_list_of_starting_grid(table) -> list[list[list[str]]]:
+	list_of_starting_grid = get_from_cache(STARTING_GRID_PATH)
+	for i in range(len(list_of_starting_grid), Stats.get_total_number_of_races()):
 		table.update_cell(1, 1, get_start_grid_string(i))
 		starting_grid = table.get_values(range_name="B1:F21")
 		if len(starting_grid) == 1:
+
 			break
 		if len(starting_grid[0]) != 5:
 			break
 		print(f"Loaded starting grid for race number {i + 1}", end="\r")
 		list_of_starting_grid.append(starting_grid)
+		cache(starting_grid, STARTING_GRID_PATH)
 	return list_of_starting_grid
 
 
@@ -115,8 +147,8 @@ def add_starting_grid(
 
 
 def get_race_results(table):
-	race_results = []
-	for i in range(Stats.get_total_number_of_races()):
+	race_results = get_from_cache(RACE_RESULTS_PATH)[::-1]
+	for i in range(len(race_results), Stats.get_total_number_of_races()):
 		table.update_cell(1, 1, get_race_string(i))
 		race = table.get_values(range_name="B1:H21")
 		if len(race) == 1:
@@ -127,6 +159,7 @@ def get_race_results(table):
 			break
 		print(f"Loaded race results for race number {i + 1}", end="\r")
 		race_results.insert(0, race)
+		cache(race, RACE_RESULTS_PATH)
 	return race_results
 
 
@@ -186,7 +219,7 @@ def add_div_categories(stats: Stats, list_of_guessers: list[Guesser]):
 		guesser.add_div_stats(stats)
 
 
-def get_stats(sheet, race_results: list[list[str]]) -> Stats:
+def get_stats(sheet, race_results: list[list[list[str]]]) -> Stats:
 	race_stats = get_table_rows(sheet, 2)
 	stats = Stats(race_stats, len(race_results))
 	return stats
@@ -207,11 +240,17 @@ def enough_time_passed_since_race(calendar: list[list[str]]):
 	return delta > enough_time
 
 
-def print_delta_time(message: str):
+def get_delta_time() -> float:
 	global delta_time
 	time_taken = time.time() - delta_time
+	return time_taken
+
+
+
+def print_delta_time(message: str):
+	print(f"{message} finished in {round(get_delta_time(), 5)} seconds")
+	global delta_time
 	delta_time = time.time()
-	print(f"{message} finished in {round(time_taken, 5)} seconds")
 
 
 proxy_id, guesses_id = get_id_from_json()
