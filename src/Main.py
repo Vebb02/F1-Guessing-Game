@@ -16,6 +16,7 @@ JSON_PATH = "./F1-Guessing-Game/json/"
 SRC_PATH = "./F1-Guessing-Game/src/"
 STARTING_GRID_PATH = SRC_PATH + "starting_grid_cache.txt"
 RACE_RESULTS_PATH = SRC_PATH + "race_results_cache.txt"
+GUESSES_PATH = SRC_PATH + "guesses_cache.txt"
 
 days_before_showing_results = 1
 
@@ -74,7 +75,12 @@ def get_table_rows(sheet, table_index: int) -> list[list[str]]:
 
 
 def get_guessers(sheet) -> dict[str, Guesser]:
-	rows = get_table_rows(sheet, 0)
+	rows = get_from_cache(GUESSES_PATH)
+	if len(rows) == 0:
+		rows = get_table_rows(sheet, 0)
+		cache(rows, GUESSES_PATH)
+	else:
+		rows = rows[0]
 	email_to_guesser: dict[str, Guesser] = dict()
 	for row in rows[1:]:
 		guesser = Guesser(row, rows[0])
@@ -96,30 +102,30 @@ def add_tenth_place_guesses(sheet):
 	return race_number_to_name
 
 
-def cache(grid: list[list[list[str]]], path: str):
-	with open(path, "a") as f:
-		for row in grid:
+def cache(data: list[list[list[str]]], path: str):
+	with open(path, "a", encoding="UTF-8") as f:
+		for row in data:
 			f.write(",".join(row) + "\n")
 		f.write("\n")
 
 
 def get_from_cache(path: str) -> list[list[list[str]]]:
 	try:
-		with open(path, "r") as f:
-			starting_grid = []
-			lines = f.readlines()
-			race = []
-			for line in lines:
-				if line == "\n":
-					if len(race) != 0:
-						starting_grid.append(race)
-						race = []
+		with open(path, "r", encoding="UTF-8") as f:
+			data = []
+			rows = f.readlines()
+			entry = []
+			for row in rows:
+				if row == "\n":
+					if len(entry) != 0:
+						data.append(entry)
+						entry = []
 				else:
-					line = line[:-1]
-					race.append(line.split(","))
+					row = row[:-1]
+					entry.append(row.split(","))
 	except FileNotFoundError:
 		return []
-	return starting_grid
+	return data
 
 def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 	list_of_starting_grid = get_from_cache(STARTING_GRID_PATH)
