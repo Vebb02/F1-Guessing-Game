@@ -1,33 +1,43 @@
 class Stats:
-	def __init__(self, stats: list, races_done: int):
+	def __init__(self, stats: list[list[str]], races_done: int):
 		self.antall = {c[1]: 0 for c in Stats.get_categories_in_antall()}
 		self.topx = {c[1]: {} for c in Stats.get_categories_in_div()}
 		self.races_done = races_done
+		self.parse_stats(stats)
+
+	def parse_stats(self, stats: list[list[str]]):
 		for row in stats:
-			if row[1] == "":
+			if is_row_without_stats(row):
 				continue
 			key = row[0]
 			if key in self.antall.keys():
-				for f in row[1:]:
-					if f == "":
-						break
-					self.antall[key] += 1
+				self.add_row_to_antall(row, key)
 			elif key in self.topx:
-				category = self.topx[key]
-				for driver in row[1:]:
-					driver = driver.upper()
-					if driver == "":
-						break
-					if driver in category.keys():
-						category[driver] += 1
-					else:
-						category[driver] = 1
+				self.add_row_to_topx(row, key)
 			else:
 				raise Exception(f"Could not parse row: {row}")
+
+	def add_row_to_topx(self, row: list[str], key: str):
+		category = self.topx[key]
+		for driver in row[1:]:
+			driver = driver.upper()
+			if is_cell_empty(driver):
+				break
+			if driver in category.keys():
+				category[driver] += 1
+			else:
+				category[driver] = 1
+
+	def add_row_to_antall(self, row: list, key: str):
+		for antall_event in row[1:]:
+			if is_cell_empty(antall_event):
+				break
+			self.antall[key] += 1
 
 	def __get_dict(self, name: str):
 		return self.topx[name]
 
+	# TODO: Clean this mess
 	def get_ranked(self, name: str) -> list:
 		dict = self.__get_dict(name)
 		list = []
@@ -67,47 +77,41 @@ class Stats:
 
 	def diff_to_points(diff: int, topx: int):
 		if topx == 5:
-			match diff:
-				case 0:
-					return 10
-				case 1:
-					return 4
-				case 2:
-					return 2
-				case _:
-					return 0
+			points_list = get_top_5_points()
 		elif topx == 3:
-			match diff:
-				case 0:
-					return 15
-				case 1:
-					return 7
-				case 2:
-					return 2
-				case 3:
-					return 1
-				case _:
-					return 0
+			points_list = get_top_3_points()
 		else:
 			raise Exception(f"{topx} is not a valid category")
+		if diff < len(points_list):
+			return points_list[diff]
+		return 0
 
 	def antall_rank_to_points(rank: int, diff: int) -> int:
-		match rank:
-			case 0:
-				points = 25
-			case 1:
-				points = 12
-			case 2:
-				points = 5
-			case _:
-				points = 0
+		points_list = get_antall_points()
+		if rank < len(points_list):
+			points = points_list[rank]
 		if diff == 0:
 			points += 20
 		return points
 
+
+def is_row_without_stats(row: list) -> bool:
+	return row[1] == ""
+
+def is_cell_empty(cell: str) -> bool:
+	return cell == ""
 
 def get_ranked_dict_from_list(l: list):
 	d = {}
 	for x, y, _ in l:
 		d[y] = x
 	return d
+
+def get_top_5_points() -> list[int]:
+	return [10, 4, 2]
+
+def get_top_3_points() -> list[int]:
+	return [15, 7, 2, 1]
+
+def get_antall_points() -> list[int]:
+	return [25, 12, 5, 0]

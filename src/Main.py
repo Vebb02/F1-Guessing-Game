@@ -137,7 +137,6 @@ def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 		table.update_cell(1, 1, get_start_grid_string(i))
 		starting_grid = table.get_values(range_name="B1:F21")
 		if len(starting_grid) == 1:
-
 			break
 		if len(starting_grid[0]) != 5:
 			break
@@ -211,7 +210,7 @@ def get_short_to_long_name(driver_standings):
 
 
 def get_constructor_standings(table):
-	constructor_standings_link = '=importhtml("https://www.formula1.com/en/results.html/2024/team.html"; "table"; 1; "en_US")'
+	constructor_standings_link = f'=importhtml("https://www.formula1.com/en/results.html/{get_year()}/team.html"; "table"; 1; "en_US")'
 	table.update_cell(1, 1, constructor_standings_link)
 	constructor_standings = table.get_values(range_name="B1:D11")
 	return constructor_standings
