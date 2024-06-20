@@ -1,7 +1,7 @@
 import copy
 from Stats import Stats
 from Guesser import Guesser
-
+from Utils import *
 
 class Table:
 	def __init__(self, header: str, table_body: list[list[str]]):
@@ -55,7 +55,7 @@ class TableCollection:
 			stats_key: str = category[1]
 			guesser_key: str = category[2]
 			antall = stats.antall[stats_key]
-			antatt_total = antall / stats.races_done * Stats.get_total_number_of_races()
+			antatt_total = antall / stats.races_done * get_total_number_of_races()
 			antatt_total = round(antatt_total, 1)
 			header = f"Antall {category[0]}<br>\nFaktisk antall: {antall}. Antatt total: {antatt_total}"
 			rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]

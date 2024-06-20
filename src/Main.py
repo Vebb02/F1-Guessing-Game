@@ -8,6 +8,7 @@ import HtmlWriter
 import time
 from Tables import TableCollection
 import datetime
+from Utils import *
 
 start_time = time.time()
 delta_time = time.time()
@@ -23,15 +24,6 @@ if not os.path.exists(CACHE_PATH):
     os.makedirs(CACHE_PATH)
 
 days_before_showing_results = 1
-
-
-def first_race():
-	return 1229
-
-
-def get_year():
-	return 2024
-
 
 def get_race_string(race_number: int):
 	first_race_season = first_race()
@@ -133,7 +125,7 @@ def get_from_cache(path: str) -> list[list[list[str]]]:
 
 def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 	list_of_starting_grid = get_from_cache(STARTING_GRID_PATH)
-	for i in range(len(list_of_starting_grid), Stats.get_total_number_of_races()):
+	for i in range(len(list_of_starting_grid), get_total_number_of_races()):
 		table.update_cell(1, 1, get_start_grid_string(i))
 		starting_grid = table.get_values(range_name="B1:F21")
 		if len(starting_grid) == 1:
@@ -157,7 +149,7 @@ def add_starting_grid(
 
 def get_race_results(table):
 	race_results = get_from_cache(RACE_RESULTS_PATH)[::-1]
-	for i in range(len(race_results), Stats.get_total_number_of_races()):
+	for i in range(len(race_results), get_total_number_of_races()):
 		table.update_cell(1, 1, get_race_string(i))
 		race = table.get_values(range_name="B1:H21")
 		if len(race) == 1:

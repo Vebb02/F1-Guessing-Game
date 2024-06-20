@@ -1,9 +1,10 @@
 from Tables import TableCollection, Table
+from Utils import *
 
 HTML_PATH = "./pages/"
 
 # HTML skeleton
-html_head = """<!DOCTYPE html>
+html_head = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
@@ -13,7 +14,7 @@ html_head = """<!DOCTYPE html>
 </head>
 <body>
 	<header>
-		<h1>F1 tipping 2024</h1>
+		<h1>F1 tipping {get_year()}</h1>
 		<a href="./">Hjem</a>
 		<a href="poengberegning">Poengberegning</a>
 		<a href="statistikk">Statistikk</a>

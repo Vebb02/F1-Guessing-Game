@@ -1,3 +1,6 @@
+from Points import *
+from Utils import *
+
 class Stats:
 	def __init__(self, stats: list[list[str]], races_done: int):
 		self.antall = {c[1]: 0 for c in Stats.get_categories_in_antall()}
@@ -72,9 +75,6 @@ class Stats:
 			("sikkerhetsbiler (inkl. VSC)", "sc", "sikkerhets"),
 		]
 
-	def get_total_number_of_races():
-		return 24
-
 	def diff_to_points(diff: int, topx: int):
 		if topx == 5:
 			points_list = get_top_5_points()
@@ -98,20 +98,13 @@ class Stats:
 def is_row_without_stats(row: list) -> bool:
 	return row[1] == ""
 
+
 def is_cell_empty(cell: str) -> bool:
 	return cell == ""
+
 
 def get_ranked_dict_from_list(l: list):
 	d = {}
 	for x, y, _ in l:
 		d[y] = x
 	return d
-
-def get_top_5_points() -> list[int]:
-	return [10, 4, 2]
-
-def get_top_3_points() -> list[int]:
-	return [15, 7, 2, 1]
-
-def get_antall_points() -> list[int]:
-	return [25, 12, 5, 0]
