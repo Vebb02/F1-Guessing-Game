@@ -1,5 +1,3 @@
-from Stats import Stats
-from Guesser import Guesser
 from Tables import TableCollection, Table
 
 HTML_PATH = "./pages/"
