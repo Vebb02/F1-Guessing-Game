@@ -295,14 +295,14 @@ calendar = get_race_calendar(proxy_sheet)
 print_delta_time("Loaded race calendar")
 
 table_coll: TableCollection = TableCollection(
-	list_of_guessers,
-	stats,
-	get_short_to_long_name(driver_standings),
-	driver_standings,
-	constructor_standings,
-	race_number_to_name,
-	race_results,
-	enough_time_passed_since_race(calendar),
+	list_of_guessers = list_of_guessers,
+	stats = stats,
+	short_to_long_name = get_short_to_long_name(driver_standings),
+	driver_standings = driver_standings,
+	constructor_standings = constructor_standings,
+	race_number_to_name = race_number_to_name,
+	race_results = race_results,
+	enough_time_passed = enough_time_passed_since_race(calendar),
 )
 print_delta_time("Created Table Collection")
 
