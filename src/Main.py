@@ -127,10 +127,11 @@ def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 	list_of_starting_grid = get_from_cache(STARTING_GRID_PATH)
 	for i in range(len(list_of_starting_grid), get_total_number_of_races()):
 		table.update_cell(1, 1, get_start_grid_string(i))
-		starting_grid = table.get_values(range_name="B1:F21")
+		starting_grid = table.get_values(range_name="B1:Z30")
 		if len(starting_grid) == 1:
 			break
-		if len(starting_grid[0]) != 5:
+		number_of_cols = len(starting_grid[0])
+		if number_of_cols != 5 and number_of_cols != 8:
 			break
 		print(f"Loaded starting grid for race number {i + 1}", end="\r")
 		list_of_starting_grid.append(starting_grid)
