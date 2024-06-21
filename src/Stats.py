@@ -59,7 +59,7 @@ class Stats:
 	def get_ranked_dict(self, name: str):
 		return get_ranked_dict_from_list(self.get_ranked(name))
 
-	def get_categories_in_div():
+	def get_categories_in_div() -> list[list[str]]:
 		return [
 			("Seiere", "win"),
 			("Poles", "pole"),
