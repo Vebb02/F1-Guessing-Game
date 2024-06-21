@@ -194,7 +194,7 @@ class TableCollection:
 		rows = [["Plassering", "Konstruktør"] + self.names_header]
 		for row in constructor_standings[1:]:
 			constructor = row[1]
-			constructor = Guesser.translate_constructor(constructor)
+			constructor = translate_constructor(constructor)
 			cells = [row[0], constructor]
 			for guesser in list_of_guessers:
 				guessed = guesser.constructor[constructor]

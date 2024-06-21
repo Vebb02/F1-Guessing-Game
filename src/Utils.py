@@ -24,5 +24,6 @@ def translate_constructor(constructor: str):
 			"Alpine Renault": "Alpine",
 		}[constructor]
 
+
 def empty() -> str:
        return "N/A"

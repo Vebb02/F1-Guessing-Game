@@ -1,34 +1,43 @@
 from Stats import Stats
 from Utils import *
+from Points import *
+
 
 class Guesser:
 	def __init__(self, guesses: list[str], header: list[str]):
+		self.init_fields()
 		self.__alias = guesses[1][0]
+		self.add_guesses(guesses, header)
+
+	def init_fields(self):
 		self.antall = {}
 		self.driver = {}
 		self.constructor = {}
-		self.__topx = {c[1]: {} for c in Stats.get_categories_in_div()}
 		self.tenth_place = {}
 		self.tenth_place_evaluated = {}
 		self.__div_score = 0
 		self.__antall_score = 0
-
+		self.__topx = {c[1]: {} for c in Stats.get_categories_in_div()}
+		
+	# TODO: Clean this
+	def add_guesses(self, guesses: list[str], header: list[str]):
 		guesses = guesses[2:]
 		header = header[2:]
+		
 		for i in range(len(guesses)):
 			key = header[i]
+			value = guesses[i]
 			split_key = key.split()
-			val = guesses[i]
 			if key == "E-postadresse":
-				self.email = val
+				self.email = value
 			elif key[:6] == "Antall":
-				self.antall[key.split()[1]] = int(val)
+				self.antall[split_key[1]] = int(value)
 			else:
 				place = int(split_key[2][1 : len(split_key[2]) - 1])
-				driver = val[-3:]
+				driver = value[-3:]
 				if split_key[0] == "Ranger":
 					if split_key[1] == "lagene":
-						self.constructor[val] = place
+						self.constructor[value] = place
 					else:
 						self.driver[driver] = place
 				else:
@@ -80,23 +89,8 @@ class Guesser:
 				}
 
 	def get_10th_place_diff(diff: int):
-		list_of_points = [
-			25 / 4,
-			18 / 4,
-			15 / 4,
-			12 / 4,
-			10 / 4,
-			8 / 4,
-			6 / 4,
-			4 / 4,
-			2 / 4,
-			1 / 4,
-		]
-		if diff >= len(list_of_points):
-			return 0
-		else:
-			return list_of_points[diff]
-
+		return get_diff_to_points(diff, get_10th_points())
+	
 	def get_10th_place_score(self):
 		score = 0
 		for key in self.tenth_place_evaluated.keys():
@@ -113,17 +107,7 @@ class Guesser:
 			guessed_place = self.driver[driver]
 			actual_place = int(row[0])
 			diff = abs(guessed_place - actual_place)
-			match diff:
-				case 0:
-					gained = 10
-				case 1:
-					gained = 5
-				case 2:
-					gained = 2
-				case 3:
-					gained = 1
-				case _:
-					gained = 0
+			gained = get_diff_to_points(diff, get_drivers_points())
 			self.driver_evaluated[driver] = gained
 
 	def get_driver_score(self):
@@ -135,17 +119,11 @@ class Guesser:
 	def evaluate_constructor_standings(self, standings: list[list[str]]):
 		self.constructor_evaluated = dict()
 		for row in standings:
-			constructor = Guesser.translate_constructor(row[1])
+			constructor = translate_constructor(row[1])
 			guessed_place = self.constructor[constructor]
 			actual_place = int(row[0])
 			diff = abs(guessed_place - actual_place)
-			match diff:
-				case 0:
-					gained = 10
-				case 1:
-					gained = 2
-				case _:
-					gained = 0
+			gained = get_diff_to_points(diff, get_constructor_points())
 			self.constructor_evaluated[constructor] = gained
 
 	def get_constructor_score(self):

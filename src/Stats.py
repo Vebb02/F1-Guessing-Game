@@ -87,9 +87,7 @@ class Stats:
 		return 0
 
 	def antall_rank_to_points(rank: int, diff: int) -> int:
-		points_list = get_antall_points()
-		if rank < len(points_list):
-			points = points_list[rank]
+		points = get_diff_to_points(rank, get_antall_points())
 		if diff == 0:
 			points += 20
 		return points
