@@ -1,5 +1,5 @@
 from Stats import Stats
-
+from Utils import *
 
 class Guesser:
 	def __init__(self, guesses: list[str], header: list[str]):
@@ -47,7 +47,7 @@ class Guesser:
 		self.tenth_place[race_number] = guess[-3:]
 
 	def add_10th_place_start(self, race_number: int, starting_grid: list[list[str]]):
-		start_pos = "N/A"
+		start_pos = empty()
 		if not race_number in self.tenth_place:
 			return
 		guessed_driver = self.tenth_place[race_number]
@@ -147,20 +147,6 @@ class Guesser:
 				case _:
 					gained = 0
 			self.constructor_evaluated[constructor] = gained
-
-	def translate_constructor(constructor: str):
-		return {
-			"Red Bull Racing Honda RBPT": "Red Bull",
-			"Ferrari": "Ferrari",
-			"McLaren Mercedes": "McLaren",
-			"Mercedes": "Mercedes",
-			"Aston Martin Aramco Mercedes": "Aston Martin",
-			"Haas Ferrari": "Haas",
-			"Williams Mercedes": "Williams",
-			"Kick Sauber Ferrari": "Stake",
-			"RB Honda RBPT": "RB",
-			"Alpine Renault": "Alpine",
-		}[constructor]
 
 	def get_constructor_score(self):
 		score = 0

@@ -25,8 +25,6 @@ html_head = f"""<!DOCTYPE html>
 """
 html_tail = "</body>\n</html>\n"
 
-empty = "N/A"
-
 
 def get_table_title(title: str):
 	header_type = "h3"
@@ -107,7 +105,7 @@ def	get_tenth_table_with_hidden(table: Table, all_na: bool) -> str:
 def is_row_all_not_available(row: list[str]):
 	all_na = True
 	for i in range(3, len(row), 4):
-		all_na = all_na and row[i] == empty
+		all_na = all_na and row[i] == empty()
 
 
 def get_tenth_table(table: Table, enough_time_passed: bool):

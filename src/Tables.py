@@ -15,8 +15,6 @@ class Table:
 		return copy.deepcopy(self.__table_body)
 
 class TableCollection:
-	EMPTY = "N/A"
-
 	def __init__(
 		self,
 		list_of_guessers: list[Guesser],
@@ -114,7 +112,7 @@ class TableCollection:
 						diff = abs(i + 1 - place)
 						row.append(Stats.diff_to_points(diff, topx))
 					else:
-						row.append(self.EMPTY)
+						row.append(empty())
 						row.append(0)
 				rows.append(row)
 			tables.append(Table(header, rows))
@@ -180,7 +178,7 @@ class TableCollection:
 				guessed = guesser.driver
 				scored = guesser.driver_evaluated
 				if not driver in guessed:
-					cells += [self.EMPTY, self.EMPTY]
+					cells += [empty(), empty()]
 				else:
 					cells += [guessed[driver], scored[driver]]
 			rows.append(cells)
@@ -227,9 +225,9 @@ class TableCollection:
 			row = [races[i]]
 			for guesser in list_of_guessers:
 				scored = 0
-				start_place = self.EMPTY
-				guessed = self.EMPTY
-				actual_place = self.EMPTY
+				start_place = empty()
+				guessed = empty()
+				actual_place = empty()
 				if i in guesser.tenth_place:
 					guessed = short_to_long_name[guesser.tenth_place[i]]
 					if i in guesser.tenth_place_evaluated:
