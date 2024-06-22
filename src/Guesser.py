@@ -78,15 +78,12 @@ class Guesser:
 		self.tenth_place[race_number] = guess[-3:]
 
 	def add_10th_place_start(self, race_number: int, starting_grid: list[list[str]]):
-		start_pos = empty()
-		if not race_number in self.tenth_place:
-			return
-		guessed_driver = self.tenth_place[race_number]
-		for row in starting_grid:
-			driver = row[2][-3:]
-			if guessed_driver == driver:
-				start_pos = row[0]
-		self.tenth_place_evaluated[race_number] = {"start pos": start_pos}
+		try:
+			guessed_driver = self.tenth_place[race_number]
+			start_pos = get_driver_position(starting_grid, guessed_driver)
+			self.tenth_place_evaluated[race_number] = {"start pos": start_pos}
+		except KeyError:
+			...
 
 	def add_10th_place_result(
 		self,
@@ -184,3 +181,9 @@ categories = {
 	category.lower() : category_notation 
 	for category, category_notation in Stats.get_categories_in_div()
 }
+
+def get_driver_position(grid: list[list[str]], guessed_driver):
+	for row in grid:
+		driver = row[2][-3:]
+		if guessed_driver == driver:
+			return row[0]
