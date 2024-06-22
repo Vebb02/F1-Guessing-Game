@@ -19,46 +19,57 @@ class Guesser:
 		self.__antall_score = 0
 		self.__topx = {c[1]: {} for c in Stats.get_categories_in_div()}
 	
-	# TODO: Del opp i flere metoder
 	def add_guesses(self, guesses: list[str], header: list[str]):
-		guesses = guesses[2:]
-		header = header[2:]
-		categories = {
-			category.lower() : category_notation 
-			for category, category_notation in Stats.get_categories_in_div()
-		}
+		self.add_email(guesses)
+		guesses = guesses[2:-1]
+		header = header[2:-1]
 
 		for i in range(len(guesses)):
-			key = header[i]
+			split_key = header[i].split()
 			value = guesses[i]
-			split_key = key.split()
+			
+			if self.add_antall_guess(split_key, value):
+				continue
 
-			if key == "E-postadresse":
-				self.email = value
+			if self.add_rank_guess(split_key, value):
 				continue
 			
-			if key[:6] == "Antall":
-				self.antall[split_key[1]] = int(value)
-				continue
-
-			place = int(split_key[2][1 : len(split_key[2]) - 1])
-			driver = value[-3:]
-			
-			if split_key[0] == "Ranger":
-				if split_key[1] == "lagene":
-					self.constructor[value] = place
-				else:
-					self.driver[driver] = place
+			if self.add_topx_guess(split_key, value):
 				continue
 			
-			category = split_key[1].lower()
-
-			if category in categories:
-				category_notation = categories[category]
-				self.__topx[category_notation][place] = driver
-				continue
-
 			raise Exception("Could not parse key")
+
+	def add_antall_guess(self, split_key: list[str], value: str):
+		if split_key[0] == "Antall":
+			self.antall[split_key[1]] = int(value)
+			return True
+		return False
+		
+	def add_rank_guess(self, split_key: list[str], value: str):
+		place = int(split_key[2][1 : len(split_key[2]) - 1])
+		driver = value[-3:]
+		if split_key[0] == "Ranger":
+			if split_key[1] == "lagene":
+				self.constructor[value] = place
+			else:
+				self.driver[driver] = place
+			return True
+		return False
+		
+	def add_topx_guess(self, split_key: list[str], value):
+		place = int(split_key[2][1 : len(split_key[2]) - 1])
+		driver = value[-3:]
+		try:
+			category = split_key[1].lower()
+			category_notation = categories[category]
+			self.__topx[category_notation][place] = driver
+			return True
+		except KeyError:
+			return False
+
+
+	def add_email(self, guesses: list[str]):
+		self.email = guesses[:-1]
 
 	def __str__(self):
 		return self.__alias
@@ -167,3 +178,9 @@ class Guesser:
 
 	def get_antall_score(self):
 		return self.__antall_score
+
+
+categories = {
+	category.lower() : category_notation 
+	for category, category_notation in Stats.get_categories_in_div()
+}
