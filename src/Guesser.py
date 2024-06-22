@@ -27,17 +27,20 @@ class Guesser:
 		for i in range(len(guesses)):
 			split_key = header[i].split()
 			value = guesses[i]
-			
-			if self.add_antall_guess(split_key, value):
-				continue
+			self.add_guess(split_key, value)
 
-			if self.add_rank_guess(split_key, value):
-				continue
-			
-			if self.add_topx_guess(split_key, value):
-				continue
-			
-			raise Exception("Could not parse key")
+	def add_guess(self, split_key: list[str], value:str):
+		if self.add_antall_guess(split_key, value):
+			return
+
+		if self.add_rank_guess(split_key, value):
+			return
+		
+		if self.add_topx_guess(split_key, value):
+			return
+		
+		raise Exception("Could not parse key")
+
 
 	def add_antall_guess(self, split_key: list[str], value: str):
 		if split_key[0] == "Antall":
