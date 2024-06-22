@@ -90,23 +90,23 @@ class Guesser:
 		race_number: int,
 		race_result: list[list[str]],
 	):
-		if not race_number in self.tenth_place:
+		try:
+			guessed_driver = self.tenth_place[race_number]
+		except KeyError:
 			return
-		guessed_driver = self.tenth_place[race_number]
-		for row in race_result:
-			driver = row[2][-3:]
-			if guessed_driver == driver:
-				if row[0] == "NC":
-					points = 0
-				else:
-					diff = abs(10 - int(row[0]))
-					points = Guesser.get_10th_place_diff(diff)
-				self.tenth_place_evaluated[race_number] = {
-					"placed": row[0],
-					"points": points,
-					"start pos": self.tenth_place_evaluated[race_number]["start pos"],
-				}
-
+		placed = get_driver_position(race_result, guessed_driver)
+		points = get_points_from_result(placed)
+		try:
+			start_pos = self.tenth_place_evaluated[race_number]["start pos"]
+		except KeyError:
+			raise Exception("Start position not added")
+		
+		self.tenth_place_evaluated[race_number] = {
+			"placed": placed,
+			"points": points,
+			"start pos": start_pos,
+		}
+	
 	def get_10th_place_diff(diff: int):
 		return get_diff_to_points(diff, get_10th_points())
 	
@@ -187,3 +187,10 @@ def get_driver_position(grid: list[list[str]], guessed_driver):
 		driver = row[2][-3:]
 		if guessed_driver == driver:
 			return row[0]
+		
+def get_points_from_result(place: str) -> int:
+	if place == "NC":
+		return 0
+	else:
+		diff = abs(10 - int(place))
+		return Guesser.get_10th_place_diff(diff)
