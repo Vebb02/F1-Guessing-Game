@@ -88,11 +88,7 @@ class Guesser:
 		except KeyError:
 			...
 
-	def add_10th_place_result(
-		self,
-		race_number: int,
-		race_result: list[list[str]],
-	):
+	def add_10th_place_result(self, race_number: int, race_result: list[list[str]]):
 		try:
 			guessed_driver = self.tenth_place[race_number]
 		except KeyError:
