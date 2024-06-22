@@ -113,8 +113,10 @@ class Guesser:
 	def get_10th_place_score(self):
 		score = 0
 		for key in self.tenth_place_evaluated.keys():
-			if "points" in self.tenth_place_evaluated[key]:
+			try:
 				score += self.tenth_place_evaluated[key]["points"]
+			except KeyError:
+				continue
 		return score
 
 	def evaluate_driver_standings(self, standings: list[list[str]]):
