@@ -131,7 +131,7 @@ def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 		if len(starting_grid) == 1:
 			break
 		number_of_cols = len(starting_grid[0])
-		if number_of_cols != 5 and number_of_cols != 8:
+		if number_of_cols != 5:
 			break
 		print(f"Loaded starting grid for race number {i + 1}", end="\r")
 		list_of_starting_grid.append(starting_grid)
