@@ -19,8 +19,8 @@ def translate_constructor(constructor: str) -> str:
 		"Aston Martin Aramco Mercedes": "Aston Martin",
 		"Haas Ferrari": "Haas",
 		"Williams Mercedes": "Williams",
-		"Kick Sauber Ferrari": "Stake",
-		"RB Honda RBPT": "RB",
+		"Kick Sauber Ferrari": "Sauber",
+		"RB Honda RBPT": "VCARB",
 		"Alpine Renault": "Alpine",
 	}[constructor]
 
