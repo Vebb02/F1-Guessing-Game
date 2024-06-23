@@ -1,4 +1,3 @@
-import os
 from google.oauth2 import service_account
 import gspread
 import json
@@ -9,21 +8,17 @@ import time
 from Tables import TableCollection
 import datetime
 from Utils import *
+import Cache
 
 start_time = time.time()
 delta_time = time.time()
 
-MAIN_PATH = "./F1-Guessing-Game/"
-JSON_PATH = MAIN_PATH + "json/"
-CACHE_PATH = MAIN_PATH + "cache/"
-STARTING_GRID_PATH = CACHE_PATH + "starting_grid_cache.txt"
-RACE_RESULTS_PATH = CACHE_PATH + "race_results_cache.txt"
-GUESSES_PATH = CACHE_PATH + "guesses_cache.txt"
+JSON_PATH = get_main_path() + "json/"
+STARTING_GRID_FILE = "starting_grid"
+RACE_RESULTS_FILE = "race_results"
+GUESSES_FILE = "guesses"
 
-if not os.path.exists(CACHE_PATH):
-    os.makedirs(CACHE_PATH)
-
-days_before_showing_results = 1
+DAYS_BEFORE_SHOWING_RESULTS = 1
 
 def get_race_string(race_number: int):
 	first_race_season = first_race()
@@ -71,10 +66,10 @@ def get_table_rows(sheet, table_index: int) -> list[list[str]]:
 
 
 def get_guessers(sheet) -> dict[str, Guesser]:
-	rows = get_from_cache(GUESSES_PATH)
+	rows = Cache.get_from_cache(GUESSES_FILE)
 	if len(rows) == 0:
 		rows = get_table_rows(sheet, 0)
-		cache(rows, GUESSES_PATH)
+		Cache.cache(rows, GUESSES_FILE)
 	else:
 		rows = rows[0]
 	email_to_guesser: dict[str, Guesser] = dict()
@@ -97,34 +92,8 @@ def add_tenth_place_guesses(sheet):
 		email_to_guesser[email].add_10th_place_guess(race_number, guessed)
 	return race_number_to_name
 
-
-def cache(data: list[list[list[str]]], path: str):
-	with open(path, "a", encoding="UTF-8") as f:
-		for row in data:
-			f.write(",".join(row) + "\n")
-		f.write("\n")
-
-
-def get_from_cache(path: str) -> list[list[list[str]]]:
-	try:
-		with open(path, "r", encoding="UTF-8") as f:
-			data = []
-			rows = f.readlines()
-			entry = []
-			for row in rows:
-				if row == "\n":
-					if len(entry) != 0:
-						data.append(entry)
-						entry = []
-				else:
-					row = row[:-1]
-					entry.append(row.split(","))
-	except FileNotFoundError:
-		return []
-	return data
-
 def get_list_of_starting_grid(table) -> list[list[list[str]]]:
-	list_of_starting_grid = get_from_cache(STARTING_GRID_PATH)
+	list_of_starting_grid = Cache.get_from_cache(STARTING_GRID_FILE)
 	for i in range(len(list_of_starting_grid), get_total_number_of_races()):
 		table.update_cell(1, 1, get_start_grid_string(i))
 		starting_grid = table.get_values(range_name="B1:Z30")
@@ -135,7 +104,7 @@ def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 			break
 		print(f"Loaded starting grid for race number {i + 1}", end="\r")
 		list_of_starting_grid.append(starting_grid)
-		cache(starting_grid, STARTING_GRID_PATH)
+		Cache.cache(starting_grid, STARTING_GRID_FILE)
 	return list_of_starting_grid
 
 
@@ -149,7 +118,7 @@ def add_starting_grid(
 
 
 def get_race_results(table):
-	race_results = get_from_cache(RACE_RESULTS_PATH)[::-1]
+	race_results = Cache.get_from_cache(RACE_RESULTS_FILE)[::-1]
 	for i in range(len(race_results), get_total_number_of_races()):
 		table.update_cell(1, 1, get_race_string(i))
 		race = table.get_values(range_name="B1:H21")
@@ -161,7 +130,7 @@ def get_race_results(table):
 			break
 		print(f"Loaded race results for race number {i + 1}", end="\r")
 		race_results.insert(0, race)
-		cache(race, RACE_RESULTS_PATH)
+		Cache.cache(race, RACE_RESULTS_FILE)
 	return race_results
 
 
@@ -238,7 +207,7 @@ def enough_time_passed_since_race(calendar: list[list[str]]):
 	delta = datetime.datetime.now() - datetime.datetime(
 		int(race_date[2]), int(race_date[1]), int(race_date[0])
 	)
-	enough_time = datetime.timedelta(days=days_before_showing_results)
+	enough_time = datetime.timedelta(days=DAYS_BEFORE_SHOWING_RESULTS)
 	return delta > enough_time
 
 
@@ -254,6 +223,7 @@ def print_delta_time(message: str):
 	global delta_time
 	delta_time = time.time()
 
+Cache.init_cache()
 
 proxy_id, guesses_id = get_id_from_json()
 client = get_client()
