@@ -1,12 +1,13 @@
 from google.oauth2 import service_account
 import gspread
 import json
+import datetime
+import time
+
 from Guesser import Guesser
 from Stats import Stats
 import HtmlWriter
-import time
 from Tables import TableCollection
-import datetime
 from Utils import *
 import Cache
 import QueryLinks
