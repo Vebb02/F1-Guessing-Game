@@ -31,3 +31,7 @@ def empty() -> str:
 
 def get_main_path() -> str:
     return "./F1-Guessing-Game/"
+
+
+def get_json_path() -> str:
+    return get_main_path() + "json/"

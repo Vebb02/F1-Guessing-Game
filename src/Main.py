@@ -1,5 +1,3 @@
-from google.oauth2 import service_account
-import gspread
 import json
 import datetime
 import time
@@ -11,11 +9,11 @@ from Tables import TableCollection
 from Utils import *
 import Cache
 import QueryLinks
+import Client
 
 start_time = time.time()
 delta_time = time.time()
 
-JSON_PATH = get_main_path() + "json/"
 STARTING_GRID_FILE = "starting_grid"
 RACE_RESULTS_FILE = "race_results"
 GUESSES_FILE = "guesses"
@@ -23,7 +21,7 @@ GUESSES_FILE = "guesses"
 DAYS_BEFORE_SHOWING_RESULTS = 1
 
 def get_id_from_json() -> str:
-	f = open(JSON_PATH + "sheets.json")
+	f = open(get_json_path() + "sheets.json")
 	data: dict[str, str] = json.load(f)
 	f.close()
 
@@ -31,20 +29,6 @@ def get_id_from_json() -> str:
 	guesses_id = data["guesses"]
 
 	return proxy_id, guesses_id
-
-
-def get_client():
-	credentials: service_account.Credentials = (
-		service_account.Credentials.from_service_account_file(
-			JSON_PATH + "credentials.json",
-			scopes=[
-				"https://www.googleapis.com/auth/spreadsheets",
-				"https://www.googleapis.com/auth/spreadsheets.readonly",
-			],
-		)
-	)
-
-	return gspread.authorize(credentials)
 
 
 def get_table_rows(sheet, table_index: int) -> list[list[str]]:
@@ -206,7 +190,7 @@ def print_delta_time(message: str):
 Cache.init_cache()
 
 proxy_id, guesses_id = get_id_from_json()
-client = get_client()
+client = Client.get_client()
 print_delta_time("Loaded client")
 
 guesses_sheet = client.open_by_key(guesses_id)
