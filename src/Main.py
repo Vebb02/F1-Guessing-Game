@@ -9,6 +9,7 @@ from Tables import TableCollection
 import datetime
 from Utils import *
 import Cache
+import QueryLinks
 
 start_time = time.time()
 delta_time = time.time()
@@ -19,20 +20,6 @@ RACE_RESULTS_FILE = "race_results"
 GUESSES_FILE = "guesses"
 
 DAYS_BEFORE_SHOWING_RESULTS = 1
-
-def get_race_string(race_number: int):
-	first_race_season = first_race()
-	i = race_number + first_race_season
-	return f'=importhtml("https://www.formula1.com/en/results.html/\
-{get_year()}/races/{i}/a/race-result.html"; "table"; 1; "en_US")'
-
-
-def get_start_grid_string(race_number: int):
-	first_race_season = first_race()
-	i = race_number + first_race_season
-	return f'=importhtml("https://www.formula1.com/en/results.html/\
-{get_year()}/races/{i}/a/starting-grid.html"; "table"; 1; "en_US")'
-
 
 def get_id_from_json() -> str:
 	f = open(JSON_PATH + "sheets.json")
@@ -56,8 +43,7 @@ def get_client():
 		)
 	)
 
-	client = gspread.authorize(credentials)
-	return client
+	return gspread.authorize(credentials)
 
 
 def get_table_rows(sheet, table_index: int) -> list[list[str]]:
@@ -95,7 +81,7 @@ def add_tenth_place_guesses(sheet):
 def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 	list_of_starting_grid = Cache.get_from_cache(STARTING_GRID_FILE)
 	for i in range(len(list_of_starting_grid), get_total_number_of_races()):
-		table.update_cell(1, 1, get_start_grid_string(i))
+		table.update_cell(1, 1, QueryLinks.get_start_grid(i))
 		starting_grid = table.get_values(range_name="B1:Z30")
 		if len(starting_grid) == 1:
 			break
@@ -120,7 +106,7 @@ def add_starting_grid(
 def get_race_results(table):
 	race_results = Cache.get_from_cache(RACE_RESULTS_FILE)[::-1]
 	for i in range(len(race_results), get_total_number_of_races()):
-		table.update_cell(1, 1, get_race_string(i))
+		table.update_cell(1, 1, QueryLinks.get_race(i))
 		race = table.get_values(range_name="B1:H21")
 		if len(race) == 1:
 			break
@@ -134,9 +120,7 @@ def get_race_results(table):
 	return race_results
 
 
-def add_race_results_to_tenth_place(
-	race_results: list[list[str]], list_of_guessers: list[Guesser]
-):
+def add_race_results_to_tenth_place(race_results: list[list[str]], list_of_guessers: list[Guesser]):
 	for i in range(len(race_results)):
 		race = race_results[::-1][i]
 		for guesser in list_of_guessers:
@@ -144,15 +128,12 @@ def add_race_results_to_tenth_place(
 
 
 def get_driver_standings(table) -> list[list[str]]:
-	driver_standings_link = f'=importhtml("https://www.formula1.com/en/results.html/\
-{get_year()}/drivers.html"; "table"; 1; "en_US")'
+	driver_standings_link = QueryLinks.get_driver_standings()
 	table.update_cell(1, 1, driver_standings_link)
 	return table.get_values(range_name="B1:F24")
 
 
-def evaluate_driver_standings(
-	driver_standings: list[list[str]], list_of_guessers: list[Guesser]
-):
+def evaluate_driver_standings(driver_standings: list[list[str]], list_of_guessers: list[Guesser]):
 	for guesser in list_of_guessers:
 		guesser.evaluate_driver_standings(driver_standings[1:])
 
@@ -172,15 +153,13 @@ def get_short_to_long_name(driver_standings):
 
 
 def get_constructor_standings(table):
-	constructor_standings_link = f'=importhtml("https://www.formula1.com/en/results.html/{get_year()}/team.html"; "table"; 1; "en_US")'
+	constructor_standings_link = QueryLinks.get_constructor_standings()
 	table.update_cell(1, 1, constructor_standings_link)
 	constructor_standings = table.get_values(range_name="B1:D11")
 	return constructor_standings
 
 
-def evaluate_constructor_standings(
-	constructor_standings: list[list[str]], list_of_guessers: list[Guesser]
-):
+def evaluate_constructor_standings(constructor_standings: list[list[str]], list_of_guessers: list[Guesser]):
 	for guesser in list_of_guessers:
 		guesser.evaluate_constructor_standings(constructor_standings[1:])
 

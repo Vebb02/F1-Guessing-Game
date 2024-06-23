@@ -1,4 +1,4 @@
-def first_race() -> int:
+def get_first_race_number() -> int:
     return 1229
 
 
