@@ -15,6 +15,7 @@ class Guesser:
 		self.constructor = {}
 		self.tenth_place = {}
 		self.tenth_place_evaluated = {}
+		self.driver_evaluated = {}
 		self.__div_score = 0
 		self.__antall_score = 0
 		self.__topx = {c[1]: {} for c in Stats.get_categories_in_div()}
@@ -119,14 +120,10 @@ class Guesser:
 		return score
 
 	def evaluate_driver_standings(self, standings: list[list[str]]):
-		self.driver_evaluated = dict()
 		for row in standings:
 			driver = row[1][-3:]
-			if not driver in self.driver.keys():
-				continue
-			guessed_place = self.driver[driver]
-			actual_place = int(row[0])
-			diff = abs(guessed_place - actual_place)
+			actual_place = row[0]
+			diff = get_diff(self.driver, driver, actual_place)
 			gained = get_diff_to_points(diff, get_drivers_points())
 			self.driver_evaluated[driver] = gained
 
@@ -140,9 +137,8 @@ class Guesser:
 		self.constructor_evaluated = dict()
 		for row in standings:
 			constructor = translate_constructor(row[1])
-			guessed_place = self.constructor[constructor]
-			actual_place = int(row[0])
-			diff = abs(guessed_place - actual_place)
+			actual_place = row[0]
+			diff = get_diff(self.constructor, constructor, actual_place)
 			gained = get_diff_to_points(diff, get_constructor_points())
 			self.constructor_evaluated[constructor] = gained
 
@@ -153,22 +149,30 @@ class Guesser:
 		return score
 
 	def add_div_stats(self, stats: Stats):
-		for category in Stats.get_categories_in_div():
-			key = category[1]
-			dictionary = self.get_dict(key)
-			ranked_drivers = stats.get_ranked_dict(key)
-			topx = len(dictionary)
-			for i in range(topx):
-				driver = dictionary[i + 1]
-				if driver in ranked_drivers:
-					place = ranked_drivers[driver]
-					diff = abs(i + 1 - place)
-					self.__div_score += Stats.diff_to_points(diff, topx)
+		topx_categories = [category[1] for category in Stats.get_categories_in_div()]
+		for topx_category in topx_categories:
+			self.add_div_category(topx_category, stats)
+
+	def add_div_category(self, topx_category: str, stats: Stats):
+		topx_dict = self.get_topx_dict(topx_category)
+		actual_topx_driver_ranks = stats.get_ranked_dict(topx_category)
+		for i in range(len(topx_dict)):
+			self.add_div_guess(i + 1, topx_dict, actual_topx_driver_ranks)
+
+	def add_div_guess(self, guessed_place: int, topx_dict: dict, actual_topx_driver_ranks: dict):
+		guessed_driver = topx_dict[guessed_place]
+		try:
+			actual_place = actual_topx_driver_ranks[guessed_driver]
+		except KeyError:
+			return
+		diff = abs(guessed_place - actual_place)
+		topx = len(topx_dict)
+		self.__div_score += Stats.diff_to_points(diff, topx)
 
 	def get_div_score(self):
 		return self.__div_score
 
-	def get_dict(self, name: str):
+	def get_topx_dict(self, name: str):
 		return self.__topx[name]
 
 	def add_antall_score(self, score: int):
@@ -189,9 +193,20 @@ def get_driver_position(grid: list[list[str]], guessed_driver):
 		if guessed_driver == driver:
 			return row[0]
 		
+
 def get_points_from_result(place: str) -> int:
 	if place == "NC":
 		return 0
 	else:
 		diff = abs(10 - int(place))
 		return Guesser.get_10th_place_diff(diff)
+	
+
+def get_diff(guessed_dict: dict, guessed: str, actual_place: str) -> int:
+	try:
+		guessed_place = guessed_dict[guessed]
+	except KeyError:
+		# Arbitrarily large
+		return 10000
+	actual_place = int(actual_place)
+	return abs(guessed_place - actual_place)

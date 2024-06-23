@@ -96,7 +96,7 @@ class TableCollection:
 				+ TableCollection.__names_header_with_actual(list_of_guessers)
 			]
 			key = category[1]
-			guessed = [guesser.get_dict(key) for guesser in list_of_guessers]
+			guessed = [guesser.get_topx_dict(key) for guesser in list_of_guessers]
 
 			ranked_drivers = stats.get_ranked_dict(key)
 			topx = len(guessed[0])
