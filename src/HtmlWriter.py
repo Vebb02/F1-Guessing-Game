@@ -89,12 +89,12 @@ def set_hidden(row: list[str], all_na: bool):
 
 
 def	get_tenth_table_with_hidden(table: Table, all_na: bool) -> str:
+	rows = table.get_table_body()
 	html = get_table_title(table.get_header()) 
 	html += '<input type="checkbox" id="toggle"/>\n'
 	html += get_table_header(rows[0])
 	
-	rows = table.get_table_body()
-	set_hidden(rows[-1])
+	set_hidden(rows[-1], all_na)
 	
 	for row in rows[1:]:
 		html += get_table_body_segment(row)
