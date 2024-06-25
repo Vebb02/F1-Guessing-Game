@@ -1,4 +1,3 @@
-import json
 import datetime
 import time
 
@@ -19,17 +18,6 @@ RACE_RESULTS_FILE = "race_results"
 GUESSES_FILE = "guesses"
 
 DAYS_BEFORE_SHOWING_RESULTS = 1
-
-def get_id_from_json() -> str:
-	f = open(get_json_path() + "sheets.json")
-	data: dict[str, str] = json.load(f)
-	f.close()
-
-	proxy_id = data["proxy"]
-	guesses_id = data["guesses"]
-
-	return proxy_id, guesses_id
-
 
 def get_table_rows(sheet, table_index: int) -> list[list[str]]:
 	table = sheet.get_worksheet(table_index)
@@ -181,7 +169,6 @@ def get_delta_time() -> float:
 	return time_taken
 
 
-
 def print_delta_time(message: str):
 	print_taken_time(message, get_delta_time())
 	global delta_time
@@ -196,11 +183,12 @@ def print_taken_time(message: str, taken_time: float):
 
 Cache.init_cache()
 
-proxy_id, guesses_id = get_id_from_json()
 client = Client.get_client()
 print_delta_time("Loaded client")
 
+guesses_id = Client.get_guesses_id()
 guesses_sheet = client.open_by_key(guesses_id)
+print_delta_time("Loaded guesses sheet")
 
 email_to_guesser = get_guessers(guesses_sheet)
 list_of_guessers: list[Guesser] = [guesser for guesser in email_to_guesser.values()]
@@ -209,7 +197,10 @@ print_delta_time("Loaded guesses")
 race_number_to_name = add_tenth_place_guesses(guesses_sheet)
 print_delta_time("Loaded tenth place guesses")
 
+proxy_id = Client.get_proxy_id()
 proxy_sheet = client.open_by_key(proxy_id)
+print_delta_time("Loaded proxy sheet")
+
 proxy = proxy_sheet.get_worksheet(0)
 print_delta_time("Loaded proxy sheet")
 
