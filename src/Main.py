@@ -183,9 +183,16 @@ def get_delta_time() -> float:
 
 
 def print_delta_time(message: str):
-	print(f"{message} finished in {round(get_delta_time(), 5)} seconds")
+	print_taken_time(message, get_delta_time())
 	global delta_time
 	delta_time = time.time()
+
+def print_taken_time(message: str, taken_time: float):
+	message_limit = 35
+	if (length := len(message)) > message_limit:
+		raise Exception(f"Message can't be longer than {message_limit}. Was {length}.") 
+	print(f"{message: <{message_limit}} {round(taken_time, 3)}")
+
 
 Cache.init_cache()
 
@@ -208,7 +215,7 @@ print_delta_time("Loaded proxy sheet")
 
 list_of_starting_grid = get_list_of_starting_grid(proxy)
 add_starting_grid(list_of_starting_grid, list_of_guessers)
-print_delta_time("Loaded and added starting grid to guessers")
+print_delta_time("Loaded starting grid")
 
 race_results = get_race_results(proxy)
 add_race_results_to_tenth_place(race_results, list_of_guessers)
@@ -248,4 +255,4 @@ HtmlWriter.write_results(table_coll)
 print_delta_time("Written to HTML")
 
 time_taken = time.time() - start_time
-print(f"Success in {round(time_taken, 2)} seconds!")
+print_taken_time("Success", time_taken) 
