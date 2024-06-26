@@ -35,3 +35,8 @@ def get_main_path() -> str:
 
 def get_json_path() -> str:
     return get_main_path() + "json/"
+
+
+def get_table_rows(sheet, table_index: int) -> list[list[str]]:
+	table = sheet.get_worksheet(table_index)
+	return table.get_values()
