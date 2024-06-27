@@ -1,5 +1,4 @@
-from Points import *
-from Utils import *
+import Points
 
 class Stats:
 	def __init__(self, stats: list[list[str]], races_done: int):
@@ -77,9 +76,9 @@ class Stats:
 
 	def diff_to_points(diff: int, topx: int):
 		if topx == 5:
-			points_list = get_top_5_points()
+			points_list = Points.get_top_5_points()
 		elif topx == 3:
-			points_list = get_top_3_points()
+			points_list = Points.get_top_3_points()
 		else:
 			raise Exception(f"{topx} is not a valid category")
 		if diff < len(points_list):
@@ -87,7 +86,7 @@ class Stats:
 		return 0
 
 	def antall_rank_to_points(rank: int, diff: int) -> int:
-		points = get_diff_to_points(rank, get_antall_points())
+		points = Points.get_diff_to_points(rank, Points.get_antall_points())
 		if diff == 0:
 			points += 20
 		return points

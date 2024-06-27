@@ -1,7 +1,7 @@
 from Stats import Stats
 from Guesser import Guesser
 import Cache
-from Utils import get_table_rows
+from Query import get_table_rows
 
 GUESSES_FILE = "guesses"
 

@@ -1,7 +1,8 @@
 import copy
 from Stats import Stats
 from Guesser import Guesser
-from Utils import *
+import Utils
+import Season
 
 class Table:
 	def __init__(self, header: str, table_body: list[list[str]]):
@@ -53,7 +54,7 @@ class TableCollection:
 			stats_key: str = category[1]
 			guesser_key: str = category[2]
 			antall = stats.antall[stats_key]
-			antatt_total = antall / stats.races_done * get_total_number_of_races()
+			antatt_total = antall / stats.races_done * Season.get_total_number_of_races()
 			antatt_total = round(antatt_total, 1)
 			header = f"Antall {category[0]}<br>\nFaktisk antall: {antall}. Antatt total: {antatt_total}"
 			rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
@@ -112,7 +113,7 @@ class TableCollection:
 						diff = abs(i + 1 - place)
 						row.append(Stats.diff_to_points(diff, topx))
 					else:
-						row.append(empty())
+						row.append(Utils.empty())
 						row.append(0)
 				rows.append(row)
 			tables.append(Table(header, rows))
@@ -178,7 +179,7 @@ class TableCollection:
 				guessed = guesser.driver
 				scored = guesser.driver_evaluated
 				if not driver in guessed:
-					cells += [empty(), empty()]
+					cells += [Utils.empty(), Utils.empty()]
 				else:
 					cells += [guessed[driver], scored[driver]]
 			rows.append(cells)
@@ -194,7 +195,7 @@ class TableCollection:
 		rows = [["Plassering", "Konstruktør"] + self.names_header]
 		for row in constructor_standings[1:]:
 			constructor = row[1]
-			constructor = translate_constructor(constructor)
+			constructor = Season.translate_constructor(constructor)
 			cells = [row[0], constructor]
 			for guesser in list_of_guessers:
 				guessed = guesser.constructor[constructor]
@@ -225,9 +226,7 @@ class TableCollection:
 			row = [races[i]]
 			for guesser in list_of_guessers:
 				scored = 0
-				start_place = empty()
-				guessed = empty()
-				actual_place = empty()
+				start_place = guessed = actual_place = Utils.empty()
 				if i in guesser.tenth_place:
 					guessed = short_to_long_name[guesser.tenth_place[i]]
 					if i in guesser.tenth_place_evaluated:

@@ -1,6 +1,7 @@
 from Stats import Stats
 from Utils import *
 from Points import *
+import Season
 
 
 class Guesser:
@@ -136,7 +137,7 @@ class Guesser:
 	def evaluate_constructor_standings(self, standings: list[list[str]]):
 		self.constructor_evaluated = dict()
 		for row in standings:
-			constructor = translate_constructor(row[1])
+			constructor = Season.translate_constructor(row[1])
 			actual_place = row[0]
 			diff = get_diff(self.constructor, constructor, actual_place)
 			gained = get_diff_to_points(diff, get_constructor_points())

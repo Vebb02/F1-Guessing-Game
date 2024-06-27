@@ -1,5 +1,6 @@
 from Tables import TableCollection, Table
-from Utils import *
+import Utils
+import Season
 
 HTML_PATH = "./pages/"
 
@@ -14,7 +15,7 @@ html_head = f"""<!DOCTYPE html>
 </head>
 <body>
 	<header>
-		<h1>F1 tipping {get_year()}</h1>
+		<h1>F1 tipping {Season.get_year()}</h1>
 		<a href="./">Hjem</a>
 		<a href="poengberegning">Poengberegning</a>
 		<a href="statistikk">Statistikk</a>
@@ -105,7 +106,7 @@ def	get_tenth_table_with_hidden(table: Table, all_na: bool) -> str:
 def is_row_all_not_available(row: list[str]):
 	all_na = True
 	for i in range(3, len(row), 4):
-		all_na = all_na and row[i] == empty()
+		all_na = all_na and row[i] == Utils.empty()
 
 
 def get_tenth_table(table: Table, enough_time_passed: bool):
