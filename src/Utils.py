@@ -27,7 +27,7 @@ def get_short_to_long_name(driver_standings):
 def enough_time_passed_since_race(calendar: list[list[str]], current_race: int):
 	import datetime
 	DAYS_BEFORE_SHOWING_RESULTS = 1
-	race_date = calendar[len(current_race) - 1][3].split(".")
+	race_date = calendar[current_race - 1][3].split(".")
 	delta = datetime.datetime.now() - datetime.datetime(
 		int(race_date[2]), int(race_date[1]), int(race_date[0])
 	)
