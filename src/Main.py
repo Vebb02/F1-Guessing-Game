@@ -1,6 +1,7 @@
 import datetime
 import time
 
+from Timer import Timer
 from GuessersList import GuessersList
 from Stats import Stats
 import HtmlWriter
@@ -11,7 +12,6 @@ import QueryLinks
 import Client
 
 start_time = time.time()
-delta_time = time.time()
 
 STARTING_GRID_FILE = "starting_grid"
 RACE_RESULTS_FILE = "race_results"
@@ -100,69 +100,52 @@ def enough_time_passed_since_race(calendar: list[list[str]]):
 	return delta > enough_time
 
 
-def get_delta_time() -> float:
-	global delta_time
-	time_taken = time.time() - delta_time
-	return time_taken
-
-
-def print_delta_time(message: str):
-	print_taken_time(message, get_delta_time())
-	global delta_time
-	delta_time = time.time()
-
-def print_taken_time(message: str, taken_time: float):
-	message_limit = 35
-	if (length := len(message)) > message_limit:
-		raise Exception(f"Message can't be longer than {message_limit}. Was {length}.") 
-	print(f"{message: <{message_limit}} {round(taken_time, 3)}")
-
-
 Cache.init_cache()
+timer: Timer = Timer()
 
 client = Client.get_client()
-print_delta_time("Loaded client")
+timer.print_delta_time("Loaded client")
 
 guesses_id = Client.get_guesses_id()
 guesses_sheet = client.open_by_key(guesses_id)
-print_delta_time("Loaded guesses sheet")
+timer.print_delta_time("Loaded guesses sheet")
 
 guessers = GuessersList(guesses_sheet)
-print_delta_time("Loaded guesses")
+timer.print_delta_time("Loaded guesses")
 
 guessers.add_tenth_place_guesses(guesses_sheet)
 race_number_to_name = guessers.get_race_number_to_name()
-print_delta_time("Loaded tenth place guesses")
+timer.print_delta_time("Loaded tenth place guesses")
 
 proxy_id = Client.get_proxy_id()
 proxy_sheet = client.open_by_key(proxy_id)
-print_delta_time("Loaded proxy sheet")
+timer.print_delta_time("Loaded proxy sheet")
 
 proxy = proxy_sheet.get_worksheet(0)
-print_delta_time("Loaded proxy sheet")
+timer.print_delta_time("Loaded proxy sheet")
 
 list_of_starting_grid = get_list_of_starting_grid(proxy)
 guessers.add_starting_grid(list_of_starting_grid)
-print_delta_time("Loaded starting grid")
+timer.print_delta_time("Loaded starting grid")
 
 race_results = get_race_results(proxy)
 guessers.add_race_results_to_tenth_place(race_results)
-print_delta_time("Loaded race results")
+timer.print_delta_time("Loaded race results")
 
 driver_standings = get_driver_standings(proxy)
 guessers.evaluate_driver_standings(driver_standings)
-print_delta_time("Evaluated driver standings")
+timer.print_delta_time("Evaluated driver standings")
 
 constructor_standings = get_constructor_standings(proxy)
 guessers.evaluate_constructor_standings(constructor_standings)
-print_delta_time("Evaluated constructor standings")
+timer.print_delta_time("Evaluated constructor standings")
 
 stats = get_stats(guesses_sheet, race_results)
 guessers.add_div_categories(stats)
-print_delta_time("Added stats from div categories")
+timer.print_delta_time("Added stats from div categories")
 
 calendar = get_race_calendar(proxy_sheet)
-print_delta_time("Loaded race calendar")
+timer.print_delta_time("Loaded race calendar")
 
 table_coll: TableCollection = TableCollection(
 	list_of_guessers = guessers.get_list_of_guessers(),
@@ -174,13 +157,12 @@ table_coll: TableCollection = TableCollection(
 	race_results = race_results,
 	enough_time_passed = enough_time_passed_since_race(calendar),
 )
-print_delta_time("Created Table Collection")
+timer.print_delta_time("Created Table Collection")
 
 HtmlWriter.write_index(table_coll)
 HtmlWriter.write_stats(table_coll)
 HtmlWriter.write_results(table_coll)
 
-print_delta_time("Written to HTML")
+timer.print_delta_time("Written to HTML")
 
-time_taken = time.time() - start_time
-print_taken_time("Success", time_taken) 
+Timer.print_taken_time("Success", Timer.get_time_since(start_time)) 
