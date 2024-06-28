@@ -7,7 +7,7 @@ import HtmlWriter
 from Tables import TableCollection
 import Utils
 import Cache
-import Client
+from Client import Client
 import Query
 import Season
 
