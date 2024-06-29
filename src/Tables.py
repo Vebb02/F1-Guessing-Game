@@ -277,7 +277,7 @@ class TableCollection:
 		for category in Stats.get_categories_in_div():
 			rows = [table_header]
 			kategori = category[0]
-			ranked_drivers = stats.get_ranked(category[1])
+			ranked_drivers = stats.get_ranked_list_from_dict(category[1])
 			for driver in ranked_drivers:
 				rows.append(
 					[driver[0], short_to_long_name[driver[1].upper()], driver[2]]

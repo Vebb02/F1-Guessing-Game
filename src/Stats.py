@@ -39,24 +39,14 @@ class Stats:
 	def __get_dict(self, name: str):
 		return self.topx[name]
 
-	# TODO: Clean this mess
-	def get_ranked(self, name: str) -> list:
+	def get_ranked_list_from_dict(self, name: str) -> list:
 		dict = self.__get_dict(name)
-		list = []
-		for item in dict.items():
-			list.append(item)
-		sorted_list = sorted(list, key=lambda x: x[1], reverse=True)
-
-		ranked_list = []
-		for i, (driver, score) in enumerate(sorted_list):
-			place = i + 1
-			if i > 0 and score == sorted_list[i - 1][1]:
-				place = ranked_list[i - 1][0]
-			ranked_list.append((place, driver, score))
+		sorted_list = get_sorted_list(dict)
+		ranked_list = get_ranked_list_from_sorted_list(sorted_list)
 		return ranked_list
 
 	def get_ranked_dict(self, name: str):
-		return get_ranked_dict_from_list(self.get_ranked(name))
+		return get_ranked_dict_from_list(self.get_ranked_list_from_dict(name))
 
 	def get_categories_in_div() -> list[list[str]]:
 		return [
@@ -105,3 +95,20 @@ def get_ranked_dict_from_list(l: list):
 	for x, y, _ in l:
 		d[y] = x
 	return d
+
+
+def get_sorted_list(dict: dict) -> list:
+	list = [item for item in dict.items()]
+	return sorted(list, key=lambda x: x[1], reverse=True)
+
+
+def get_ranked_list_from_sorted_list(sorted_list: list) -> list:
+	ranked_list = []
+	for i, (driver, score) in enumerate(sorted_list):
+		place = i + 1
+		if i > 0:
+			prev_score = sorted_list[i - 1][1]
+			if score == prev_score:
+				place = ranked_list[i - 1][0]
+		ranked_list.append((place, driver, score))
+	return ranked_list
