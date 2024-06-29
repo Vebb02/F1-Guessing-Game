@@ -288,5 +288,5 @@ class TableCollection:
 		return copy.deepcopy(self.__div_stats_tables)
 
 
-	def enough_time_paseed(self):
+	def enough_time_passed(self):
 		return self.__enough_time_passed

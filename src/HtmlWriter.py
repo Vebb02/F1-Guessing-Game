@@ -139,7 +139,7 @@ def get_index_html(table_coll: TableCollection):
 	html_body += get_table(table_coll.get_summary_table())
 	html_body += get_table(table_coll.get_driver_standings_table())
 	html_body += get_table(table_coll.get_constructor_standings_table())
-	html_body += get_tenth_table(table_coll.get_tenth_table(), table_coll.enough_time_paseed())
+	html_body += get_tenth_table(table_coll.get_tenth_table(), table_coll.enough_time_passed())
 	html_body += get_tippet_diverse(table_coll)
 	html_body += get_abbrivation_explanation()
 	html_body += "</div>\n"
