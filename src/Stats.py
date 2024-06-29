@@ -77,9 +77,12 @@ class Stats:
 
 	def antall_rank_to_points(rank: int, diff: int) -> int:
 		points = Points.get_diff_to_points(rank, Points.get_antall_points())
-		if diff == 0:
-			points += 20
+		points += get_bonus(diff)
 		return points
+
+
+def get_bonus(diff: int):
+	return 20 if diff == 0 else 0
 
 
 def is_row_without_stats(row: list) -> bool:
