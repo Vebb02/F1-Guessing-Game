@@ -18,7 +18,7 @@ class GuessersList:
 	def get_list_of_guessers(self):
 		return self.list_of_guessers
 
-	def get_guessers(self, sheet) -> dict[str, Guesser]:
+	def get_guessers(self, sheet):
 		rows = Cache.get_from_cache(GUESSES_FILE)
 		if len(rows) == 0:
 			rows = get_table_rows(sheet, 0)
