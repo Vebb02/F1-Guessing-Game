@@ -26,6 +26,7 @@ class TableCollection:
 		enough_time_passed: bool,
 	):
 		self.__list_of_guessers: list[Guesser] = guessers.get_list_of_guessers()
+		self.__guessers: GuessersList = guessers
 		self.__stats: Stats = stats
 		self.__short_to_long_name: dict[str, str] = Utils.get_short_to_long_name(results.driver_standings)
 		self.__driver_standings: list[list[str]] = results.driver_standings
@@ -54,37 +55,47 @@ class TableCollection:
 		]
 		self.names_header = [s for sublist in list_of_lists for s in sublist]
 
+	def __get_antatt_total(self, antall: int) -> float:
+		return round(antall / self.__stats.races_done * Season.get_total_number_of_races(), 1)
+
+	def __get_header_antall(self, antall: int, category_name: str):
+		antatt_total = self.__get_antatt_total(antall)
+		return f"Antall {category_name}<br>\nFaktisk antall: {antall}. Antatt total: {antatt_total}"
+
+	def __get_sorted_antall(self, antall: int, guesser_key: str):
+		unsorted_list = [
+			(
+				guesser,
+				guesser.antall[guesser_key],
+				abs(guesser.antall[guesser_key] - antall),
+			)
+			for guesser in self.__list_of_guessers
+		]
+		return sorted(unsorted_list, key=lambda x: x[2])
+
+	def __add_row_antall(self, rows: list[tuple[str]], sorted_list: list, i: int):
+		guesser, number, diff = sorted_list[i]
+		rank = i + 1
+		if i > 0 and diff == rows[i][3]:
+			rank = rows[i][0]
+		points = Stats.antall_rank_to_points(rank - 1, diff)
+		guesser.add_antall_score(points)
+		rows.append((rank, guesser, number, diff, points))
+
+	def __get_rows_antall(self, antall: int, guesser_key: str):
+		rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
+		sorted_list = self.__get_sorted_antall(antall, guesser_key)
+		for i in range(len(sorted_list)):
+			self.__add_row_antall(rows, sorted_list, i) 
+		return rows
+
 	def __add_antall_guessed(self):
-		tables: list[list[tuple[str]]] = []
-		for category in Stats.get_categories_in_antall():
-			stats_key: str = category[1]
-			guesser_key: str = category[2]
+		self.__antall_tables: list[Table] = []
+		for category_name, stats_key, guesser_key in Stats.get_categories_in_antall():
 			antall = self.__stats.antall[stats_key]
-			antatt_total = antall / self.__stats.races_done * Season.get_total_number_of_races()
-			antatt_total = round(antatt_total, 1)
-			header = f"Antall {category[0]}<br>\nFaktisk antall: {antall}. Antatt total: {antatt_total}"
-			rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
-			unsorted_list = [
-				(
-					guesser,
-					guesser.antall[guesser_key],
-					abs(guesser.antall[guesser_key] - antall),
-				)
-				for guesser in self.__list_of_guessers
-			]
-			sorted_list = sorted(unsorted_list, key=lambda x: x[2])
-			for i in range(len(sorted_list)):
-				name, number, diff = sorted_list[i]
-				rank = i + 1
-				if i > 0 and diff == rows[i][3]:
-					rank = rows[i][0]
-				points = Stats.antall_rank_to_points(rank - 1, diff)
-				rows.append((rank, name, number, diff, points))
-				for guesser in self.__list_of_guessers:
-					if guesser == name:
-						guesser.add_antall_score(points)
-			tables.append(Table(header, rows))
-		self.__antall_tables = tables
+			header = self.__get_header_antall(antall, category_name)
+			rows = self.__get_rows_antall(antall, guesser_key)
+			self.__antall_tables.append(Table(header, rows))
 
 	def get_antall_guessed_tables(self) -> list[Table]:
 		return copy.deepcopy(self.__antall_tables)
@@ -281,3 +292,4 @@ def names_header_with_actual(list_of_guessers: list[Guesser]):
 		for guesser in list_of_guessers
 	]
 	return [s for sublist in list_of_lists for s in sublist]
+
