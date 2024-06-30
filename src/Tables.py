@@ -201,14 +201,14 @@ class TableCollection:
 			for guesser in self.__list_of_guessers:
 				scored = 0
 				start_place = guessed = actual_place = Utils.empty()
-				if i in guesser.tenth_place:
+				try:
 					guessed = self.__short_to_long_name[guesser.tenth_place[i]]
-					if i in guesser.tenth_place_evaluated:
-						evaluated = guesser.tenth_place_evaluated[i]
-						start_place = evaluated["start pos"]
-						if "placed" in evaluated:
-							actual_place = evaluated["placed"]
-							scored = evaluated["points"]
+					evaluated = guesser.tenth_place_evaluated[i]
+					start_place = evaluated["start pos"]
+					actual_place = evaluated["placed"]
+					scored = evaluated["points"]
+				except KeyError:
+					...
 				row += [guessed, start_place, actual_place, scored]
 			rows.append(row)
 		self.__tenth_table = Table("10.plass", rows)
