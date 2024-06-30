@@ -100,54 +100,44 @@ class TableCollection:
 	def get_antall_guessed_tables(self) -> list[Table]:
 		return copy.deepcopy(self.__antall_tables)
 
-	def __add_div_guessed(self):
-		tables = []
-		for category in Stats.get_categories_in_div():
-			header = category[0]
-			rows = [
-				["Plassering"]
-				+ names_header_with_actual(self.__list_of_guessers)
-			]
-			key = category[1]
-			guessed = [guesser.get_topx_dict(key) for guesser in self.__list_of_guessers]
+	def __add_row_div_guessed(self, rows: list[list[str]], topx: int, i: int):
+		row = [i + 1]
+		for driver in self.__guessed:
+			driver_name = driver[i + 1]
+			row.append(self.__short_to_long_name[driver_name])
+			if driver_name in self.__ranked_drivers:
+				place = self.__ranked_drivers[driver_name]
+				row.append(place)
+				diff = abs(i + 1 - place)
+				row.append(Stats.diff_to_points(diff, topx))
+			else:
+				row.append(Utils.empty())
+				row.append(0)
+		rows.append(row)
 
-			ranked_drivers = self.__stats.get_ranked_dict(key)
-			topx = len(guessed[0])
-			for i in range(topx):
-				row = []
-				row.append(i + 1)
-				for driver in guessed:
-					driver_name = driver[i + 1]
-					row.append(self.__short_to_long_name[driver_name])
-					if driver_name in ranked_drivers:
-						place = ranked_drivers[driver_name]
-						row.append(place)
-						diff = abs(i + 1 - place)
-						row.append(Stats.diff_to_points(diff, topx))
-					else:
-						row.append(Utils.empty())
-						row.append(0)
-				rows.append(row)
-			tables.append(Table(header, rows))
-		self.__div_tables = tables
+	def __get_rows_div_guessed(self, key: str):
+		rows = [
+			["Plassering"]
+			+ names_header_with_actual(self.__list_of_guessers)
+		]
+		self.__guessed = [guesser.get_topx_dict(key) for guesser in self.__list_of_guessers]
+		self.__ranked_drivers = self.__stats.get_ranked_dict(key)
+		topx = len(self.__guessed[0])
+		for i in range(topx):
+			self.__add_row_div_guessed(rows, topx, i)
+		return rows
+
+	def __add_div_guessed(self):
+		self.__div_tables: list[Table] = []
+		for header, key in Stats.get_categories_in_div():
+			rows = self.__get_rows_div_guessed(key)
+			self.__div_tables.append(Table(header, rows))
 
 	def get_div_guessed_tables(self):
 		return copy.deepcopy(self.__div_tables)
 
-
 	def __add_summary(self):
-		# Summary
-		summary_header = [
-			"Plassering",
-			"Navn",
-			"Sjåførmesterskap",
-			"Konstruktørmesterskap",
-			"10.plass",
-			"Tipping av diverse",
-			"Antall",
-			"Total",
-		]
-
+		header = get_summary_header()
 		rows = []
 		for guesser in self.__list_of_guessers:
 			constructor = guesser.get_constructor_score()
@@ -161,7 +151,7 @@ class TableCollection:
 		for i in range(len(rows)):
 			row = rows[i]
 			row.insert(0, i + 1)
-		rows.insert(0, summary_header)
+		rows.insert(0, header)
 		self.__summary_table = Table("Oppsummering", rows)
 
 	def get_summary_table(self):
@@ -293,3 +283,14 @@ def names_header_with_actual(list_of_guessers: list[Guesser]):
 	]
 	return [s for sublist in list_of_lists for s in sublist]
 
+def get_summary_header():
+	return [
+		"Plassering",
+		"Navn",
+		"Sjåførmesterskap",
+		"Konstruktørmesterskap",
+		"10.plass",
+		"Tipping av diverse",
+		"Antall",
+		"Total",
+	]
