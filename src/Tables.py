@@ -3,6 +3,8 @@ from Stats import Stats
 from Guesser import Guesser
 import Utils
 import Season
+from GuessersList import GuessersList
+from SeasonResults import SeasonResults
 
 class Table:
 	def __init__(self, header: str, table_body: list[list[str]]):
@@ -18,22 +20,18 @@ class Table:
 class TableCollection:
 	def __init__(
 		self,
-		list_of_guessers: list[Guesser],
+		guessers: GuessersList,
 		stats: Stats,
-		short_to_long_name: dict[str, str],
-		driver_standings: list[list[str]],
-		constructor_standings: list[list[str]],
-		race_number_to_name: dict[int, str],
-		race_results: list[list[str]],
+		results: SeasonResults,
 		enough_time_passed: bool,
 	):
-		self.__list_of_guessers: list[Guesser] = list_of_guessers
+		self.__list_of_guessers: list[Guesser] = guessers.get_list_of_guessers()
 		self.__stats: Stats = stats
-		self.__short_to_long_name: dict[str, str] = short_to_long_name
-		self.__driver_standings: list[list[str]] = driver_standings
-		self.__constructor_standings: list[list[str]] = constructor_standings
-		self.__race_number_to_name: dict[int, str] = race_number_to_name
-		self.__race_results = race_results
+		self.__short_to_long_name: dict[str, str] = Utils.get_short_to_long_name(results.driver_standings)
+		self.__driver_standings: list[list[str]] = results.driver_standings
+		self.__constructor_standings: list[list[str]] = results.constructor_standings
+		self.__race_number_to_name: dict[int, str] = guessers.get_race_number_to_name()
+		self.__race_results: list[list[list[str]]] = results.race_results
 		self.__enough_time_passed: bool = enough_time_passed
 		self.add_data()
 

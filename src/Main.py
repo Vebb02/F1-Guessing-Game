@@ -10,6 +10,7 @@ import Cache
 from Client import Client
 import Query
 import Season
+from SeasonResults import SeasonResults
 
 start_time = time.time()
 
@@ -53,6 +54,12 @@ constructor_standings = Query.get_constructor_standings(proxy)
 guessers.evaluate_constructor_standings(constructor_standings)
 timer.print_delta_time("Evaluated constructor standings")
 
+results = SeasonResults(
+	driver_standings = driver_standings,
+	constructor_standings = constructor_standings,
+	race_results = race_results,
+)
+
 race_stats = Query.get_stats(guesses_sheet)
 stats = Stats(race_stats, len(race_results))
 guessers.add_div_categories(stats)
@@ -66,13 +73,9 @@ enough_time_passed = Utils.enough_time_passed_since_race(
 )
 
 table_coll: TableCollection = TableCollection(
-	list_of_guessers = guessers.get_list_of_guessers(),
+	guessers = guessers,
 	stats = stats,
-	short_to_long_name = Utils.get_short_to_long_name(driver_standings),
-	driver_standings = driver_standings,
-	constructor_standings = constructor_standings,
-	race_number_to_name = race_number_to_name,
-	race_results = race_results,
+	results = results,
 	enough_time_passed = enough_time_passed,
 )
 timer.print_delta_time("Created Table Collection")
