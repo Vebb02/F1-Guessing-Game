@@ -23,7 +23,7 @@ class Timer:
 		message_limit = 35
 		if (length := len(message)) > message_limit:
 			raise Exception(f"Message can't be longer than {message_limit}. Was {length}.") 
-		print(f"{message: <{message_limit}} {round(taken_time, 3)}")
+		print(f"{message: <{message_limit}} {taken_time:>{6}.3f}")
 
 	
 	def stamp(self):
