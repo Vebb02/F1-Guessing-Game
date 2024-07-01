@@ -26,7 +26,6 @@ class TableCollection:
 		enough_time_passed: bool,
 	):
 		self.__list_of_guessers: list[Guesser] = guessers.get_list_of_guessers()
-		self.__guessers: GuessersList = guessers
 		self.__stats: Stats = stats
 		self.__short_to_long_name: dict[str, str] = Utils.get_short_to_long_name(results.driver_standings)
 		self.__driver_standings: list[list[str]] = results.driver_standings
@@ -73,20 +72,11 @@ class TableCollection:
 		]
 		return sorted(unsorted_list, key=lambda x: x[2])
 
-	def __add_row_antall(self, rows: list[tuple[str]], sorted_list: list, i: int):
-		guesser, number, diff = sorted_list[i]
-		rank = i + 1
-		if i > 0 and diff == rows[i][3]:
-			rank = rows[i][0]
-		points = Stats.antall_rank_to_points(rank - 1, diff)
-		guesser.add_antall_score(points)
-		rows.append((rank, guesser, number, diff, points))
-
 	def __get_rows_antall(self, antall: int, guesser_key: str):
 		rows = [["Plassering", "Navn", "Gjettet", "Differanse", "Poeng"]]
 		sorted_list = self.__get_sorted_antall(antall, guesser_key)
 		for i in range(len(sorted_list)):
-			self.__add_row_antall(rows, sorted_list, i) 
+			add_row_antall(rows, sorted_list, i) 
 		return rows
 
 	def __add_antall_guessed(self):
@@ -138,19 +128,11 @@ class TableCollection:
 
 	def __add_summary(self):
 		header = get_summary_header()
-		rows = []
+		rows: list[list[str]] = []
 		for guesser in self.__list_of_guessers:
-			constructor = guesser.get_constructor_score()
-			driver = guesser.get_driver_score()
-			tenth = guesser.get_10th_place_score()
-			div = guesser.get_div_score()
-			antall = guesser.get_antall_score()
-			total = constructor + driver + tenth + div + antall
-			rows.append([guesser, driver, constructor, tenth, div, antall, total])
+			add_guesser_summary(guesser, rows)
 		rows = sorted(rows, key=lambda x: x[6], reverse=True)
-		for i in range(len(rows)):
-			row = rows[i]
-			row.insert(0, i + 1)
+		insert_rank_to_summary(rows)
 		rows.insert(0, header)
 		self.__summary_table = Table("Oppsummering", rows)
 
@@ -294,3 +276,33 @@ def get_summary_header():
 		"Antall",
 		"Total",
 	]
+
+def add_row_antall(rows: list[tuple[str]], sorted_list: list, i: int):
+	guesser, number, diff = sorted_list[i]
+	rank = i + 1
+	if i > 0 and diff == rows[i][3]:
+		rank = rows[i][0]
+	points = Stats.antall_rank_to_points(rank - 1, diff)
+	guesser.add_antall_score(points)
+	rows.append((rank, guesser, number, diff, points))
+
+def add_guesser_summary(guesser: Guesser, rows: list[list[str]]):
+	constructor = guesser.get_constructor_score()
+	driver = guesser.get_driver_score()
+	tenth = guesser.get_10th_place_score()
+	div = guesser.get_div_score()
+	antall = guesser.get_antall_score()
+	total = constructor + driver + tenth + div + antall
+	rows.append([guesser, driver, constructor, tenth, div, antall, total])
+
+def insert_rank_to_summary(rows: list[list[str]]):
+	for i in range(len(rows)):
+		row = rows[i]
+		rank = i + 1
+		if i > 0:
+			score = row[-1]
+			prev_row = rows[i-1]
+			prev_score = prev_row[-1]
+			if score == prev_score:
+				rank = prev_row[0]
+		row.insert(0, rank)
