@@ -1,13 +1,13 @@
 def get_first_race_number() -> int:
-    return 1229
+	return 1229
 
 
 def get_year() -> int:
-    return 2024
+	return 2024
 
 
 def get_total_number_of_races() -> int:
-    return 24
+	return 24
 
 
 def translate_constructor(constructor: str) -> str:
@@ -26,6 +26,12 @@ def translate_constructor(constructor: str) -> str:
 
 
 def get_race_calendar(sheet):
-	table = sheet.get_worksheet(1)
-	calendar = table.get_values(range_name="A2:D30")
+	import Cache
+	CALENDAR_FILE = "race_calendar"
+	try:
+		calendar = Cache.get_from_cache(CALENDAR_FILE)[0]
+	except IndexError:
+		table = sheet.get_worksheet(1)
+		calendar = table.get_values(range_name="A2:D30")
+		Cache.cache(calendar, CALENDAR_FILE)
 	return calendar
