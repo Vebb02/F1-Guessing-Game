@@ -107,6 +107,7 @@ def is_row_all_not_available(row: list[str]):
 	all_na = True
 	for i in range(3, len(row), 4):
 		all_na = all_na and row[i] == Utils.empty()
+	return all_na
 
 
 def get_tenth_table(table: Table, enough_time_passed: bool):
