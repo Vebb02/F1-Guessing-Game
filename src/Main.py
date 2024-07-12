@@ -17,11 +17,10 @@ start_time = time.time()
 Cache.init_cache()
 timer = Timer()
 
-client = Client.get_client()
+client = Client()
 timer.print_delta_time("Loaded client")
 
-guesses_id = Client.get_guesses_id()
-guesses_sheet = client.open_by_key(guesses_id)
+guesses_sheet = client.get_guesses_sheet()
 timer.print_delta_time("Loaded guesses sheet")
 
 guessers = GuessersList(guesses_sheet)
@@ -31,8 +30,7 @@ guessers.add_tenth_place_guesses(guesses_sheet)
 race_number_to_name = guessers.get_race_number_to_name()
 timer.print_delta_time("Loaded tenth place guesses")
 
-proxy_id = Client.get_proxy_id()
-proxy_sheet = client.open_by_key(proxy_id)
+proxy_sheet = client.get_proxy_sheet()
 timer.print_delta_time("Loaded proxy sheet")
 
 proxy = proxy_sheet.get_worksheet(0)
