@@ -187,6 +187,8 @@ class TableCollection:
 					guessed = self.__short_to_long_name[guesser.tenth_place[i]]
 					evaluated = guesser.tenth_place_evaluated[i]
 					start_place = evaluated["start pos"]
+					if start_place is None:
+						start_place = "Pit"
 					actual_place = evaluated["placed"]
 					scored = evaluated["points"]
 				except KeyError:
