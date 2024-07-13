@@ -26,10 +26,6 @@ timer.print_delta_time("Loaded guesses sheet")
 guessers = GuessersList(guesses_sheet)
 timer.print_delta_time("Loaded guesses")
 
-guessers.add_tenth_place_guesses(guesses_sheet)
-race_number_to_name = guessers.get_race_number_to_name()
-timer.print_delta_time("Loaded tenth place guesses")
-
 proxy_sheet = client.get_proxy_sheet()
 timer.print_delta_time("Loaded proxy sheet")
 

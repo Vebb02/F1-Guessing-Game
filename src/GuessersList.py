@@ -14,6 +14,7 @@ class GuessersList:
 			guesser for guesser in self.email_to_guesser.values()
 		]
 		self.race_number_to_name = {}
+		self.__add_tenth_place_guesses(sheet)
 
 	def get_list_of_guessers(self):
 		return self.list_of_guessers
@@ -36,7 +37,7 @@ class GuessersList:
 			for guesser in self.list_of_guessers:
 				guesser.add_10th_place_start(i, starting_grid[1:])
 
-	def add_tenth_place_guesses(self, sheet):
+	def __add_tenth_place_guesses(self, sheet):
 		tenth_place_guessed = get_table_rows(sheet, 1)
 		for row in tenth_place_guessed[1:]:
 			email = row[1]
