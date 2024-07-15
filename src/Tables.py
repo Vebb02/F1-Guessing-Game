@@ -32,6 +32,7 @@ class TableCollection:
 		self.__constructor_standings: list[list[str]] = results.constructor_standings
 		self.__race_number_to_name: dict[int, str] = guessers.get_race_number_to_name()
 		self.__race_results: list[list[list[str]]] = results.race_results
+		self.__races_done: int = results.get_number_races_done()
 		self.__enough_time_passed: bool = enough_time_passed
 		self.add_data()
 
@@ -55,7 +56,7 @@ class TableCollection:
 		self.names_header = [s for sublist in list_of_lists for s in sublist]
 
 	def __get_antatt_total(self, antall: int) -> float:
-		return round(antall / self.__stats.races_done * Season.get_total_number_of_races(), 1)
+		return round(antall / self.__races_done * Season.get_total_number_of_races(), 1)
 
 	def __get_header_antall(self, antall: int, category_name: str):
 		antatt_total = self.__get_antatt_total(antall)

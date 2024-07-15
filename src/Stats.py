@@ -1,10 +1,9 @@
 import Points
 
 class Stats:
-	def __init__(self, stats: list[list[str]], races_done: int):
+	def __init__(self, stats: list[list[str]]):
 		self.antall = {c[1]: 0 for c in Stats.get_categories_in_antall()}
 		self.topx = {c[1]: {} for c in Stats.get_categories_in_div()}
-		self.races_done = races_done
 		self.parse_stats(stats)
 
 	def parse_stats(self, stats: list[list[str]]):

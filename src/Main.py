@@ -55,7 +55,7 @@ results = SeasonResults(
 )
 
 race_stats = Query.get_stats(guesses_sheet)
-stats = Stats(race_stats, len(race_results))
+stats = Stats(race_stats)
 guessers.add_div_categories(stats)
 timer.print_delta_time("Added stats from div categories")
 
