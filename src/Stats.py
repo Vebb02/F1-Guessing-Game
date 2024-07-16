@@ -1,7 +1,9 @@
 import Points
+import Query
 
 class Stats:
-	def __init__(self, stats: list[list[str]]):
+	def __init__(self, guesses_sheet):
+		stats: list[list[str]] = Query.get_stats(guesses_sheet)
 		self.antall = {c[1]: 0 for c in Stats.get_categories_in_antall()}
 		self.topx = {c[1]: {} for c in Stats.get_categories_in_div()}
 		self.parse_stats(stats)
