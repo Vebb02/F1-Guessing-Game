@@ -12,7 +12,7 @@ import Query
 import Season
 from SeasonResults import SeasonResults
 
-start_time = time.time()
+start_time = time.perf_counter()
 
 Cache.init_cache()
 timer = Timer()

@@ -6,7 +6,7 @@ class Timer:
 
 	
 	def get_time_since(prev_time: float) -> float:
-		return time.time() - prev_time
+		return time.perf_counter() - prev_time
 
 
 	def get_delta_time(self) -> float:
@@ -27,4 +27,4 @@ class Timer:
 
 	
 	def stamp(self):
-		self.time_stamp = time.time()
+		self.time_stamp = time.perf_counter()
