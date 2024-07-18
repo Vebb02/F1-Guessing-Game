@@ -12,7 +12,7 @@ import Query
 import Season
 from SeasonResults import SeasonResults
 
-start_time = time.perf_counter()
+accumulative_timer = Timer()
 
 Cache.init_cache()
 timer = Timer()
@@ -78,4 +78,4 @@ HtmlWriter.write_stats(table_coll)
 HtmlWriter.write_results(table_coll)
 timer.print_delta_time("Written to HTML")
 
-Timer.print_taken_time("Success", Timer.get_time_since(start_time)) 
+accumulative_timer.print_delta_time("Success")
