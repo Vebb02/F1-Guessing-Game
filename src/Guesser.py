@@ -112,8 +112,13 @@ class Guesser:
 		return get_diff_to_points(diff, get_10th_points())
 	
 	def get_10th_place_score(self):
+		return self.get_10th_place_score_at_race(10000)
+
+	def get_10th_place_score_at_race(self, race_number: int):
 		score = 0
 		for key in self.tenth_place_evaluated.keys():
+			if key > race_number:
+				continue
 			try:
 				score += self.tenth_place_evaluated[key]["points"]
 			except KeyError:
