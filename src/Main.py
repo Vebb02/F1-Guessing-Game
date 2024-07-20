@@ -1,5 +1,3 @@
-import time
-
 from Timer import Timer
 from GuessersList import GuessersList
 from Stats import Stats
