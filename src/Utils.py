@@ -11,12 +11,7 @@ def get_json_path() -> str:
 
 
 def parse_driver_name(driver_name: str) -> str:
-	parsed_driver = ""
-	for c in driver_name[:-3]:
-		if c.isupper():
-			parsed_driver += " "
-		parsed_driver += c
-	return parsed_driver[1:], driver_name[-3:]
+	return driver_name[:-3], driver_name[-3:]
 
 
 def get_short_to_long_name(driver_standings: list[list[str]]):

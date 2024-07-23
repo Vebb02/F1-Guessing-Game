@@ -42,13 +42,13 @@ def get_race_results(table):
 def get_driver_standings(table) -> list[list[str]]:
 	driver_standings_link = QueryLinks.get_driver_standings()
 	table.update_cell(1, 1, driver_standings_link)
-	return table.get_values(range_name="B1:F24")
+	return table.get_values(range_name="A1:F24")
 
 
 def get_constructor_standings(table):
 	constructor_standings_link = QueryLinks.get_constructor_standings()
 	table.update_cell(1, 1, constructor_standings_link)
-	constructor_standings = table.get_values(range_name="B1:D11")
+	constructor_standings = table.get_values(range_name="A1:D11")
 	return constructor_standings
 
 
