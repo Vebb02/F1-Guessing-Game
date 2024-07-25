@@ -40,7 +40,7 @@ def main():
 	timer.print_delta_time("Loaded race results")
 
 	sprint_results = Query.get_sprint_results(proxy, len(race_results))
-	print(sprint_results)
+	timer.print_delta_time("Loaded sprint results")
 
 	driver_standings = Query.get_driver_standings(proxy)
 	guessers.evaluate_driver_standings(driver_standings)

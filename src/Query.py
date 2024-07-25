@@ -48,13 +48,8 @@ def get_sprint_results(table, number_of_races: int):
 	for i in range(number_of_races):
 		table.update_cell(1, 1, QueryLinks.get_sprint_race(i))
 		race = table.get_values(range_name="B1:H21")
-		print(i, race)
 		if len(race) == 1:
-			break
-		if len(race[0]) != 7:
-			break
-		if not (race[0][6] == "PTS" and int(race[1][6]) < 25):
-			break
+			continue
 		print(f"Loaded sprint results for race number {i + 1}", end="\r")
 		sprint_results[i] = race
 		# Cache.cache(race, RACE_RESULTS_FILE)
