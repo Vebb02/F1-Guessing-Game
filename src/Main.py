@@ -39,6 +39,9 @@ def main():
 	guessers.add_race_results_to_tenth_place(race_results)
 	timer.print_delta_time("Loaded race results")
 
+	sprint_results = Query.get_sprint_results(proxy, len(race_results))
+	print(sprint_results)
+
 	driver_standings = Query.get_driver_standings(proxy)
 	guessers.evaluate_driver_standings(driver_standings)
 	timer.print_delta_time("Evaluated driver standings")

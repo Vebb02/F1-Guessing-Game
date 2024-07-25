@@ -39,6 +39,24 @@ def get_race_results(table):
 	return race_results
 
 
+def get_sprint_results(table, number_of_races: int):
+	sprint_results = dict()
+	for i in range(number_of_races):
+		table.update_cell(1, 1, QueryLinks.get_sprint_race(i))
+		race = table.get_values(range_name="B1:H21")
+		print(i, race)
+		if len(race) == 1:
+			break
+		if len(race[0]) != 7:
+			break
+		if not (race[0][6] == "PTS" and int(race[1][6]) < 25):
+			break
+		print(f"Loaded sprint results for race number {i + 1}", end="\r")
+		sprint_results[i] = race
+		# Cache.cache(race, RACE_RESULTS_FILE)
+	return sprint_results
+
+
 def get_driver_standings(table) -> list[list[str]]:
 	driver_standings_link = QueryLinks.get_driver_standings()
 	table.update_cell(1, 1, driver_standings_link)
