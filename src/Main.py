@@ -44,15 +44,6 @@ def main():
 	timer.print_delta_time("Loaded sprint results")
 
 	standings: Standings = Standings(race_results, sprint_results)
-	for i in range(len(race_results) + 1):
-		current_standings = standings.get_driver_standings(i)
-		print(current_standings)
-		print()
-
-	for i in range(len(race_results) + 1):
-		current_standings = standings.get_constructor_standings(i)
-		print(current_standings)
-		print()
 
 	driver_standings = Query.get_driver_standings(proxy)
 	guessers.evaluate_driver_standings(driver_standings)
