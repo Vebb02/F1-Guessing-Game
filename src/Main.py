@@ -9,6 +9,7 @@ from Client import Client
 import Query
 import Season
 from SeasonResults import SeasonResults
+from Standings import Standings
 
 def main():
 	accumulative_timer = Timer()
@@ -41,6 +42,9 @@ def main():
 
 	sprint_results = Query.get_sprint_results(proxy, len(race_results))
 	timer.print_delta_time("Loaded sprint results")
+
+	standings: Standings = Standings(race_results, sprint_results)
+	standings.get_driver_standings(len(race_results))
 
 	driver_standings = Query.get_driver_standings(proxy)
 	guessers.evaluate_driver_standings(driver_standings)

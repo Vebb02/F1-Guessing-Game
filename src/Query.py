@@ -47,7 +47,7 @@ def get_sprint_results(table, number_of_races: int):
 	sprint_results = dict()
 	for i in range(number_of_races):
 		table.update_cell(1, 1, QueryLinks.get_sprint_race(i))
-		race = table.get_values(range_name="B1:H21")
+		race = table.get_values(range_name="A1:H21")
 		if len(race) == 1:
 			continue
 		print(f"Loaded sprint results for race number {i + 1}", end="\r")
