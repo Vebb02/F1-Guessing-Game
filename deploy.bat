@@ -1,3 +1,4 @@
+git checkout main
 git pull
 cd ../pages
 git pull
