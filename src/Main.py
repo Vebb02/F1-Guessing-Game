@@ -30,7 +30,7 @@ def main():
 	timer.print_delta_time("Loaded proxy sheet")
 
 	proxy = proxy_sheet.get_worksheet(0)
-	timer.print_delta_time("Loaded proxy sheet")
+	timer.print_delta_time("Loaded proxy")
 
 	list_of_starting_grid = Query.get_list_of_starting_grid(proxy)
 	guessers.add_starting_grid(list_of_starting_grid)
@@ -44,7 +44,15 @@ def main():
 	timer.print_delta_time("Loaded sprint results")
 
 	standings: Standings = Standings(race_results, sprint_results)
-	standings.get_driver_standings(len(race_results))
+	for i in range(len(race_results) + 1):
+		current_standings = standings.get_driver_standings(i)
+		print(current_standings)
+		print()
+
+	for i in range(len(race_results) + 1):
+		current_standings = standings.get_constructor_standings(i)
+		print(current_standings)
+		print()
 
 	driver_standings = Query.get_driver_standings(proxy)
 	guessers.evaluate_driver_standings(driver_standings)
