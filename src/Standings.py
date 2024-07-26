@@ -16,7 +16,6 @@ class Standings:
 			for i in range(1, 21):
 				self.driver_points[driver][str(i)] = 0
 
-		
 		try:
 			self.constructor_points[constructor]["points"] += points
 		except KeyError:
@@ -26,16 +25,8 @@ class Standings:
 				self.constructor_points[constructor][str(i)] = 0
 		
 		if not is_sprint:
-			try:
-				self.driver_points[driver][pos] += 1
-			except KeyError:
-				self.driver_points[driver][pos] = 1
-
-			try:
-				self.constructor_points[constructor][pos] += 1
-			except KeyError:
-				self.constructor_points[constructor][pos] = 1
-
+			self.driver_points[driver][pos] += 1
+			self.constructor_points[constructor][pos] += 1
 
 	def __add_race_result(self, race_result: list[list[str]], is_sprint: bool = False):
 		for result in race_result:
