@@ -1,16 +1,26 @@
 import Points
 import Query
+import copy
 
 class Stats:
 	def __init__(self, guesses_sheet):
 		stats: list[list[str]] = Query.get_stats(guesses_sheet)
 		self.antall = {c[1]: 0 for c in Stats.get_categories_in_antall()}
 		self.topx = {c[1]: {} for c in Stats.get_categories_in_div()}
+		self.antall_after_n_races = []
+		self.topx_after_n_races = []
 		self.parse_stats(stats)
 
+	def __save_state(self):
+		self.antall_after_n_races.append(copy.deepcopy(self.antall))
+		self.topx_after_n_races.append(copy.deepcopy(self.topx))
+
 	def parse_stats(self, stats: list[list[str]]):
-		for row in stats:
+		# Exclude first row to not save initial state
+		for row in stats[1:]:
 			if is_row_without_stats(row):
+				if len(row[0].split()) == 1:
+					self.__save_state()
 				continue
 			key = row[0]
 			if key in self.antall.keys():
