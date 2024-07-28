@@ -31,10 +31,6 @@ def get_race_results(table):
 		race = table.get_values(range_name="A1:G21")
 		if len(race) == 1:
 			break
-		if len(race[0]) != 7:
-			break
-		if not ((race[0][6]).upper() == "PTS" and int(race[1][6]) >= 25):
-			break
 		if race[-1][0][:4].upper() == "NOTE":
 			race.pop()
 		print(f"Loaded race results for race number {i + 1}", end="\r")
