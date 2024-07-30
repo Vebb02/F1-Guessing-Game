@@ -78,7 +78,8 @@ def main():
 	)
 	timer.print_delta_time("Created Table Collection")
 
-	history = SeasonHistory(standings, stats, guesses_sheet, starting_grids, race_results)
+	SeasonHistory(standings, stats, guesses_sheet, starting_grids, race_results)
+	timer.print_delta_time("Created graph")
 
 	HtmlWriter.write_index(table_coll)
 	HtmlWriter.write_stats(table_coll)
