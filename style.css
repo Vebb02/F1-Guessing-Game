@@ -98,3 +98,8 @@ td a {
 td div {
     margin: 0px;
 }
+
+img {
+    width:500px;
+    height: auto;
+}
