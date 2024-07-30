@@ -10,6 +10,7 @@ import Query
 import Season
 from SeasonResults import SeasonResults
 from Standings import Standings
+from SeasonHistory import SeasonHistory
 
 def main():
 	accumulative_timer = Timer()
@@ -32,8 +33,8 @@ def main():
 	proxy = proxy_sheet.get_worksheet(0)
 	timer.print_delta_time("Loaded proxy")
 
-	list_of_starting_grid = Query.get_list_of_starting_grid(proxy)
-	guessers.add_starting_grid(list_of_starting_grid)
+	starting_grids = Query.get_list_of_starting_grid(proxy)
+	guessers.add_starting_grid(starting_grids)
 	timer.print_delta_time("Loaded starting grid")
 
 	race_results = Query.get_race_results(proxy)
@@ -42,7 +43,6 @@ def main():
 
 	sprint_results = Query.get_sprint_results(proxy, len(race_results))
 	timer.print_delta_time("Loaded sprint results")
-
 	standings: Standings = Standings(race_results, sprint_results)
 
 	driver_standings = Query.get_driver_standings(proxy)
@@ -77,6 +77,8 @@ def main():
 		enough_time_passed = enough_time_passed,
 	)
 	timer.print_delta_time("Created Table Collection")
+
+	history = SeasonHistory(standings, stats, guesses_sheet, starting_grids, race_results)
 
 	HtmlWriter.write_index(table_coll)
 	HtmlWriter.write_stats(table_coll)

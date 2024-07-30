@@ -4,6 +4,7 @@ import Season
 
 STARTING_GRID_FILE = "starting_grid"
 RACE_RESULTS_FILE = "race_results"
+SPRINT_RESULTS_FILE = "sprint_results"
 
 
 def get_list_of_starting_grid(table) -> list[list[list[str]]]:
@@ -45,14 +46,19 @@ def get_race_results(table):
 
 def get_sprint_results(table, number_of_races: int):
 	sprint_results = dict()
-	for i in range(number_of_races):
+	list_sprint = Cache.get_from_cache(SPRINT_RESULTS_FILE)
+	for i, sprint in enumerate(list_sprint):
+		if len(sprint) > 1:
+			sprint_results[i] = sprint
+	for i in range(len(list_sprint), number_of_races):
 		table.update_cell(1, 1, QueryLinks.get_sprint_race(i))
 		race = table.get_values(range_name="A1:H21")
 		if len(race) == 1:
+			Cache.cache([["No sprint"]], SPRINT_RESULTS_FILE)
 			continue
 		print(f"Loaded sprint results for race number {i + 1}", end="\r")
 		sprint_results[i] = race
-		# Cache.cache(race, RACE_RESULTS_FILE)
+		Cache.cache(race, SPRINT_RESULTS_FILE)
 	return sprint_results
 
 

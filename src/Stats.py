@@ -29,6 +29,7 @@ class Stats:
 				self.add_row_to_topx(row, key)
 			else:
 				raise Exception(f"Could not parse row: {row}")
+		self.__save_state()
 
 	def add_row_to_topx(self, row: list[str], key: str):
 		category = self.topx[key]
@@ -90,6 +91,14 @@ class Stats:
 		points = Points.get_diff_to_points(rank, Points.get_antall_points())
 		points += get_bonus(diff)
 		return points
+	
+	def use_all_stats(self):
+		self.use_stats_after_n_races(0)
+
+	def use_stats_after_n_races(self, race_number: int):
+		race_number -= 1
+		self.antall = self.antall_after_n_races[race_number]
+		self.topx = self.topx_after_n_races[race_number]
 
 
 def get_bonus(diff: int):

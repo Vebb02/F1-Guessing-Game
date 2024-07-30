@@ -2,6 +2,7 @@ class Standings:
 	def __init__(self, race_results: list[list[list[str]]], sprint_results: dict[int, list[list[list[str]]]]):
 		self.race_results: list[list[list[str]]] = race_results[::-1]
 		self.sprint_results: dict[int, list[list[list[str]]]] = sprint_results
+		self.number_of_races = len(race_results)
 
 	def __add_driver_result(self, result: list[str], is_sprint: bool):
 		driver = result[2]
@@ -24,7 +25,7 @@ class Standings:
 			for i in range(1, 21):
 				self.constructor_points[constructor][str(i)] = 0
 		
-		if not is_sprint:
+		if not is_sprint and pos != "NC" and pos != "DQ":
 			self.driver_points[driver][pos] += 1
 			self.constructor_points[constructor][pos] += 1
 
