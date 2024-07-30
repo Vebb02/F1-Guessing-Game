@@ -47,4 +47,4 @@ class SeasonHistory:
 			plt.plot(xs, ys, label = name)
 			plt.xticks(np.arange(min(xs), max(xs)+1, 1))
 		plt.legend()
-		plt.savefig('./pages/history.png')
+		plt.savefig('./pages/history.png', dpi = 500)
