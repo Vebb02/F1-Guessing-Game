@@ -1,3 +1,4 @@
+import copy
 from Standings import Standings
 from Stats import Stats
 from GuessersList import GuessersList
@@ -15,12 +16,12 @@ class SeasonHistory:
 		self.get_graph()
 
 	def init_results(self):
-		gs = GuessersList(self.guesses_sheet)
-		self.history: dict[list] = {str(guesser) : [] for guesser in gs.get_list_of_guessers()}
+		default_gs = GuessersList(self.guesses_sheet)
+		self.history: dict[list] = {str(guesser) : [] for guesser in default_gs.get_list_of_guessers()}
 		
 		for i in range(self.standings.number_of_races):
 			race_number = i + 1
-			gs = GuessersList(self.guesses_sheet)
+			gs = copy.deepcopy(default_gs) 
 			gs.add_starting_grid(self.starting_grids)
 			gs.add_race_results_to_tenth_place(self.race_results)
 			gs.evaluate_driver_standings([""] + self.standings.get_driver_standings(race_number))
