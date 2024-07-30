@@ -9,6 +9,10 @@ def get_race(race_number: int):
 	return f'=importhtml("https://www.formula1.com/en/results/\
 {Season.get_year()}/races/{query_number}/a/race-result"; "table"; 1; "en_US")'
 
+def get_sprint_race(race_number: int):
+	query_number = __get_race_query_number(race_number)
+	return f'=importhtml("https://www.formula1.com/en/results/\
+{Season.get_year()}/races/{query_number}/a/sprint-results"; "table"; 1; "en_US")'
 
 def get_start_grid(race_number: int):
 	query_number = __get_race_query_number(race_number)

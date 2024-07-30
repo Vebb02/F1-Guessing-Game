@@ -135,9 +135,14 @@ def get_page_title(title: str):
 	return f"<div>\n<h2>{title}</h2>\n"
 
 
+def get_image():
+	return '<div>\n<img src="history.png" alt="history">\n</div>\n'
+
+
 def get_index_html(table_coll: TableCollection):
 	html_body = get_page_title("Hjem")
 	html_body += get_table(table_coll.get_summary_table())
+	html_body += get_image()
 	html_body += get_table(table_coll.get_driver_standings_table())
 	html_body += get_table(table_coll.get_constructor_standings_table())
 	html_body += get_tenth_table(table_coll.get_tenth_table(), table_coll.enough_time_passed())
