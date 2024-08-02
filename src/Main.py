@@ -1,3 +1,4 @@
+import copy
 from Timer import Timer
 from GuessersList import GuessersList
 from Stats import Stats
@@ -25,6 +26,7 @@ def main():
 	timer.print_delta_time("Loaded guesses sheet")
 
 	guessers = GuessersList(guesses_sheet)
+	unmodified_guessers = copy.deepcopy(guessers)
 	timer.print_delta_time("Loaded guesses")
 
 	proxy_sheet = client.get_proxy_sheet()
@@ -78,7 +80,7 @@ def main():
 	)
 	timer.print_delta_time("Created Table Collection")
 
-	history = SeasonHistory(standings, stats, guesses_sheet, starting_grids, race_results)
+	history = SeasonHistory(standings, stats, copy.deepcopy(unmodified_guessers), starting_grids, race_results)
 	history.save_image()
 	timer.print_delta_time("Created graph")
 

@@ -6,15 +6,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class SeasonHistory:
-	def __init__(self, standings: Standings, stats: Stats, guesses_sheet, starting_grids, race_results):
+	def __init__(self, standings: Standings, stats: Stats, guessers: GuessersList, starting_grids, race_results):
 		self.__standings = standings
 		self.__stats = stats
-		self.__guesses_sheet = guesses_sheet
+		self.__guessers = guessers
 		self.__starting_grids = starting_grids
 		self.__race_results = race_results
 
 	def __init_results(self):
-		default_gs = GuessersList(self.__guesses_sheet)
+		default_gs = self.__guessers
 		self.__history: dict[list] = {str(guesser) : [] for guesser in default_gs.get_list_of_guessers()}
 		
 		for i in range(self.__standings.number_of_races):
