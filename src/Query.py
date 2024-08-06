@@ -6,10 +6,12 @@ STARTING_GRID_FILE = "starting_grid"
 RACE_RESULTS_FILE = "race_results"
 SPRINT_RESULTS_FILE = "sprint_results"
 
+NUMBER_OF_RACES = Season.get_total_number_of_races()
 
 def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 	list_of_starting_grid = Cache.get_from_cache(STARTING_GRID_FILE)
-	for i in range(len(list_of_starting_grid), Season.get_total_number_of_races()):
+	number_of_loaded_grids = len(list_of_starting_grid)
+	for i in range(number_of_loaded_grids, NUMBER_OF_RACES):
 		table.update_cell(1, 1, QueryLinks.get_start_grid(i))
 		starting_grid = table.get_values(range_name="A1:Z21")
 		if len(starting_grid) == 1:
@@ -27,7 +29,8 @@ def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 
 def get_race_results(table):
 	race_results = Cache.get_from_cache(RACE_RESULTS_FILE)[::-1]
-	for i in range(len(race_results), Season.get_total_number_of_races()):
+	number_of_loaded_results = len(race_results)
+	for i in range(number_of_loaded_results, NUMBER_OF_RACES):
 		table.update_cell(1, 1, QueryLinks.get_race(i))
 		race = table.get_values(range_name="A1:G21")
 		if len(race) == 1:
