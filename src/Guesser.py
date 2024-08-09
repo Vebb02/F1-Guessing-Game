@@ -20,18 +20,15 @@ class Guesser:
 		self.__div_score = 0
 		self.__antall_score = 0
 		self.__topx = {c[1]: {} for c in Stats.get_categories_in_div()}
-	
+
 	def add_guesses(self, guesses: list[str], header: list[str]):
 		self.add_email(guesses)
-		guesses = guesses[2:-1]
-		header = header[2:-1]
+		guesses_with_header = list(zip(guesses, header))[2:-1]
+		for value, key in guesses_with_header:
+			self.add_guess(key, value)
 
-		for i in range(len(guesses)):
-			split_key = header[i].split()
-			value = guesses[i]
-			self.add_guess(split_key, value)
-
-	def add_guess(self, split_key: list[str], value:str):
+	def add_guess(self, key: str, value: str):
+		split_key = key.split()
 		if self.add_antall_guess(split_key, value):
 			return
 
@@ -49,7 +46,7 @@ class Guesser:
 			self.antall[split_key[1]] = int(value)
 			return True
 		return False
-		
+
 	def add_rank_guess(self, split_key: list[str], value: str):
 		place = int(split_key[2][1 : len(split_key[2]) - 1])
 		driver = value[-3:]
@@ -71,7 +68,6 @@ class Guesser:
 			return True
 		except KeyError:
 			return False
-
 
 	def add_email(self, guesses: list[str]):
 		self.email = guesses[:-1]
@@ -112,6 +108,7 @@ class Guesser:
 		return get_diff_to_points(diff, get_10th_points())
 	
 	def get_10th_place_score(self):
+		# Arbitrarily large number to always include every raceS
 		return self.get_10th_place_score_at_race(10000)
 
 	def get_10th_place_score_at_race(self, race_number: int):
