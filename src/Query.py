@@ -13,7 +13,7 @@ def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 	number_of_loaded_grids = len(list_of_starting_grid)
 	for i in range(number_of_loaded_grids, NUMBER_OF_RACES):
 		table.update_cell(1, 1, QueryLinks.get_start_grid(i))
-		starting_grid: list = table.get_values(range_name="A1:Z21")
+		starting_grid: list = table.get_values()
 		if len(starting_grid) == 1:
 			break
 		if starting_grid[-1][0][:4].upper() == "NOTE":
@@ -29,7 +29,7 @@ def get_race_results(table):
 	number_of_loaded_results = len(race_results)
 	for i in range(number_of_loaded_results, NUMBER_OF_RACES):
 		table.update_cell(1, 1, QueryLinks.get_race(i))
-		race = table.get_values(range_name="A1:G21")
+		race = table.get_values()
 		if len(race) == 1:
 			break
 		if race[-1][0][:4].upper() == "NOTE":
@@ -48,7 +48,7 @@ def get_sprint_results(table, number_of_races: int):
 			sprint_results[i] = sprint
 	for i in range(len(list_sprint), number_of_races):
 		table.update_cell(1, 1, QueryLinks.get_sprint_race(i))
-		race = table.get_values(range_name="A1:H21")
+		race = table.get_values()
 		if len(race) == 1:
 			Cache.cache([["No sprint"]], SPRINT_RESULTS_FILE)
 			continue
@@ -61,13 +61,13 @@ def get_sprint_results(table, number_of_races: int):
 def get_driver_standings(table) -> list[list[str]]:
 	driver_standings_link = QueryLinks.get_driver_standings()
 	table.update_cell(1, 1, driver_standings_link)
-	return table.get_values(range_name="A1:F24")
+	return table.get_values()
 
 
 def get_constructor_standings(table):
 	constructor_standings_link = QueryLinks.get_constructor_standings()
 	table.update_cell(1, 1, constructor_standings_link)
-	constructor_standings = table.get_values(range_name="A1:D11")
+	constructor_standings = table.get_values()
 	return constructor_standings
 
 
