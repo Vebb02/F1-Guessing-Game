@@ -13,11 +13,8 @@ def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 	number_of_loaded_grids = len(list_of_starting_grid)
 	for i in range(number_of_loaded_grids, NUMBER_OF_RACES):
 		table.update_cell(1, 1, QueryLinks.get_start_grid(i))
-		starting_grid = table.get_values(range_name="A1:Z21")
+		starting_grid: list = table.get_values(range_name="A1:Z21")
 		if len(starting_grid) == 1:
-			break
-		number_of_cols = len(starting_grid[0])
-		if number_of_cols != 5:
 			break
 		if starting_grid[-1][0][:4].upper() == "NOTE":
 			starting_grid.pop()
