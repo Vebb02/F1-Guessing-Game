@@ -52,6 +52,8 @@ def get_sprint_results(table, number_of_races: int):
 		if len(race) == 1:
 			Cache.cache([["No sprint"]], SPRINT_RESULTS_FILE)
 			continue
+		if race[-1][0][:4].upper() == "NOTE":
+			race.pop()
 		print(f"Loaded sprint results for race number {i + 1}", end="\r")
 		sprint_results[i] = race
 		Cache.cache(race, SPRINT_RESULTS_FILE)
