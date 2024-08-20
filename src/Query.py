@@ -16,7 +16,7 @@ def get_list_of_starting_grid(table) -> list[list[list[str]]]:
 		starting_grid: list = table.get_values()
 		if len(starting_grid) == 1:
 			break
-		if starting_grid[-1][0][:4].upper() == "NOTE":
+		if starting_grid[-1][-2] == "":
 			starting_grid.pop()
 		print(f"Loaded starting grid for race number {i + 1}", end="\r")
 		list_of_starting_grid.append(starting_grid)
@@ -32,7 +32,7 @@ def get_race_results(table):
 		race = table.get_values()
 		if len(race) == 1:
 			break
-		if race[-1][0][:4].upper() == "NOTE":
+		if race[-1][-1] == "":
 			race.pop()
 		print(f"Loaded race results for race number {i + 1}", end="\r")
 		race_results.insert(0, race)
@@ -52,7 +52,7 @@ def get_sprint_results(table, number_of_races: int):
 		if len(race) == 1:
 			Cache.cache([["No sprint"]], SPRINT_RESULTS_FILE)
 			continue
-		if race[-1][0][:4].upper() == "NOTE":
+		if race[-1][-1] == "":
 			race.pop()
 		print(f"Loaded sprint results for race number {i + 1}", end="\r")
 		sprint_results[i] = race
