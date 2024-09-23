@@ -81,21 +81,21 @@ def should_be_hidden(i: int, race_result_not_out: bool):
 	return is_hidden if race_result_not_out else not is_hidden
 
 
-def set_hidden(row: list[str], all_na: bool):
+def set_hidden(row: list[str], is_results_out: bool):
 	for i in range(1, len(row)):
-		if not should_be_hidden(i, all_na):
+		if not should_be_hidden(i, is_results_out):
 			continue
 		cell = row[i]
 		row[i] = f'<div id="hidden">█</div><div id="result">{cell}</div>'
 
 
-def	get_tenth_table_with_hidden(table: Table, all_na: bool) -> str:
+def	get_tenth_table_with_hidden(table: Table, is_results_out: bool) -> str:
 	rows = table.get_table_body()
 	html = get_table_title(table.get_header()) 
 	html += '<input type="checkbox" id="toggle"/>\n'
 	html += get_table_header(rows[0])
 	
-	set_hidden(rows[-1], all_na)
+	set_hidden(rows[-1], is_results_out)
 	
 	for row in rows[1:]:
 		html += get_table_body_segment(row)
@@ -110,12 +110,20 @@ def is_row_all_not_available(row: list[str]):
 	return all_na
 
 
+def all_has_guessed(row: list[str]):
+	all_guessed = False
+	for i in range(1, len(row), 4):
+		all_guessed = all_guessed and row[i] != Utils.empty()
+	return all_guessed
+
+
 def get_tenth_table(table: Table, enough_time_passed: bool):
 	rows = table.get_table_body()
-	all_na = is_row_all_not_available(rows[-1])
-	if not all_na and enough_time_passed:
+	is_results_out = is_row_all_not_available(rows[-1])
+	have_all_guessed = all_has_guessed(rows[-1]) and not is_results_out
+	if not is_results_out and enough_time_passed or have_all_guessed and not enough_time_passed:
 		return get_table(table)
-	return get_tenth_table_with_hidden(table, all_na)
+	return get_tenth_table_with_hidden(table, is_results_out)
 
 
 def get_tippet_diverse(table_coll: TableCollection):
