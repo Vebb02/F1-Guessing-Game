@@ -69,7 +69,7 @@ def main():
 	timer.print_delta_time("Loaded race calendar")
 
 	enough_time_passed = Utils.enough_time_passed_since_race(
-		calendar, len(race_results)
+		calendar, len(starting_grids)
 	)
 
 	table_coll: TableCollection = TableCollection(

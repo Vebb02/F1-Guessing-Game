@@ -110,8 +110,8 @@ def is_row_all_not_available(row: list[str]):
 	return all_na
 
 
-def all_has_guessed(row: list[str]):
-	all_guessed = False
+def all_have_guessed(row: list[str]):
+	all_guessed = True
 	for i in range(1, len(row), 4):
 		all_guessed = all_guessed and row[i] != Utils.empty()
 	return all_guessed
@@ -119,11 +119,11 @@ def all_has_guessed(row: list[str]):
 
 def get_tenth_table(table: Table, enough_time_passed: bool):
 	rows = table.get_table_body()
-	is_results_out = is_row_all_not_available(rows[-1])
-	have_all_guessed = all_has_guessed(rows[-1]) and not is_results_out
-	if not is_results_out and enough_time_passed or have_all_guessed and not enough_time_passed:
+	are_no_results_out = is_row_all_not_available(rows[-1])
+	have_all_guessed = all_have_guessed(rows[-1]) and are_no_results_out
+	if not are_no_results_out and enough_time_passed or have_all_guessed and not enough_time_passed:
 		return get_table(table)
-	return get_tenth_table_with_hidden(table, is_results_out)
+	return get_tenth_table_with_hidden(table, are_no_results_out)
 
 
 def get_tippet_diverse(table_coll: TableCollection):
