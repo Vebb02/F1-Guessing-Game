@@ -17,10 +17,17 @@ class Stats:
 
 	def parse_stats(self, stats: list[list[str]]):
 		# Exclude first row to not save initial state
+		was_prev_sprint = False
 		for row in stats[1:]:
 			if is_row_without_stats(row):
-				if len(row[0].split()) == 1:
+				is_race = len(row[0].split()) == 1
+				if is_race:
+					if not was_prev_sprint:
+						self.__save_state()
+					was_prev_sprint = False
+				else:
 					self.__save_state()
+					was_prev_sprint = True
 				continue
 			key = row[0]
 			if key in self.antall.keys():
